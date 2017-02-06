@@ -1,0 +1,58 @@
+header, main, footer {
+    padding: 20px;
+}
+
+header, footer {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+header {
+    width: 100%;
+    background-color: #a03033;
+    min-height: 90px;
+}
+
+#logo_header {
+    position: absolute;
+    left: 20px;
+    height: 50px;
+    width: auto;
+    -webkit-user-select: none; /* Chrome all / Safari all */
+    -moz-user-select: none; /* Firefox all */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Likely future */
+}
+
+header input[type=submit] {
+    width: inherit;
+    position: absolute;
+    right: 20px;
+    height: 50px;
+}
+
+main {
+    width: 80%;
+    max-width: 920px;
+    margin: 0 auto;
+    padding-bottom: 50px;
+}
+
+footer {
+    color: white;
+    text-align: center;
+    background-color: #a03033;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    height: 50px;
+}
+
+nav {
+    display: block;
+    text-align: right;
+    margin-bottom: 10px;
+    font-size: 150%;
+}
+

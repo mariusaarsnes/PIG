@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}Tilbud sendt{% endblock %}
+{% block content %}
+  <h1>Tilbud sendt</h1>
+  {% if rows %}
+    <table>
+      <tr>
+        <th>Band</th>
+        <th>E-post</th>
+        <th>Tlf</th>
+        <th>Scene</th>
+        <th>Dato</th>
+        <th>Start</th>
+        <th>Slutt</th>
+        <th>Pris</th>
+        <th>Status</th>
+      </tr>
+      {% for row in rows %}
+        <tr>
+          <td>{{ row[9] }}</td>
+          <td>{{ row[13] }}</td>
+          <td>{{ row[14] }}</td>
+          <td>{{ row[21] }}</td>
+          <td>{{ row[5] }}</td>
+          <td>{{ row[3] }}</td>
+          <td>{{ row[4] }}</td>
+          <td>{{ row[11] }}</td>
+          {% if row[7] == "pending" %}
+            <td>Sendt til bookingsjef</td>
+          {% elif row[7] == "declined" %}
+            <td>Ikke godkjent</td>
+          {% elif row[7] == "accepted" %}
+            <td>Sendt til manager</td>
+          {% elif row[7] == "confirmed" %}
+            <td>Godkjent av manager</td>
+          {% elif row[7] == "approved" %}
+            <td>
+              <form action="{{ url_for('send_offer') }}" method="post">
+                <input type="hidden" name="id" value="{{ row[0] }}">
+                <button class='approve' name="status" type="submit" value="accepted">Send tilbud</button>
+              </form>
+            </td>
+          {% endif %}
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>Det er ingen tilbud i databasen.</p>
+  {% endif %}
+{% endblock %}

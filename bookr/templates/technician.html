@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}Mine jobber{% endblock %}
+{% block content %}
+  <h1>Mine jobber</h1>
+  {% if concerts %}
+    <table>
+      <tr>
+        <th>Artist</th>
+        <th>Scene</th>
+        <th>Start</th>
+        <th>Slutt</th>
+        <th>Dato</th>
+        <th>Teknikere</th>
+        <th>Tekniske krav</th>
+      </tr>
+      {% for concert in concerts %}
+        <tr>
+          <td>{{ concert[16] }}</td>
+          <td>{{ concert[28] }}</td>
+          <td>{{ concert[10] }}</td>
+          <td>{{ concert[11] }}</td>
+          <td>{{ concert[12] }}</td>
+          <td>{{ concert[2] }}</td>
+          <td>{{ concert[22] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>Du har ikke fått tildelt noen jobber.</p>
+  {% endif %}
+{% endblock %}

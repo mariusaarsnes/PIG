@@ -1,0 +1,107 @@
+@import url('reset.css');
+
+@font-face {
+    font-family: 'Lato';
+    font-weight: 300;
+    font-style: normal;
+    src: url('fonts/Lato-300/Lato-300.eot');
+    src: url('fonts/Lato-300/Lato-300.eot?#iefix') format('embedded-opentype'),
+    local('Lato Light'),
+    local('Lato-300'),
+    url('fonts/Lato-300/Lato-300.woff2') format('woff2'),
+    url('fonts/Lato-300/Lato-300.woff') format('woff'),
+    url('fonts/Lato-300/Lato-300.ttf') format('truetype'),
+    url('fonts/Lato-300/Lato-300.svg#Lato') format('svg');
+}
+
+@font-face {
+    font-family: 'Lato';
+    font-weight: 400;
+    font-style: normal;
+    src: url('fonts/Lato-regular/Lato-regular.eot');
+    src: url('fonts/Lato-regular/Lato-regular.eot?#iefix') format('embedded-opentype'),
+    local('Lato Regular'),
+    local('Lato-regular'),
+    url('fonts/Lato-regular/Lato-regular.woff2') format('woff2'),
+    url('fonts/Lato-regular/Lato-regular.woff') format('woff'),
+    url('fonts/Lato-regular/Lato-regular.ttf') format('truetype'),
+    url('fonts/Lato-regular/Lato-regular.svg#Lato') format('svg');
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    font-weight: 500;
+    min-height: 100%;
+    position: relative;
+    color: #111;
+}
+
+table, th, td {
+    text-align: left;
+    padding: 10px 5px;
+    border: none;
+}
+
+table {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+th {
+    font-weight: bold;
+}
+
+td {
+    border-top: 1px solid silver;
+}
+
+tr:not(:first-child):hover {
+    background-color: #eee;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #a03033;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+h1 {
+    font-size: 200%;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 150%;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 125%;
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 5px;
+}
+
+.card {
+    margin: 0 0 30px;
+    padding: 20px;
+    display: flex;
+    flex-flow: row nowrap;
+    background-color: #eee;
+    transition: 0.2s;
+    overflow: auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card .right_info p{
+    border: 2px groove;
+    margin: 5px 0;
+    padding: 5px;
+    background-color: white;
+}
