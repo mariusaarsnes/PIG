@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block title %}Nye tilbud{% endblock %}
+{% block content %}
+  <h1>Tilbud til dine band</h1>
+  {% if rows %}
+    {% for row in rows %}
+      <div class="card">
+        <div class="left_info">
+          Band: {{ row[9] }} <br>
+          Scene: {{ row[25] }} <br>
+          Kapasitet: {{ row[26] }} <br>
+          Pris: {{ row[11] }} <br>
+          Dato: {{ row[5] }} <br>
+          Start: {{ row[3] }} <br>
+          Slutt: {{ row[4] }}
+        </div>
+        <div class="right_info">
+          <form action="{{ url_for('confirm_offer') }}" method="post" id="bookingstatus">
+            <input type="hidden" name="id" value="{{ row[0] }}">
+            <button class='approve' name="status" type="submit" value="confirmed">Godkjenn</button>
+            <button class='deny' name="status" type="submit" value="declined">Avslå</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>Ingen av dine band har fått noen nye tilbud.</p>
+  {% endif %}
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% block title %}Økonomisk rapport{% endblock %}
+{% block content %}
+  <h1>Økonomisk rapport</h1>
+  <div id="div_dropdown">
+    <form action="/get_concerts_venue_filtered" method="post">
+      <select name="venues" id="venues" onChange="submit.disabled=false" required>
+        <option selected disabled>Velg scene</option>
+        {% for entry in entries %}
+          <option value="{{ entry[1] }}"> {{ entry[1] }} </option>
+        {% endfor %}
+      </select>
+      <input name="submit" disabled type="submit" value="Generer rapport">
+    </form>
+    {% if retrieved %}
+      {% if concerts %}
+        <table name="rapport" id="rapport">
+          <tr>
+            <th>ID</th>
+            <th>Artist</th>
+            <th>Sjanger</th>
+            <th>Scene</th>
+            <th>Publikumstall</th>
+            <th>Kostnader</th>
+            <th>Økonomisk resultat</th>
+          </tr>
+          {% for concert in concerts %}
+            <tr>
+              <td>{{ concert[0] }}</td>
+              <td>{{ concert[1] }}</td>
+              <td>{{ concert[2] }}</td>
+              <td>{{ concert[3] }}</td>
+              <td>{{ concert[5] }}</td>
+              <td>{{ concert[4] }}</td>
+              <td>
+                <script>
+                  document.write({{ concert[5] }} * {{ concert[6] }} -
+                  {{ concert[4] }})
+                </script>
+              </td>
+            </tr>
+          {% endfor %}
+        </table>
+      {% else %}
+        <p>Det har ikke vært noen konserter på denne scenen.</p>
+      {% endif %}
+    {% endif %}
+  </div>
+
+
+{% endblock %}

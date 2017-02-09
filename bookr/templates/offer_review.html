@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}Tilbud{% endblock %}
+{% block content %}
+  {{ error }}
+  <h1>Tilbud fra bookingansvarlig</h1>
+  {% if rows %}
+    {% for row in rows %}
+      <div class="card">
+        <div class="left_info">
+          Artist: {{ row[9] }} <br>
+          E-mail: {{ row[13] }} <br>
+          Tlf.: {{ row[14] }} <br>
+          Scene: {{ row[21] }} <br>
+          Sjanger: {{ row[10] }} <br>
+          Pris: {{ row[11] }} <br>
+          Dato: {{ row[5] }} <br>
+          Start: {{ row[3] }} <br>
+          Slutt: {{ row[4] }}
+        </div>
+        <div class="right_info">
+          {% if row[6] %}
+            Kommentar fra bookingansvarlig <br>
+            <p>{{ row[6] }}</p>
+          {% endif %}
+          <form action="{{ url_for('review_offer') }}" method="post" id="bookingstatus">
+            <input type="hidden" name="id" value="{{ row[0] }}">
+            <input class='input' type="number" id="{{ row[0] }}" name="ticket_price" placeholder="Billettpris" min="0"
+                   max="100000" required>
+            <button class='calc' type="button" onclick="calculate({{ row[0] }}, {{ row[11] }},{{ row[22] }})">Generator
+            </button>
+            <button class='approve' name="status" type="submit" value="approved">Godkjenn</button>
+            <button class='deny' name="status" type="submit" onclick="ticket_price.value = '0'" value="declined">Avslå
+            </button>
+          </form>
+        </div>
+      </div>
+      <script type="text/javascript">
+        function calculate(id, pris, cap) {
+          var aprox = Math.round(pris / ((cap / 4) * 3));
+          document.getElementById(id).value = aprox;
+        }
+      </script>
+    {% endfor %}
+  {% else %}
+    <p>Det er ingen tilbud som venter på godkjenning.</p>
+  {% endif %}
+{% endblock %}

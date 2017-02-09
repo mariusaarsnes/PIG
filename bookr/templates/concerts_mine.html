@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block title %}Mine konserter{% endblock %}
+{% block content %}
+  <h1>Mine konserter</h1>
+  {% if entries %}
+    {% for entry in entries %}
+      <div class="card">
+        <div class="left_info">
+          Artist: {{ entry[17] }} <br>
+          Scene: {{ entry[28] }} <br>
+          Dato: {{ entry[12] }} <br>
+          Start: {{ entry[10] }} <br>
+          Slutt: {{ entry[11] }} <br>
+          Billettpris: {{ entry[4] }}
+        </div>
+        <div class="right_info">
+          Teknikere ved konserten <br>
+          <p>{{ entry[2] }}</p>
+          <form action="/add_technicians" method="post">
+            <input id="users{{ entry[0] }}" type="hidden" name="users">
+            <input class="concert_id" type="hidden" value="{{ entry[0] }}" name="concert_id">
+            <select name="names" onChange="add_user(this, {{ entry[0] }})">
+              <option selected="true" disabled>Velg teknikere</option>
+              {% for entry in technicians %}
+                <option value="{{ entry[1] }}">{{ entry[1] }}</option>
+              {% endfor %}
+            </select>
+            <input type="submit" value="Oppdater">
+          </form>
+          <output id="techs{{ entry[0] }}"></output>
+        </div>
+      </div>
+      <script type="text/javascript">
+        list = [];
+        function add_user(name, concert_id) {
+          techs = document.getElementById("techs" + concert_id);
+          users = document.getElementById("users" + concert_id);
+          list.push(name.value);
+          techs.innerHTML = list.join(', ');
+          users.value = list;
+          value = name.selectedIndex;
+          name.removeChild(name[value]);
+          name.selectedIndex = 0;
+        }
+      </script>
+    {% endfor %}
+  {% else %}
+    <p>Du er ikke arrangør for noen konserter.</p>
+  {% endif %}
+{% endblock %}
