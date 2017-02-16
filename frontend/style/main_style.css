@@ -1,0 +1,97 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+container {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+header {
+    position: absolute;
+    left: 0; right: 0;
+    height: 10%;
+    max-height: 250;
+    background-color: darkslategrey;
+    text-align: center;
+    border-bottom: solid black;
+    border-width: 1px;
+}
+header-content {
+    padding: 0;
+    margin: 0;
+    display: block;
+    font-size: 9vh;
+    cursor: default;
+}
+#logo {
+    width: 7vh;
+    height: 7vh;
+}
+sidebar {
+    position: absolute;
+    left: 0; top: 10%; bottom: 0;
+    width: 15%;
+    background-color: #D9DDDE;
+}
+side-text {
+    margin: 1% 0;
+    text-align: center;
+}
+#sidebar-option {
+    padding-top: 1.5%;
+    padding-bottom: 1.5%;
+    display: block;
+    color: black;
+    font-size: 2vw;
+    text-decoration: none;
+    transition: 0.5s;
+}
+#sidebar-option:hover {
+    color: white;
+    background-color: black;
+}
+#navigasjon {
+    font-size: 3vw; 
+    cursor: default;
+    padding-bottom: 15px; 
+    padding-top: 10px;
+}
+main {
+    overflow-x: hidden;
+    background-color: #D9DDDE;
+    position: absolute;
+    left: 15%; top: 10%; bottom: 5%; right: 0;
+    font-size: 15px;
+    border-left: solid black;
+    border-width: 1px;
+    overflow-y: scroll;
+    max-height: 85%;
+}
+main-content {
+    display: block;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+footer {
+    position: absolute;
+    left: 15%; right: 0; bottom: 0;
+    height: 5%;
+    border-top: solid black;
+    border-width: 1px;
+    background-color: #D9DDDE;
+    border-left: solid black;
+    border-width: 1px;
+}
+footer-content {
+    display: block; 
+    margin-top: 0.5%;
+    text-align: center;
+}
+h1, p {
+    margin: 0;
+}
