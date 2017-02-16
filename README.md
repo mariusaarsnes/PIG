@@ -1,48 +1,44 @@
-# Heroku Django Starter Template
+# python-getting-started
 
-An utterly fantastic project starter template for Django 1.10.
+A barebones Python app, which can easily be deployed to Heroku.
 
-## Features
+This application supports the [Getting Started with Python on Heroku](https://devcenter.heroku.com/articles/getting-started-with-python) article - check it out.
 
-- Production-ready configuration for Static Files, Database Settings, Gunicorn, etc.
-- Enhancements to Django's static file serving functionality via WhiteNoise.
-- Latest Python 3.6 runtime environment. 
+## Running Locally
 
-## How to Use
+Make sure you have Python [installed properly](http://install.python-guide.org).  Also, install the [Heroku Toolbelt](https://toolbelt.heroku.com/) and [Postgres](https://devcenter.heroku.com/articles/heroku-postgresql#local-setup).
 
-To use this project, follow these steps:
+```sh
+$ git clone git@github.com:heroku/python-getting-started.git
+$ cd python-getting-started
 
-1. Create your working environment.
-2. Install Django (`$ pip install django`)
-3. Create a new project using this template
+$ pip install -r requirements.txt
 
-## Creating Your Project
+$ createdb python_getting_started
 
-Using this template to create a new Django app is easy::
+$ python manage.py migrate
+$ python manage.py collectstatic
 
-    $ django-admin.py startproject --template=https://github.com/heroku/heroku-django-template/archive/master.zip --name=Procfile helloworld
+$ heroku local
+```
 
-You can replace ``helloworld`` with your desired project name.
+Your app should now be running on [localhost:5000](http://localhost:5000/).
 
-## Deployment to Heroku
+## Deploying to Heroku
 
-    $ git init
-    $ git add -A
-    $ git commit -m "Initial commit"
+```sh
+$ heroku create
+$ git push heroku master
 
-    $ heroku create
-    $ git push heroku master
+$ heroku run python manage.py migrate
+$ heroku open
+```
+or
 
-    $ heroku run python manage.py migrate
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
-See also, a [ready-made application](https://github.com/heroku/python-getting-started), ready to deploy.
+## Documentation
 
-## Using Python 2.7?
+For more information about using Python on Heroku, see these Dev Center articles:
 
-Just update `runtime.txt` to `python-2.7.13` (no trailing spaces or newlines!).
-
-## Further Reading
-
-- [Gunicorn](https://warehouse.python.org/project/gunicorn/)
-- [WhiteNoise](https://warehouse.python.org/project/whitenoise/)
-- [dj-database-url](https://warehouse.python.org/project/dj-database-url/)
+- [Python on Heroku](https://devcenter.heroku.com/categories/python)
