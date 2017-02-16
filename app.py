@@ -9,8 +9,6 @@ This file creates your application.
 
 from flask import Flask
 
-app = Flask(__name__)
-
 ###
 # Routing for your application.
 ###
