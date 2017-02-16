@@ -1,0 +1,95 @@
+{% extends "layout.html" %}
+{% block title %}Statistikk{% endblock %}
+{% block content %}
+  <h1>Statistikk for booking</h1>
+  <table class="stats_table">
+    <tr>
+      <th>Antall bekreftede konserter</th>
+      <th>Antall tilbud sendt</th>
+      <th class="right">Antall dager igjen til semesterslutt</th>
+    </tr>
+    <tr>
+      <!-- Iterates through all confirmed concerts and returns the last index -->
+      {% if rows_accepted %}
+        {% for row in rows_accepted %}
+          {% if loop.last %}
+            <td>{{ loop.index }}</td>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <td>0</td>
+      {% endif %}
+
+      <!-- Iterates through all offers sendt and returns the last index -->
+      {% if entries %}
+        {% for row in entries %}
+          {% if loop.last %}
+            <td>{{ loop.index }}</td>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <td>0</td>
+      {% endif %}
+
+      <td class="right">{{ days_left }}</td>
+    </tr>
+  </table>
+  <h2>Ledige dager per scene dette semesteret</h2>
+  <table class="stats_table">
+    <tr>
+      <th>Scene</th>
+      <th>Antall ledige datoer</th>
+      <th class="right">Datoer som er opptatt</th>
+    </tr>
+    <tr>
+      <td>Strossa</td>
+      <td>{{ strossa }}</td>
+      <td class="right">{{ strossa_taken }}</td>
+    </tr>
+    <tr>
+      <td>Storsalen</td>
+      <td>{{ storsalen }}</td>
+      <td class="right">{{ storsalen_taken }}</td>
+    </tr>
+    <tr>
+      <td>Selskapssiden</td>
+      <td>{{ selskapssiden }}</td>
+      <td class="right">{{ selskapssiden_taken }}</td>
+    </tr>
+    <tr>
+      <td>Rundhallen</td>
+      <td>{{ rundhallen }}</td>
+      <td class="right">{{ rundhallen_taken }}</td>
+    </tr>
+    <tr>
+      <td>Lyche</td>
+      <td>{{ lyche }}</td>
+      <td class="right">{{ lyche_taken }}</td>
+    </tr>
+    <tr>
+      <td>Knaus</td>
+      <td>{{ knaus }}</td>
+      <td class="right">{{ knaus_taken }}</td>
+    </tr>
+    <tr>
+      <td>Klubben</td>
+      <td>{{ klubben }}</td>
+      <td class="right">{{ klubben_taken }}</td>
+    </tr>
+    <tr>
+      <td>Edgar</td>
+      <td>{{ edgar }}</td>
+      <td class="right">{{ edgar_taken }}</td>
+    </tr>
+    <tr>
+      <td>Daglighallen</td>
+      <td>{{ daglighallen }}</td>
+      <td class="right">{{ daglighallen_taken }}</td>
+    </tr>
+    <tr>
+      <td>Bodegaen</td>
+      <td>{{ bodegaen }}</td>
+      <td class="right">{{ bodegaen_taken }}</td>
+    </tr>
+  </table>
+{% endblock %}

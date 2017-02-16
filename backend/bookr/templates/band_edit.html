@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block title %}Rediger band{% endblock %}
+{% block content %}
+  <p class="error">{{ error }}</p>
+  <h1>Rediger band</h1>
+  <form action="/pick_band" method="post">
+    <select name="band_id" onChange="pick_band.disabled=false">
+      <option selected disabled>Velg band</option>
+      {% for band in bands %}
+        <option value= {{ band[0] }}> {{ band[1] }}</option>
+      {% endfor %}
+    </select>
+    <button name="pick_band" type="submit" id="pick_band" disabled>Velg band</button>
+  </form>
+  {% if manager_band %}
+    <h2>{{ manager_band[1] }}</h2>
+    <form action="/update_band" method="post">
+      <fieldset>
+        <legend>Band-informasjon</legend>
+        <input type="hidden" name="band_id" value="{{ manager_band[0] }}">
+        <label for="bandname">Bandnavn</label>
+        <input type="text" name="bandname" id="bandname" value="{{ manager_band[1] }}"
+               placeholder="{{ manager_band[1] }}">
+        <label for="tlf">Telefon</label>
+        <input type="number" name="tlf" id="tlf" placeholder="{{ manager_band[6] }}" value="{{ manager_band[6] }}"
+               min="10000000" max="99999999">
+        <label for="mail">Email</label>
+        <input type="email" name="mail" id="email" placeholder="{{ manager_band[5] }}" value="{{ manager_band[5] }}">
+        <label for="genre">Sjanger</label>
+        <select name="genre" id="genre">
+          <option selected value="{{ manager_band[2] }}">{{ manager_band[2] }}</option>
+          <option value="Pop">Pop</option>
+          <option value="Rock">Rock</option>
+          <option value="Rap">Rap</option>
+          <option value="Techno">Techno</option>
+          <option value="Metal">Metal</option>
+          <option value="Folk">Folk</option>
+          <option value="Jazz">Jazz</option>
+          <option value="Country">Country</option>
+        </select>
+        <label for="requirements">Tekniske behov</label>
+        <textarea name="requirements" id="requirements" rows="6" cols="52"
+                  placeholder="{{ manager_band[3] }}">{{ manager_band[3] }}</textarea>
+        <label for="price">Pris for booking</label>
+        <input type="number" name="price" id="price" placeholder="{{ manager_band[4] }}" value="{{ manager_band[4] }}"
+               min="1" max="1000000">
+
+      </fieldset>
+      <button name="change_name" type="submit" id="update_band"> Lagre</button>
+    </form>
+  {% endif %}
+{% endblock %}

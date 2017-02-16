@@ -1,0 +1,46 @@
+@import url('base.css');
+@import url('form.css');
+
+body {
+    width: 80%;
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+#logo {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 15% auto 5%;
+    -webkit-user-select: none;  /* Chrome all / Safari all */
+    -moz-user-select: none; /* Firefox all */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Likely future */
+}
+
+.card_login {
+    margin: 0 auto;
+    width: 500px;
+    display: block;
+    position: relative;
+}
+
+.form_index {
+    width: 100%;
+}
+
+.error {
+    text-align: center;
+    margin: 10px;
+    color: red;
+}
+
+.flip_form {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+}
+
+.flip_button {
+    width: auto;
+}

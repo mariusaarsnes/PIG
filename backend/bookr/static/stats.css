@@ -1,0 +1,11 @@
+.stats_table td, .stats_table th {
+    width: 20%;
+}
+
+.stats_table tr th:first-child, .stats_table tr td:first-child {
+    width: 30%;
+}
+
+.stats_table tr th:last-child, .stats_table tr td:last-child {
+    width: 50%;
+}

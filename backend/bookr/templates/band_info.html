@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block title %}Bandinformasjon{% endblock %}
+{% block content %}
+  <h1>{{ band_info[1] }}</h1>
+  <div class="card">
+    <div class="left_info">
+      Manager: {{ band_info[7] }} <br>
+      Email: {{ band_info[4] }}<br>
+      Tlf.: {{ band_info[5] }} <br>
+      Sjanger: {{ band_info[2] }} <br>
+      Pris: {{ band_info[3] }} <br>
+      Albumer: {{ band_info[8] }} <br>
+      Album solgt: {{ band_info[9] }} <br>
+      Streaming: {{ band_info[10] }} <br>
+      Byer hvor de har spilt: {{ band_info[11] }}
+    </div>
+    {% if band_info[6] %}
+      <div class="right_info">
+        <b>Tekniske krav:</b>
+        <p>{{ band_info[6] }}</p>
+      </div>
+    {% endif %}
+  </div>
+  <h2>Tidligere konserter</h2>
+  {% if rows %}
+    <table>
+      <tr>
+        <th>Scene</th>
+        <th>Dato</th>
+        <th>Start</th>
+        <th>Slutt</th>
+        <th>Publikumstall</th>
+      </tr>
+      {% for row in rows %}
+        <tr>
+          <td>{{ row[0] }}</td>
+          <td>{{ row[1] }}</td>
+          <td>{{ row[2] }}</td>
+          <td>{{ row[3] }}</td>
+          <td>{{ row[4] }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p>{{ band_info[1] }} har ikke spilt noen konserter på Samfundet før.</p>
+  {% endif %}
+{% endblock %}
