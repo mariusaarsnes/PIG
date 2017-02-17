@@ -7,7 +7,7 @@ document.getElementById("add_button").addEventListener("click", function() {
     textField.setAttribute("type", "parameter");
     textField.setAttribute("placeholder", "Parameternavn");
     var cross = document.createElement("img");
-    cross.setAttribute("src", "img/cross.png");
+    cross.setAttribute("src", "/static/img/cross.png");
     cross.setAttribute("id", "remove_button");
     document.getElementById("division-form").insertBefore(label, document.getElementById("add_button"));
     document.getElementById("division-form").insertBefore(textField, document.getElementById("add_button"));

@@ -29,7 +29,6 @@ input[type=text] {
     width: 100%;
     padding: 8px 15px;
     margin: 8px 0;
-    /*display: inline-block;*/
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
@@ -39,7 +38,6 @@ input[type=parameter] {
     width: 80%;
     padding: 8px 15px;
     margin: 8px 0;
-    /*display: inline-block;*/
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
@@ -48,14 +46,12 @@ input[type=parameter] {
 #remove_button {
     cursor: pointer;
     width: 10%;
-    background-image: url('img/cross.png');
     margin: -2% 5%;
 }
 select {
     width: 100%;
     padding: 8px 15px;
     margin: 8px 0;
-    /*display: inline-block;*/
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
