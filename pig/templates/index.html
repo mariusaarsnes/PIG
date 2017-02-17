@@ -1,25 +1,30 @@
-<html>
 <head>
     <title>PIG-Partition Into Groups</title>
-    <link rel=stylesheet type=text/css href='{{ url_for('static', filename='main.css') }}'>
+    <link rel="stylesheet" type="text/css" href="../static/style/main_style.css">
 </head>
 
 <body>
     <container>
         <header>
             <header-content>
+                <img src="../static/img/pig_logo.png" id="logo"><a>PIG</a>
             </header-content>
         </header>
         <sidebar>
             <side-text>
-                <p style="font-size: 40px; cursor: default; padding-bottom: 15px; padding-top: 10px;">Navigasjon</p>
-                <a href="#" id="sidebar-option">Her er en sidebar</a>
-                <a href="#" id="sidebar-option">Med mange options</a>
+                <p id="navigasjon">Navigasjon</p>
+                <a href="index.html" id="sidebar-option">Hjem</a>
+                <a href="login.html" id="sidebar-option">Login</a>
+                <a href="create_division.html" id="sidebar-option">Create division</a>
+                <a href="apply_group.html" id="sidebar-option">Apply for group</a>
             </side-text>    
         </sidebar>
         <main>
             <main-content>
-                <p>Dette er main content, her går det som er spesifikt for siden inn inn</p>
+                <h2>Hva er pig?</h2>
+                <p>PIG er et system som kan dele personer inn i grupper. Den lar en leder definere hva slags paremetere man har lyst å dele etter, og lar brukere selv svare på parameteren(e) på en skala fra 1-10.</p>
+                <h2>Hvorfor bruke PIG?</h2>
+                <p>PIG gjør det mulig å dele inn i grupper så optimalt som mulig. Dette betyr at man slipper å bruke dyrebar tid på å dele inn i relativt gode grupper, fordi systemet gjør det for deg.</p>
             </main-content>
         </main>
         <footer>
@@ -29,4 +34,3 @@
         </footer>
     </container>
 </body>
-</html>
