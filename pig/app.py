@@ -13,14 +13,14 @@ app = Flask(__name__, template_folder='templates')
 def index():
     return render_template('index.html')
 
-@app.route("/login")
+@app.route("/login.html")
 def login():
     return render_template("login.html")
 
-@app.route("apply_group")
+@app.route("apply_group.html")
 def apply_group():
     return render_template("apply_group.html")
 
-@app.route("create_division")
+@app.route("create_division.html")
 def create_division():
     return render_template("create_division.html")
