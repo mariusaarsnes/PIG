@@ -1,5 +1,12 @@
 from flask import Flask
 from flask import render_template
+import mysql.connector
+
+
+cnx = mysql.connector.connect(user='mariaars_pu', password='pu',
+                              host='mysql.stud.ntnu.no',
+                              database='sebasto_pig')
+cnx.close()
 
 app = Flask(__name__, template_folder='templates')
 
