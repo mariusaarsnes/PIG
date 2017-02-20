@@ -1,10 +1,10 @@
 from flask import Flask, request
 from flask import render_template
-from flask_mysql import MySQL
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__, template_folder='templates')
 
-mysql = MySQL()
+mysql = SQLAlchemy(app)
  
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = 'mariaars_pu'
