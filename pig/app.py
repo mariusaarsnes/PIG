@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask import render_template
-from flask.ext.mysql import MySQL
+from flask_mysql import MySQL
 
 app = Flask(__name__, template_folder='templates')
 
