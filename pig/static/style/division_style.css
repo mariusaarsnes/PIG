@@ -1,0 +1,59 @@
+#division-form {
+    margin: auto;
+    width: 30%; 
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    min-width: 250px;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+input[type=button] {
+    width: 100%;
+    background-color: cadetblue;
+    color: white;
+    margin-bottom: 10px;
+    padding: 14px 20px;
+    border: none;
+    border-radius:  4px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#submit-form {
+    background-color: #85B381;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 8px 15px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 25px;
+}
+input[type=parameter] {
+    width: 80%;
+    padding: 8px 15px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 25px;
+}
+#remove_button {
+    cursor: pointer;
+    width: 10%;
+    margin: -2% 5%;
+}
+select {
+    width: 100%;
+    padding: 8px 15px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 25px;
+}
