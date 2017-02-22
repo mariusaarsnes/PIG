@@ -1,11 +1,17 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
 import os
+import models
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 db = SQLAlchemy(app)
+
+test = models.User(firstName='firstTest' lastName="lastTest", email ="test@test.com", role="test")
+db.session.add(test)
+db.session.commit()
+
 
 @app.route("/")
 def hello():
