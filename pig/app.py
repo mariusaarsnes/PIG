@@ -4,15 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__, template_folder='templates')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+db = SQLAlchemy(app)
 
-mysql = SQLAlchemy(app)
- 
-# MySQL configurations
-app.config['MYSQL_DATABASE_USER'] = 'mariaars_pu'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'pu'
-app.config['MYSQL_DATABASE_DB'] = 'sebasto_pig'
-app.config['MYSQL_DATABASE_HOST'] = 'mysql.stud.ntnu.no'
-mysql.init_app(app)
+all_users =db.query_all();
 
 @app.route("/")
 def hello():
