@@ -8,9 +8,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 db = SQLAlchemy(app)
 
-test = models.users(firstName='firstTest', lastName='lastTest', email ='test@test.com', role='test')
-db.session.add(test)
-db.session.commit()
+all_users= user.query.all()
 
 
 @app.route("/")
