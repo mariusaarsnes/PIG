@@ -1,49 +1,22 @@
-<head>
-    <title>PIG-Partition Into Groups</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main_style.css') }}">
+{% extends "template.html" %}
+{% block head %}
+    {{super()}}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/division_style.css') }}">
-</head>
-
-<body>
-    <container>
-        <header>
-            <header-content>
-                 <img src="{{ url_for('static', filename='img/pig_logo.png') }}" id="logo"><a>PIG</a>
-            </header-content>
-        </header>
-        <sidebar>
-            <side-text>
-                <p id="navigasjon">Navigasjon</p>
-                <a href="{{ url_for('home') }}" id="sidebar-option">Hjem</a>
-                <a href="{{ url_for('login') }}" id="sidebar-option">Login</a>
-                <a href="{{ url_for('create_division') }}" id="sidebar-option">Create division</a>
-                <a href="{{ url_for('apply_group') }}" id="sidebar-option">Apply for group</a>
-            </side-text>    
-        </sidebar>
-        <main>
-            <main-content>
-                <form id="division-form">
-                    <select>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                    </select>
-                    <input type="button" id = "submit-form" value="Apply for group" id="add_button">
-                </form>
-            </main-content>
-        </main>
-        <footer>
-            <footer-content>
-                <p>Made with love by, Marius, Daniel, Sebastian and Erlend</p>
-            </footer-content>
-        </footer>
-    </container>
-    <script src="{{ url_for('static', filename='js/division.js') }}"></script>
-</body>
+{% endblock %}
+{% block content %}
+    <form id="division-form">
+        <select>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+        </select>
+        <input type="button" id = "submit-form" value="Apply for group" id="add_button">
+    </form>
+{% endblock %}

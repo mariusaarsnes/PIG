@@ -23,6 +23,14 @@ input[type=button] {
 
 #submit-form {
     background-color: #85B381;
+    width: 100%;
+    color: white;
+    margin-bottom: 10px;
+    padding: 14px 20px;
+    border: none;
+    border-radius:  4px;
+    cursor: pointer;
+    font-size: 20px;
 }
 
 input[type=text] {
@@ -34,7 +42,7 @@ input[type=text] {
     box-sizing: border-box;
     font-size: 25px;
 }
-input[type=parameter] {
+input[id=parameter] {
     width: 80%;
     padding: 8px 15px;
     margin: 8px 0;
@@ -46,6 +54,7 @@ input[type=parameter] {
 #remove_button {
     cursor: pointer;
     width: 10%;
+    max-width: 40px;
     margin: -2% 5%;
 }
 select {

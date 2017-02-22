@@ -1,10 +1,15 @@
+var paraId = 0;
+
 document.getElementById("add_button").addEventListener("click", function() {
    
     console.log(document.getElementById("division-form").childElementCount);
     var label = document.createElement("label");
     label.innerHTML = "Parameter: ";
     var textField = document.createElement("input");
-    textField.setAttribute("type", "parameter");
+    textField.setAttribute("type", "text");
+    textField.setAttribute("name", "Parameter" + paraId);
+    textField.setAttribute("id", "parameter");
+    paraId += 1;
     textField.setAttribute("placeholder", "Parameternavn");
     var cross = document.createElement("img");
     cross.setAttribute("src", "/static/img/cross.png");
