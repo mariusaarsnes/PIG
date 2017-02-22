@@ -1,10 +1,12 @@
 from flask import Flask, request
 from flask import render_template
-from flask_sqlalchemy import SQLAlchemy
+from flask.ext.sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__, template_folder='templates')
-
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/pre-registration'
+db = SQLAlchemy(app)
 
 @app.route("/")
 def hello():
