@@ -1,11 +1,11 @@
-from flask import Flask, request
-from flask import render_template
+from flask import Flask, render_template, request
 from flask.ext.sqlalchemy import SQLAlchemy
 
+from flask.ext.heroku import Heroku
 
-app = Flask(__name__, template_folder='templates')
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/pre-registration'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 @app.route("/")
