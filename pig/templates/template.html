@@ -10,11 +10,14 @@
         <header>
             <header-content>
                 <img src="{{ url_for('static', filename='img/pig_logo.png') }}" id="logo"><a>PIG</a>
+                {% if user.is_authenticated %}
+                    <a id="user">Logged in as: {{ user.username }}</a>
+                {% endif %}
             </header-content>
         </header>
         <sidebar>
             <side-text>
-                {% if logged_in %}
+                {% if user.is_authenticated %}
                     <p id="navigasjon">Navigasjon</p>
                     <a href="{{ url_for('home') }}" id="sidebar-option">Home</a>
                     <a href="{{ url_for('create_division') }}" id="sidebar-option">Create division</a>
@@ -22,7 +25,7 @@
                     <a href="{{ url_for('logout') }}" id="sidebar-option">Logout</a>
                 {% else %}
                     <p id="navigasjon">Navigasjon</p>
-                    <a href="{{ url_for('home') }}" id="sidebar-option">Home</a>'
+                    <a href="{{ url_for('home') }}" id="sidebar-option">Home</a>
                     <a href="{{ url_for('login') }}" id="sidebar-option">Login</a>
                 {% endif %}
             </side-text>

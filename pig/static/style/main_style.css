@@ -95,3 +95,9 @@ footer-content {
 h1, p {
     margin: 0;
 }
+#user {
+    position: absolute;
+    bottom: 5%;
+    right: 1%;
+    font-size: 20px;
+}

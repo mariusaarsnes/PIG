@@ -28,3 +28,10 @@ input[type=text], input[type=password] {
     box-sizing: border-box;
     font-size: 18px;
 }
+
+#error {
+    padding: 10px 0px;
+    display: inline-block;
+    font-size: 18px;
+    color: red;
+}
