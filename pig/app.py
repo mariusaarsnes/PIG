@@ -1,8 +1,9 @@
 from flask import Flask, redirect, url_for, request, render_template
-from pig.login.LoginManager import LoginManager as Login
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
-from pig.db import User
+
+from pig.login.LoginManager import LoginManager as Login
+
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = "key"
@@ -13,7 +14,14 @@ app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://wtsceqpjdsbhxw:34df69f4132d3
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
-print(db.session.query(User).filter(User.firstname == "Marius").first().email)
+from pig.db.User import User
+
+# Er er det noen eksempler på spørringer til databasen.
+#
+#print(db.session.query(User).filter(User.firstname == "Marius").first().lastname)
+#print(db.session.query(User).all())
+#users = db.session.query(User).all()
+#print(users[0].firstname)
 
 @login_manager.user_loader
 def user_loader(user_id):
