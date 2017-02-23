@@ -1,40 +1,16 @@
-<head>
-    <title>PIG-Partition Into Groups</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main_style.css') }}">
-     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/login_style.css') }}">
-</head>
-
-<body>
-    <container>
-        <header>
-            <header-content>
-                <img src="{{ url_for('static', filename='img/pig_logo.png') }}" id="logo"><a>PIG</a>
-            </header-content>
-        </header>
-        <sidebar>
-            <side-text>
-                <p id="navigasjon">Navigasjon</p>
-                <a href="{{ url_for('home') }}" id="sidebar-option">Hjem</a>
-                <a href="{{ url_for('login') }}" id="sidebar-option">Login</a>
-                <a href="{{ url_for('create_division') }}" id="sidebar-option">Create division</a>
-                <a href="{{ url_for('apply_group') }}" id="sidebar-option">Apply for group</a>
-            </side-text>    
-        </sidebar>
-        <main>
-            <main-content style="width: 100%; min-width: 250px; margin-top: 10%;">
-                <form id="login-form">
-                    <label for="Username">Username: </label>
-                    <input type = "text" name = "Username" placeholder= "Username">
-                    <label for="Password">Password:</label>
-                    <input type = "password" name = "Password" placeholder = "Password">
-                    <input type="button" value="Login">
-                </form>
-            </main-content>
-        </main>
-        <footer>
-            <footer-content>
-                <p>Made with love by, Marius, Daniel, Sebastian and Erlend</p>
-            </footer-content>
-        </footer>
-    </container>
-</body>
+{% extends "template.html" %}
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/login_style.css') }}">
+{% endblock %}
+{% block content %}
+    <main-content style="width: 100%; min-width: 250px; margin-top: 10%;">
+        <form id="login-form" method="post">
+            <label for="Username">Username: </label>
+            <input type = "text" name = "Username" placeholder= "Username">
+            <label for="Password">Password:</label>
+            <input type = "password" name = "Password" placeholder = "Password">
+            <button type="submit" name="Login" id="button">Login</button>
+        </form>
+    </main-content>
+{% endblock %}

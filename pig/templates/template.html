@@ -1,0 +1,43 @@
+<head>
+    {% block head %}
+        <title>PIG-Partition Into Groups</title>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/main_style.css') }}">
+    {% endblock %}
+</head>
+
+<body>
+    <container>
+        <header>
+            <header-content>
+                <img src="{{ url_for('static', filename='img/pig_logo.png') }}" id="logo"><a>PIG</a>
+            </header-content>
+        </header>
+        <sidebar>
+            <side-text>
+                {% if logged_in %}
+                    <p id="navigasjon">Navigasjon</p>
+                    <a href="{{ url_for('home') }}" id="sidebar-option">Home</a>
+                    <a href="{{ url_for('create_division') }}" id="sidebar-option">Create division</a>
+                    <a href="{{ url_for('apply_group') }}" id="sidebar-option">Apply for group</a>
+                    <a href="{{ url_for('logout') }}" id="sidebar-option">Logout</a>
+                {% else %}
+                    <p id="navigasjon">Navigasjon</p>
+                    <a href="{{ url_for('home') }}" id="sidebar-option">Home</a>'
+                    <a href="{{ url_for('login') }}" id="sidebar-option">Login</a>
+                {% endif %}
+            </side-text>
+        </sidebar>
+        <main>
+            <main-content>
+                {% block content %}{% endblock %}
+            </main-content>
+        </main>
+        <footer>
+            <footer-content>
+                <p>Made with love by, Marius, Daniel, Sebastian and Erlend</p>
+            </footer-content>
+        </footer>
+    </container>
+    {% block bottom %}
+    {% endblock %}
+</body>
