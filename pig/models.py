@@ -12,5 +12,3 @@ class User(db.Model):
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.firstname)+str(self.lastname)+ ", Email: " + str(self.email)
-
-class
