@@ -1,3 +1,5 @@
+# encoding=UTF8
+
 from flask import Flask, redirect, url_for, request, render_template
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 from flask_sqlalchemy import SQLAlchemy
@@ -16,7 +18,7 @@ db = SQLAlchemy(app)
 
 from pig.db.User import User
 
-# Er er det noen eksempler på spørringer til databasen.
+# Er er det noen eksempler på sporringer til databasen.
 #
 #print(db.session.query(User).filter(User.firstname == "Marius").first().lastname)
 #print(db.session.query(User).all())
@@ -48,7 +50,7 @@ def create_division():
         #TODO - Ta parameterne man får inn her og legge dem inn i databasen
     return render_template("create_division.html", user=current_user)
 
-#Dersom det kommer en POST request vil metoden få inn en dict med alle verdiene i html formen. Gjorde bare en liten test
+#Dersom det kommer en POST request vil metoden faa inn en dict med alle verdiene i html formen. Gjorde bare en liten test
 #for å endre side (og sette login variabelen til logged in)
 @app.route("/login", methods=['GET', 'POST'])
 def login():

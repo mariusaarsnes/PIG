@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="4b46e473-3975-4511-83c7-6d2fbf4a36cf" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pig/app.py" afterPath="$PROJECT_DIR$/pig/app.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pig/db/User.py" afterPath="$PROJECT_DIR$/pig/db/User.py" />
     </list>
     <ignored path="PIG.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -32,19 +31,19 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="app.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="app.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/pig/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="759">
-              <caret line="23" column="26" lean-forward="false" selection-start-line="23" selection-start-column="26" selection-end-line="23" selection-end-column="26" />
+            <state relative-caret-position="0">
+              <caret line="0" column="15" lean-forward="false" selection-start-line="0" selection-start-column="15" selection-end-line="0" selection-end-column="15" />
               <folding>
-                <element signature="e#0#68#0" expanded="true" />
+                <element signature="e#17#85#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="LoginManager.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="LoginManager.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pig/login/LoginManager.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="660">
@@ -67,8 +66,8 @@
       <file leaf-file-name="User.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pig/db/User.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="12" selection-end-column="121" />
+            <state relative-caret-position="462">
+              <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -89,9 +88,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/pig/app.py" />
         <option value="$PROJECT_DIR$/pig/db/User.py" />
         <option value="$PROJECT_DIR$/pig/models.py" />
+        <option value="$PROJECT_DIR$/pig/app.py" />
       </list>
     </option>
   </component>
@@ -481,7 +480,7 @@
         <state relative-caret-position="594">
           <caret line="18" column="77" lean-forward="false" selection-start-line="18" selection-start-column="77" selection-end-line="18" selection-end-column="77" />
           <folding>
-            <element signature="e#0#68#0" expanded="true" />
+            <element signature="e#17#85#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -491,16 +490,6 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/pig/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="759">
-          <caret line="23" column="26" lean-forward="false" selection-start-line="23" selection-start-column="26" selection-end-line="23" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#68#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -512,10 +501,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pig/login/LoginManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="660">
+          <caret line="20" column="16" lean-forward="true" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/pig/db/User.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="12" selection-end-column="121" />
+        <state relative-caret-position="462">
+          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -528,11 +525,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pig/login/LoginManager.py">
+    <entry file="file://$PROJECT_DIR$/pig/app.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
-          <caret line="20" column="16" lean-forward="true" selection-start-line="20" selection-start-column="16" selection-end-line="20" selection-end-column="16" />
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="0" column="15" lean-forward="false" selection-start-line="0" selection-start-column="15" selection-end-line="0" selection-end-column="15" />
+          <folding>
+            <element signature="e#17#85#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
