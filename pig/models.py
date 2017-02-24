@@ -1,6 +1,31 @@
 from pig.app import db
 
 
+
+ # Helper tables to connect the tables in the DB
+users_divisions = db.Table('users_divisions',
+                           db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
+                           db.Column('division_id', db.Integer,db.ForeignKey('divisions.id')),
+                           db.Column('role',db.String(255))
+)
+
+users_groups = db.Table('users_groups',
+                        db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
+                        db.Column('group_id',db.Integer,db.ForeignKey('groups.id'))
+)
+
+parameters_values= db.Table('parameters_values',
+                            db.Column('parameter_id',db.Integer,db.ForeignKey('parameters.id')),
+                            db.Column('value_id',db.Integer,db.ForeignKey('values.id'))
+)
+
+users_divisions_parameters_values = db.Table('users_divisions_parameters_values',
+                                             db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
+                                             db.Column('division_id',db.Integer,db.ForeignKey('division.id')),
+                                             db.Column('parameter_id',db.Integer,db.ForeignKey('parameters.id')),
+                                             db.Column('value_id',db.Integer, db.ForeignKey('values.id'))
+)
+
 class User(db.Model):
 
     __tablename__ = "users"
@@ -10,7 +35,15 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255), unique =False)
     divisions_created = db.relationship("Division", backref='users')
-    groups = db.relationship('Group', backref='users')
+    divisions = db.relationship('Division', secondary=users_divisions,
+                                backref=db.backref('divisions', lazy='dynamic'))
+    groups = db.relationship('Group',secondary=users_groups,
+                             backref=db.backref('groups', lazy='dynamic'))
+    parameters = db.relationship('Parameter', secondary=users_divisions_parameters_values,
+                                 backref=db.backref('parameters',lazy='dynamic'))
+    values= db.relationship('Value', secondary=users_divisions_parameters_values,
+                            backref = db.backref('values', lazy='dynamic'))
+
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.firstname)+str(self.lastname)+ ", Email: " + str(self.email)
@@ -21,19 +54,13 @@ class Division(db.Model):
     name = db.Column(db.String(255))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     groups = db.relationship('Group',backref='divisions')
-
+    users = db.relationship('User', secondary=users_divisions,
+                            backref=db.backref('users', lazy='dynamic'))
 
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.name)+ ", creator: " + str(self.creator_id)
 
-
- # Helper table to get the role of a user in a division
-users_divisions = db.Table('users_divisions',
-                           db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
-                           db.Column('division_id', db.Integer,db.ForeignKey('divisions.id')),
-                           db.Column('role',db.String(255))
-)
 
 """
 class User_Division(db.Model):
@@ -53,14 +80,11 @@ class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     division_id = db.Column(db.Integer, db.ForeignKey('divisions.id'))
     leader_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    members = db.relationship('User', secondary=users_groups,
+                              backref=db.backref('users',lazy='dynamic'))
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", divisionID: " + str(self.division_id) + ", leader: " + str(self.leader_id)
-
-users_groups = db.Table('users_groups',
-                        db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
-                        db.Column('group_id',db.Integer,db.ForeignKey('groups.id'))
-)
 
 """
 class User_Group(db.Model):
@@ -76,6 +100,13 @@ class Parameter(db.Model):
     __tablename__="parameters"
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255))
+    values = db.relationship('Value', secondary=parameters_values,
+                             backref=db.backref('values',lazy='dynamic'))
+    users = db.relationship('User', secondary=users_divisions_parameters_values,
+                            backref=db.backref('users', lazy='dynamic'))
+    divisions = db.relationship('Division', secondary=users_divisions_parameters_values,
+                                backref=db.backref('divisions',lazy='dynamic'))
+
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", description: " + str(self.description)
@@ -86,14 +117,15 @@ class Value(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Integer)
     description = db.Column(db.String(255))
+    parameters = db.relationship('Parameter', secondary=parameters_values,
+                                 backref=db.backref('parameters',lazy='dynamic'))
+    users = db.relationship('User', secondary=users_divisions_parameters_values,
+                            backref=db.backref('users', lazy='dynamic'))
+    divisions = db.relationship('Division', secondary=users_divisions_parameters_values,
+                                backref=db.backref('divisions', lazy='dynamic'))
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", description: " + str(self.description)
-
-parameters_values= db.Table('parameters_values',
-                            db.Column('parameter_id',db.Integer,db.ForeignKey('parameters.id')),
-                            db.Column('value_id',db.Integer,db.ForeignKey('values.id'))
-)
 
 """
 class Parameter_Value(db.Model):
@@ -104,13 +136,6 @@ class Parameter_Value(db.Model):
     def __repr__(self):
         return "parameterID: " + str(self.parameterID) + ", valueID: " + str(self.valueID)
 """
-
-users_divisions_parameters_values = db.Table('users_divisions_parameters_values',
-                                             db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
-                                             db.Column('division_id',db.Integer,db.ForeignKey('division.id')),
-                                             db.Column('parameter_id',db.Integer,db.ForeignKey('parameters.id')),
-                                             db.Column('value_id',db.Integer, db.ForeignKey('values.id'))
-)
 
 """
 class User_Division_Parameter_Value(db.Model):
