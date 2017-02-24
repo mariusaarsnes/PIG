@@ -59,7 +59,7 @@ class Group(db.Model):
 
 users_groups = db.Table('users_groups',
                         db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
-                        db.Column('group_id'),db.Integer,db.ForeignKey('groups.id')
+                        db.Column('group_id',db.Integer,db.ForeignKey('groups.id'))
 )
 
 """
