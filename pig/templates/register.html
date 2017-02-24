@@ -1,0 +1,25 @@
+{% extends "template.html" %}
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/login_style.css') }}">
+{% endblock %}
+{% block content %}
+    <main-content style="width: 100%; min-width: 250px; margin-top: 10%;">
+        <form id="login-form" method="post">
+            {% if error is not none %}
+                <p id="error">{{ error }}</p><br>
+            {% endif %}
+            <label for="Email">Email: </label>
+            <input type = "text" name = "Email" placeholder= "Email">
+            <label for="First name">First name: </label>
+            <input type = "text" name = "FirstName" placeholder= "First name">
+            <label for="Last name">Last name: </label>
+            <input type = "text" name = "LastName" placeholder= "Last name">
+            <label for="Password">Password:</label>
+            <input type = "password" name = "Password" placeholder = "Password">
+            <label for="PasswordConfirm">Confirm password:</label>
+            <input type = "password" name = "PasswordConfirm" placeholder = "Confirm password">
+            <button type="submit" id="button">Register</button>
+        </form>
+    </main-content>
+{% endblock %}
