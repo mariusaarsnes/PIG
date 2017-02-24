@@ -9,6 +9,7 @@ class User(db.Model):
     lastname = db.Column(db.String(255), unique = False)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255), unique =False)
+    divisions = db.relationship("Division", backref='users', lazy='dynamic')
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.firstname)+str(self.lastname)+ ", Email: " + str(self.email)
@@ -17,11 +18,19 @@ class Division(db.Model):
     __tablename__="divisions"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
-    creatorID = db.Column(db.Integer)
+    creatorID = db.Column(db.Integer, db.ForeignKey('users.id'))
+
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.name)+ ", creator: " + str(self.creatorID)
 
+users_divisions = db.Table('users_divisions',
+                           db.Column('userID',db.Integer,db.ForeignKey('users.id')),
+                           db.Column('divisionID', db.Integer,db.ForeignKey('divisions.id'))
+                           )
+
+
+"""
 class User_Division(db.Model):
     __tablename__="users_divisions"
     userID = db.Column(db.Integer, primary_key=True)
@@ -31,11 +40,12 @@ class User_Division(db.Model):
     def __repr__(self):
         return "userID: " + str(self.userID) + ", divisionID: " + str(self.divisionID) + ", users role: " + str(self.role)
 
+"""
 
 class Group(db.Model):
     __tablename__="groups"
     id = db.Column(db.Integer, primary_key=True)
-    divisionID = db.Column(db.Integer, primary_key=True)
+    divisionID = db.Column(db.Integer, primary_key=True, )
     leaderID = db.Column(db.Integer)
 
     def __repr__(self):
