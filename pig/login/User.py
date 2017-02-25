@@ -2,9 +2,10 @@ __author__ = 'owner_000'
 
 class User:
 
-    def __init__(self, username, password, id):
+    def __init__(self, username, password, full_name, id):
         self.username = username
         self.passowrd = password
+        self.full_name = full_name
         self.id = id
 
     def is_active(self):
