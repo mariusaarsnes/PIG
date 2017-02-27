@@ -2,6 +2,7 @@ __author__ = 'owner_000'
 
 class user:
 
+    #Stores the user that will be passed to the login_manager
     def __init__(self, username, password, full_name, id):
         self.username = username
         self.passowrd = password
