@@ -1,6 +1,6 @@
-from pig.login.User import User as LoginUser
+from pig.login.user import user as LoginUser
 
-class LoginHandler:
+class login_handler:
 
     def __init__(self, database, User):
         self.database = database
