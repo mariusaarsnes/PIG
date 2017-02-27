@@ -5,6 +5,8 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from pig.login.LoginHandler import LoginHandler
 from pig.login.RegistrationHandler import RegistrationHandler
 from pig.db.Database import Database
+from pig.scripts.get_divisions import get_divisions
+
 
 
 app = Flask(__name__, template_folder='templates')
@@ -17,7 +19,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_handler = LoginHandler(database, User)
 registration_handler = RegistrationHandler(database, User)
-
+show_divisions = get_divisions(database, User)
 
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
@@ -72,6 +74,12 @@ def register():
 @app.route("/home")
 def home():
     return render_template("index.html", user=current_user)
+
+
+@app.route("/show_divisions")
+def show_divisions():
+    temp = show_divisions.fetch_divisions(current_user)
+    return render_template("show_divisions.html", user=current_user, divisions=temp)
 
 @app.route("/logout")
 @login_required

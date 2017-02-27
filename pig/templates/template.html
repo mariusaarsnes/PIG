@@ -27,8 +27,8 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
                 {% if user.is_authenticated %}
                     <p id="navigasjon">Navigasjon</p>
                     <a href="{{ url_for('home') }}" id="sidebar-option">Home</a>
+                    <a href="{{ url_for('show_divisions') }}" id="sidebar-option">Divisions</a>
                     <a href="{{ url_for('create_division') }}" id="sidebar-option">Create division</a>
-                    <a href="{{ url_for('create_division') }}" id="sidebar-option">My divisions</a>
                    <!-- <a href="{{ url_for('apply_group') }}" id="sidebar-option">My participations</a>-->
                     <a href="{{ url_for('logout') }}" id="sidebar-option">Logout</a>
                 {% else %}
