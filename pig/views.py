@@ -6,25 +6,29 @@ from pig.login.LoginHandler import LoginHandler
 from pig.login.RegistrationHandler import RegistrationHandler
 from pig.db.Database import Database
 
+
 app = Flask(__name__, template_folder='templates')
 
+# Instatiating different classes that are used by the functions below.
 database = Database(app)
-
 from pig.db.models import *
-
 app.secret_key = "key"
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 login_handler = LoginHandler(database, User)
 registration_handler = RegistrationHandler(database, User)
 
-#This code is being used by the login_manager to grab user based on their IDs. Thats how we identify which user we
+
+
+#This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
     print(login_handler.get_user_with_id(user_id))
     return login_handler.get_user_with_id(user_id)
+
+
+#The Functions below are used to handle user interaction with te web app. That is switching between pages
 
 @app.route("/")
 def hello():

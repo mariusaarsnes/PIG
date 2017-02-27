@@ -18,12 +18,19 @@ users_groups = db.Table('users_groups',
                         db.Column('group_id',db.Integer,db.ForeignKey('groups.id'))
 )
 
+# Connects divsions to parameters
+divisions_parameters = db.Table('divisions_parameters',
+                                db.Column('division_id', db.Integer, db.ForeignKey('divisions.id')),
+                                db.Column('parameter_id', db.Integer, db.ForeignKey('parameters.id'))
+                                )
+
 # Connects parameters to values, probably is unnecessary seeing as the next table will do the same job
 parameters_values = db.Table('parameters_values',
                             db.Column('parameter_id',db.Integer,db.ForeignKey('parameters.id')),
                             db.Column('value_id',db.Integer,db.ForeignKey('values.id'))
 )
 
+# connects users, divisions, parameters and values
 users_divisions_parameters_values = db.Table('users_divisions_parameters_values',
                                              db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
                                              db.Column('division_id',db.Integer,db.ForeignKey('divisions.id')),
@@ -40,7 +47,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255), unique =False)
     divisions_created = db.relationship("Division", backref='creators')
-    divisions = db.relationship('Division', secondary=users_divisions, backref=db.backref('users', lazy='dynamic'))
+    # divisions = db.relationship('Division', secondary=users_divisions, backref=db.backref('users', lazy='dynamic'))
     groups = db.relationship('Group',secondary=users_groups, backref=db.backref('users', lazy='dynamic'))
     parameters = db.relationship('Parameter', secondary=users_divisions_parameters_values, backref=db.backref('users',lazy='dynamic'))
     values= db.relationship('Value', secondary=users_divisions_parameters_values, backref = db.backref('users', lazy='dynamic'))
@@ -55,8 +62,8 @@ class Division(db.Model):
     name = db.Column(db.String(255))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     groups = db.relationship('Group',backref='divisions')
-    # users = db.relationship('User', secondary=users_divisions, backref=db.backref('divisions', lazy='dynamic'))
-    # parameters = db.relationship('Parameter', secondary=users_divisions_parameters_values,  backref=db.backref('divisions', lazy='dynamic'))
+    users = db.relationship('User', secondary=users_divisions, backref=db.backref('divisions', lazy='dynamic'))
+    parameters = db.relationship('Parameter', secondary=divisions_parameters,  backref=db.backref('divisions', lazy='dynamic'))
 
 
     def __repr__(self):
@@ -97,7 +104,7 @@ class Parameter(db.Model):
     __tablename__="parameters"
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255))
-    # values = db.relationship('Value', secondary=parameters_values, backref=db.backref('parameters',lazy='dynamic'))
+    values = db.relationship('Value', secondary=parameters_values, backref=db.backref('parameters',lazy='dynamic'))
     # users = db.relationship('User', secondary=users_divisions_parameters_values, backref=db.backref('parameters', lazy='dynamic'))
     # divisions = db.relationship('Division', secondary=users_divisions_parameters_values, backref=db.backref('parameters',lazy='dynamic'))
 
