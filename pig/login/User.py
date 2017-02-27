@@ -1,6 +1,6 @@
 __author__ = 'owner_000'
 
-class User:
+class user:
 
     def __init__(self, username, password, full_name, id):
         self.username = username

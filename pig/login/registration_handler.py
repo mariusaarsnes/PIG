@@ -1,4 +1,4 @@
-class RegistrationHandler:
+class registration_handler:
 
     def __init__(self, database, User):
         self.database = database

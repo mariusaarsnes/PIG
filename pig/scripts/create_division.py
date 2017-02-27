@@ -1,6 +1,6 @@
 from sqlalchemy import func
 
-class CreateDivision:
+class create_division:
 
     def __init__(self, database, Division, Parameter):
         self.database = database
