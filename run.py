@@ -1,8 +1,6 @@
 import os
 
-#from pig.app import app
 from pig.views import app
-
 
 db = None
 
