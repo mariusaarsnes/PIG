@@ -18,6 +18,12 @@ users_groups = db.Table('users_groups',
                         db.Column('group_id',db.Integer,db.ForeignKey('groups.id'))
 )
 
+
+divisions_parameters = db.Table("divisions_parameters",
+                               db.Column("division_id", db.Integer, db.ForeignKey("divisions.id")),
+                               db.Column("parameter_id", db.Integer, db.ForeignKey("parameters.id"))
+)
+
 # Connects parameters to values, probably is unnecessary seeing as the next table will do the same job
 parameters_values = db.Table('parameters_values',
                             db.Column('parameter_id',db.Integer,db.ForeignKey('parameters.id')),
@@ -55,8 +61,8 @@ class Division(db.Model):
     name = db.Column(db.String(255))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     groups = db.relationship('Group',backref='divisions')
-    # users = db.relationship('User', secondary=users_divisions, backref=db.backref('divisions', lazy='dynamic'))
-    # parameters = db.relationship('Parameter', secondary=users_divisions_parameters_values,  backref=db.backref('divisions', lazy='dynamic'))
+    #users = db.relationship('User', secondary=users_divisions, backref=db.backref('divisions', lazy='dynamic'))
+    parameters = db.relationship('Parameter', secondary=divisions_parameters,  backref=db.backref('divisions', lazy='dynamic'))
 
 
     def __repr__(self):
