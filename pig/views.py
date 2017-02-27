@@ -11,7 +11,8 @@ app = Flask(__name__, template_folder='templates')
 
 database = Database(app)
 
-from pig.db.models import * #Denne importen må ligge etter at vi lager databaseobjektet fordi klassene
+from pig.db.models import *
+#Denne importen må ligge etter at vi lager databaseobjektet fordi klassene
 #i model krever at det finnes en kjørende databaseinstans
 
 app.secret_key = "key"
