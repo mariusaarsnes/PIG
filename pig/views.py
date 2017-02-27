@@ -5,26 +5,30 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from pig.login.LoginHandler import LoginHandler
 from pig.login.RegistrationHandler import RegistrationHandler
 from pig.db.Database import Database
-from pig.scripts.CreateDivision import CreateDivision
+
 
 app = Flask(__name__, template_folder='templates')
 
+# Instatiating different classes that are used by the functions below.
 database = Database(app)
-
 from pig.db.models import *
-#Denne importen må ligge etter at vi lager databaseobjektet fordi klassene
-#i model krever at det finnes en kjørende databaseinstans
-
 app.secret_key = "key"
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_handler = LoginHandler(database, User)
+registration_handler = RegistrationHandler(database, User)
 
-division_handler = CreateDivision(database, Division, Parameter)
-login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
 
+
+#This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
+#are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
+    print(login_handler.get_user_with_id(user_id))
     return login_handler.get_user_with_id(user_id)
+
+
+#The Functions below are used to handle user interaction with te web app. That is switching between pages
 
 @app.route("/")
 def hello():
@@ -39,8 +43,8 @@ def apply_group():
 @login_required
 def create_division():
     if request.method == 'POST':
-        division_handler.register_division(current_user, request.form)
-        return redirect(url_for("home"))
+        pass
+        #TODO - Ta parameterne man får inn her og legge dem inn i databasen
     return render_template("create_division.html", user=current_user)
 
 @app.route("/login", methods=['GET', 'POST'])

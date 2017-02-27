@@ -1,3 +1,10 @@
+<!--
+FILE NAME: pig/templates/create_division.html
+WRITTEN BY: Daniel Romanich
+WHEN: February 2017
+PURPOSE: Provide a way for users to create an instance of group division
+-->
+
 {% extends "template.html" %}
 {% block head %}
     {{super()}}
@@ -6,8 +13,8 @@
 {% block content %}
     <form id="division-form" method="post">
         <input type= "text" name= "Division" placeholder= "Divisjonsnavn">
-        <input type= "button" value="Add parameter" id="add_button">
-        <input type= "submit" id = "submit-form" value="Create division">
+        <input type="button" value="Add parameter" id="add_button">
+        <input type="submit" id = "submit-form" value="Create division">
     </form>
 {% endblock %}
 {% block bottom %}

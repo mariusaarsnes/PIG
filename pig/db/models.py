@@ -18,11 +18,11 @@ users_groups = db.Table('users_groups',
                         db.Column('group_id',db.Integer,db.ForeignKey('groups.id'))
 )
 
-
-divisions_parameters = db.Table("divisions_parameters",
-                               db.Column("division_id", db.Integer, db.ForeignKey("divisions.id")),
-                               db.Column("parameter_id", db.Integer, db.ForeignKey("parameters.id"))
-)
+# Connects divsions to parameters
+divisions_parameters = db.Table('divisions_parameters',
+                                db.Column('division_id', db.Integer, db.ForeignKey('divisions.id')),
+                                db.Column('parameter_id', db.Integer, db.ForeignKey('parameters.id'))
+                                )
 
 # Connects parameters to values, probably is unnecessary seeing as the next table will do the same job
 parameters_values = db.Table('parameters_values',
@@ -30,6 +30,7 @@ parameters_values = db.Table('parameters_values',
                             db.Column('value_id',db.Integer,db.ForeignKey('values.id'))
 )
 
+# connects users, divisions, parameters and values
 users_divisions_parameters_values = db.Table('users_divisions_parameters_values',
                                              db.Column('user_id',db.Integer,db.ForeignKey('users.id')),
                                              db.Column('division_id',db.Integer,db.ForeignKey('divisions.id')),
@@ -103,7 +104,7 @@ class Parameter(db.Model):
     __tablename__="parameters"
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255))
-    # values = db.relationship('Value', secondary=parameters_values, backref=db.backref('parameters',lazy='dynamic'))
+    values = db.relationship('Value', secondary=parameters_values, backref=db.backref('parameters',lazy='dynamic'))
     # users = db.relationship('User', secondary=users_divisions_parameters_values, backref=db.backref('parameters', lazy='dynamic'))
     # divisions = db.relationship('Division', secondary=users_divisions_parameters_values, backref=db.backref('parameters',lazy='dynamic'))
 
