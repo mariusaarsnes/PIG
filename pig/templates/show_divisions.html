@@ -6,5 +6,17 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 -->
 {% extends "template.html" %}
 {% block content %}
-    {{ divisions }}
+    <h1>You are signed up for these divisions:</h1>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+        </tr>
+        {%  for division in divisions %}
+            <tr>
+                <td>{{ division.name }}</td>
+                <td>{{division.creator_id }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
