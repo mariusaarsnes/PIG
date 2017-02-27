@@ -19,4 +19,3 @@ class User:
 
     def get_id(self):
         return self.id
-

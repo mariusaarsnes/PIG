@@ -12,4 +12,3 @@ class Database:
 
     def get_session(self):
         return self.db.session
-
