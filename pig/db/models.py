@@ -35,7 +35,7 @@ class User(db.Model):
     lastname = db.Column(db.String(255), unique = False)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255), unique =False)
-    divisions_created = db.relationship("Division", backref='users')
+    divisions_created = db.relationship("Division", backref='creator')
     divisions = db.relationship('Division', secondary=users_divisions,
                                 backref=db.backref('divisions', lazy='dynamic'))
     groups = db.relationship('Group',secondary=users_groups,
@@ -57,6 +57,8 @@ class Division(db.Model):
     groups = db.relationship('Group',backref='divisions')
     users = db.relationship('User', secondary=users_divisions,
                             backref=db.backref('users', lazy='dynamic'))
+    parameters = db.relationship('Parameter', secondary=users_divisions_parameters_values,
+                                 backref=db.backref('parameters', lazy='dynamic'))
 
 
     def __repr__(self):
