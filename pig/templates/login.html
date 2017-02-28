@@ -5,8 +5,15 @@
 {% endblock %}
 {% block content %}
 
-  
-    <main-content>
+  <style>
+      .mdl-card {
+          align-content: right;
+          
+      }
+
+</style>
+    <div class="mdl-card"> 
+        <div class="mdl-card__title">Login</div>
         <form id="login-form" method="post">
             <div class="mdl-textfield mdl-js-textfield">
             {% if error %}
@@ -21,7 +28,7 @@
             <button class="mdl-button mdl-js-button mdl-button--raised" type="submit" name="Login" id="button">Login</button>
 
         </form>
-    </main-content>
+    </div>
     
 
 {% endblock %}

@@ -20,6 +20,9 @@
      your background is light. */
   color: white;
 }
+    .mdl-layout {
+        align-items: center;
+    }
 </style>
 
 <div class="demo-layout-transparent mdl-layout mdl-js-layout">
@@ -68,10 +71,23 @@
   </main>
 </div>
 
-    <div>
-    <main-content>
-                {% block content %}{% endblock %}
-            </main-content>
+    
+    <div class="mdl-layout__content">
+        <div class="mdl-card">
+            <div class="mdl-card__title">
+    <h2 class="mdl-card__title-text">title Text Goes Here</h2>
+  </div>
+  <div class="mdl-card__media">
+    <img src="photo.jpg" width="220" height="140" border="0" alt="" style="padding:20px;">
+  </div>
+  <div class="mdl-card__supporting-text">
+    {% block content %}fuck yeah{% endblock %}
+  </div>
+        </div>
     </div>
+
+                
+       
+    
  
 </body>
