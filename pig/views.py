@@ -5,7 +5,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from pig.login.login_handler import login_handler
 from pig.login.registration_handler import registration_handler
 from pig.scripts.create_division import create_division
-from pig.db.database import Database
+from pig.db.Database import Database
 
 app = Flask(__name__, template_folder='templates')
 
