@@ -66,6 +66,7 @@ class Division(db.Model):
     parameters = db.relationship('Parameter', secondary=division_parameter,  backref=db.backref('division', lazy='dynamic'))
 
 
+
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.name)+ ", creator: " + str(self.creator_id)
 

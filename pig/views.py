@@ -2,22 +2,27 @@
 
 from flask import Flask, redirect, url_for, request, render_template
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
+
 from pig.login.login_handler import login_handler
 from pig.login.registration_handler import registration_handler
 from pig.scripts.create_division import create_division
-from pig.db.Database import Database
+from pig.scripts.get_divisions import get_divisions
+from pig.db.database import database
 
 app = Flask(__name__, template_folder='templates')
 
 # Instatiating different classes that are used by the functions below.
-database = Database(app)
+database = database(app)
 
 from pig.db.models import *
 app.secret_key = "key"
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
 division_creator = create_division(database, Division, Parameter)
+divisions_get = get_divisions(database, User)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -70,6 +75,13 @@ def register():
 @app.route("/home")
 def home():
     return render_template("index.html", user=current_user)
+
+
+@app.route("/show_divisions")
+def show_divisions():
+    divisions_participating, divisions_created = divisions_get.fetch_divisions(current_user)
+    return render_template("show_divisions.html", user=current_user,
+                           divisions_participating=divisions_participating, divisions_created=divisions_created)
 
 @app.route("/logout")
 @login_required
