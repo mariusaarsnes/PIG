@@ -79,8 +79,9 @@ def home():
 
 @app.route("/show_divisions")
 def show_divisions():
-    temp = divisions_get.fetch_divisions(current_user)
-    return render_template("show_divisions.html", user=current_user, divisions=temp)
+    divisions_participating, divisions_created = divisions_get.fetch_divisions(current_user)
+    return render_template("show_divisions.html", user=current_user,
+                           divisions_participating=divisions_participating, divisions_created=divisions_created)
 
 @app.route("/logout")
 @login_required

@@ -6,17 +6,35 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 -->
 {% extends "template.html" %}
 {% block content %}
-    <h1>You are signed up for these divisions:</h1>
-    <table id="show_divisions_table">
-        <tr>
-            <th>Name</th>
-            <th>Owner</th>
-        </tr>
-        {%  for division in divisions %}
+    <div>
+        <h1>Your divisions:</h1>
+        <table id="show_divisions_created_table">
             <tr>
-                <td>{{ division.name }}</td>
-                <td>{{division.creator_id }}</td>
+                <th>Name</th>
+                <th>Teamleader Signup link</th>
+                <th>Teammember Signup link</th>
             </tr>
-        {% endfor %}
-    </table>
+            {%  for division in divisions_created %}
+                <tr>
+                    <td>{{ division.name }}</td>
+                    <td>{{division.leader_link }}</td>
+                    <td>{{division.member_link }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div>
+    <h1>The divisions you are signed up for:</h1>
+        <table id="show_divisions_participating_table">
+            <tr>
+                <th>Name</th>
+            </tr>
+            {%  for division in divisions_participating %}
+                <tr>
+                    <td>{{ division.name }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    </div>
 {% endblock %}
