@@ -1,4 +1,6 @@
-var paraId = 0;
+// Used to create unique names for input elements
+var counter = 0;
+function getCounter() { return (counter ++); }
 
 document.getElementById("add_button").addEventListener("click", function() {
     var parameterForm = document.createElement("div");
@@ -13,14 +15,14 @@ document.getElementById("add_button").addEventListener("click", function() {
 
     var nameField = document.createElement("input");
     nameField.setAttribute("type", "text");
-    nameField.setAttribute("name", "Parameter" + paraId);
+    nameField.setAttribute("name", "Parameter" + getCounter());
     nameField.setAttribute("id", "parameter");
-    paraId += 1;
     nameField.setAttribute("placeholder", "Parameternavn");
 
 
     var deleteBtn = document.createElement("button");
-    deleteBtn.innerHTML = "Delete";
+    deleteBtn.type = "button";
+    deleteBtn.innerHTML = "-";
 
     parameterForm.appendChild(label);
     parameterForm.appendChild(nameField);
@@ -68,6 +70,7 @@ function numberForm() {
 function enumForm() {
     var addButton = document.createElement("button");
     addButton.id = "add_variant_button";
+    addButton.type = "button";
     addButton.innerHTML = "+"
 
     var container = document.createElement("span");
@@ -85,6 +88,8 @@ function addVariantFormTo(container) {
     var variantForm = document.createElement("div");
     var textField = document.createElement("input");
     var deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.innerHTML = "-";
 
     variantForm.appendChild(textField);
     variantForm.appendChild(deleteButton);

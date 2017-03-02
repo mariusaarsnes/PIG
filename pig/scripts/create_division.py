@@ -1,4 +1,5 @@
 from sqlalchemy import func
+import sys
 
 class create_division:
 
@@ -8,8 +9,10 @@ class create_division:
         self.Division = Division
 
     def register_division(self, current_user, form):
+        print('Registering division...', file=sys.stderr)
         division = self.Division(name = form["Division"], creator_id = current_user.id)
         for key in form:
+            print('form[%s] = %s' % (key, form[key]), file=sys.stderr)
             if not key == "Division":
                 parameter = self.database.get_session().query(self.Parameter).filter(form[key].strip().lower() == func.lower(self.Parameter.description)).first()
                 if parameter is None:
