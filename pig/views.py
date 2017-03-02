@@ -45,8 +45,6 @@ def apply_group():
     if not arg is None:
         values = encryption.decode(pig_key, arg)
         variables = values.split(",")
-        for i in range(0, len(variables)):
-            variables[i] = variables[i].split(":")[1]
         if int(variables[2]) == 1:
             return render_template("apply_group.html", user=current_user, message="Successfully registered you as a TA for the division: " + variables[0])
     return render_template("apply_group.html", user=current_user, message=None)
