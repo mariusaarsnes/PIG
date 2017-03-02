@@ -1,6 +1,9 @@
 var paraId = 0;
 
 document.getElementById("add_button").addEventListener("click", function() {
+    var parameterForm = document.createElement("div");
+    document.getElementById("division-form").insertBefore(parameterForm, document.getElementById("add_button"));
+
     // Display a form to add a parameter to a division.
     console.log(document.getElementById("division-form").childElementCount);
 
@@ -19,18 +22,16 @@ document.getElementById("add_button").addEventListener("click", function() {
     cross.setAttribute("src", "/static/img/cross.png");
     cross.setAttribute("id", "remove_button");
 
-    document.getElementById("division-form").insertBefore(label, document.getElementById("add_button"));
-    document.getElementById("division-form").insertBefore(document.createElement("br"), document.getElementById("add_button"));
-    document.getElementById("division-form").insertBefore(typeSelection(), document.getElementById("add_button"));
-    document.getElementById("division-form").insertBefore(numberForm(), document.getElementById("add_button"));
-
-    document.getElementById("division-form").insertBefore(nameField, document.getElementById("add_button"));
-    document.getElementById("division-form").insertBefore(cross, document.getElementById("add_button"));
+    parameterForm.appendChild(document.createElement("br"));
+    parameterForm.appendChild(label);
+    parameterForm.appendChild(document.createElement("br"));
+    parameterForm.appendChild(nameField);
+    parameterForm.appendChild(typeSelection());
+    parameterForm.appendChild(numberForm());
+    parameterForm.appendChild(cross);
 
     cross.addEventListener("click", function() {
-        document.getElementById("division-form").removeChild(nameField);
-        document.getElementById("division-form").removeChild(label);
-        document.getElementById("division-form").removeChild(cross);
+        document.getElementById("division-form").removeChild(parameterForm);
     });
 });
 
@@ -56,5 +57,8 @@ function numberForm() {
     container.style.visibility = "visible";
 
     return container;
+}
 
+function enumForm() {
+    
 }
