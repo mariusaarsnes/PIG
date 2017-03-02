@@ -6,9 +6,18 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 -->
 {% extends "template.html" %}
 {% block content %}
-    <div>
-        <h1>Your divisions:</h1>
-        <table id="show_divisions_created_table">
+
+
+
+ <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+      <div class="mdl-card__title showdivisons mdl-color--primary mdl-color-text--white" id="showdivisions">
+				<h2 class="mdl-card__title-text">Your Divisions</h2>
+      </div>
+         
+      <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
+          <div>
+        
+        <table id="show_divisions_created_table" class="mdl-data-table mdl-js-data-table">
             <tr>
                 <th>Name</th>
                 <th>Teamleader Signup link</th>
@@ -24,8 +33,8 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
         </table>
     </div>
     <div>
-    <h1>The divisions you are signed up for:</h1>
-        <table id="show_divisions_participating_table">
+    The divisions you are signed up for:
+        <table id="show_divisions_participating_table" class="mdl-data-table mdl-js-data-table">
             <tr>
                 <th>Name</th>
             </tr>
@@ -37,4 +46,47 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
         </table>
 
     </div>
+        
+            
+            
+            
+      </div>
+          
+                
+
+</div>  
+
+ <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+      <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
+				<h2 class="mdl-card__title-text">Divisions you are signed up for</h2>
+      </div>
+         
+      <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
+          
+    <div>
+    
+        <table id="show_divisions_participating_table" class="mdl-data-table mdl-js-data-table">
+            <tr>
+                <th>Name</th>
+            </tr>
+            {%  for division in divisions_participating %}
+                <tr>
+                    <td>{{ division.name }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+        
+            
+            
+            
+      </div>
+          
+                
+
+</div> 
+
+
+    
 {% endblock %}

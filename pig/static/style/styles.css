@@ -104,6 +104,18 @@ body .demo-layout-transparent {
   padding: 16px;
     min-height: 100px;
     
+    
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+#showdivisions    {
+  padding: 16px;
+    min-height: 100px;
+    max-height: 100px;
+    
+    
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -132,8 +144,9 @@ body .demo-layout-transparent {
 }
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
-  padding: 16px;
   min-height: 64px;
+  margin: 0px;
+    padding: 0px;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -141,6 +154,14 @@ body .demo-layout-transparent {
       -ms-flex-align: center;
           align-items: center;
 }
+
+
+.mdl-data-table {
+    width: 100%;
+   
+    
+}
+
 .demo-layout-transparent .mdl-card__supporting-text strong {
   font-weight: 400;
 }
