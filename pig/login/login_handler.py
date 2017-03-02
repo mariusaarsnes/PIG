@@ -11,7 +11,7 @@ class login_handler:
         return self.get_user(user.email, user.password)
 
     def get_user(self, email, password):
-        user = self.database.get_session().query(self.User).filter(self.User.email == email and self.User.password == password).first()
+        user = self.database.get_session().query(self.User).filter(self.User.password == password, self.User.email == email).first()
         if user is not None:
             return LoginUser(email, password, user.firstname + " " + user.lastname, user.id)
         return None
