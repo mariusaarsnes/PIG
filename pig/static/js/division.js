@@ -1,6 +1,5 @@
-// Used to create unique names for input elements
-var counter = 0;
-function getCounter() { return (counter ++); }
+var paramId = 0;
+function newId() { return (++ paramId); }
 
 document.getElementById("add_button").addEventListener("click", function() {
     var parameterForm = document.createElement("div");
@@ -14,10 +13,10 @@ document.getElementById("add_button").addEventListener("click", function() {
     label.innerHTML = "Parameter:";
 
     var nameField = document.createElement("input");
-    nameField.setAttribute("type", "text");
-    nameField.setAttribute("name", "Parameter" + getCounter());
-    nameField.setAttribute("id", "parameter");
-    nameField.setAttribute("placeholder", "Parameternavn");
+    nameField.type = "text";
+    nameField.name = "Parameter" + newId();
+    nameField.id = "parameter";
+    nameField.placeholder = "Parameter name";
 
 
     var deleteBtn = document.createElement("button");
@@ -40,10 +39,16 @@ document.getElementById("add_button").addEventListener("click", function() {
 
 function typeSelection() {
     var select = document.createElement("select");
+    select.id = "type";
+    select.name = "Type" + paramId;
+
     var numOption = document.createElement("option");
-    numOption.text = "Number";
+    numOption.text = "Numberic";
+    numOption.value = "Number";
     var enumOption = document.createElement("option");
-    enumOption.text = "Options";
+    enumOption.text = "Enumeration";
+    enumOption.value = "Enum";
+
     select.options.add(numOption);
     select.options.add(enumOption);
     return select;
@@ -52,9 +57,13 @@ function typeSelection() {
 // If type of parameter is number - the form to be shown with number-specific configuration
 function numberForm() {
     var min = document.createElement("input");
-    min.setAttribute("placeholder", "min");
+    min.name = "Min" + paramId;
+    min.id = "min";
+    min.placeholder = "min";
     var max = document.createElement("input");
-    max.setAttribute("placeholder", "max");
+    max.name = "Max" + paramId;
+    max.id = "max";
+    max.placeholder = "max";
 
     // Container so that we may change visibility of both fields
     var container = document.createElement("span");
@@ -86,7 +95,11 @@ function enumForm() {
 
 function addVariantFormTo(container) {
     var variantForm = document.createElement("div");
+
     var textField = document.createElement("input");
+    textField.placeholder = "Option name";
+    textField.name = "Option" + paramId;
+
     var deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.innerHTML = "-";
