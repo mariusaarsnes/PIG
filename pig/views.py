@@ -33,7 +33,6 @@ divisions_get = get_divisions(database, User)
 def user_loader(user_id):
     return login_handler.get_user_with_id(user_id)
 
-
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
 
 @app.route("/")
@@ -82,9 +81,9 @@ def home():
 
 @app.route("/show_divisions")
 def show_divisions():
-    divisions_participating, divisions_created = divisions_get.fetch_divisions(current_user)
+    divisions_participating, divisions_created, ta_links, student_links = divisions_get.fetch_divisions(current_user, pig_key)
     return render_template("show_divisions.html", user=current_user,
-                           divisions_participating=divisions_participating, divisions_created=divisions_created)
+                           divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
 
 @app.route("/logout")
 @login_required
@@ -94,8 +93,13 @@ def logout():
 
 @app.route("/register_division")
 def register_division():
-    values = encryption.decode(pig_key, request.args.get("values"))
-    #request.args.get("variable") - returnerer parameter med navn variable fra urlen
+    arg = request.args.get("values")
+    if not arg is None:
+        values = encryption.decode(pig_key, arg)
+        variables = values.split(",")
+        for i in range(0, len(variables)):
+            variables[i] = variables[i].split(":")[1]
+        return render_template("register_division.html", user=current_user, message="Successfully registered you for the group: " + variables[0])
     return render_template("register_division.html", user=current_user)
 
 @app.route("/404")
