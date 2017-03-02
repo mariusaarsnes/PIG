@@ -1,0 +1,13 @@
+<!--
+FILE NAME: pig/templates/index.html
+WRITTEN BY: Daniel Romanic, Marius Aarsnes
+WHEN: February 2017
+PURPOSE: A frontpage that informs the user of what PIG is.
+-->
+
+{% extends "template.html" %}
+{% block content %}
+    {% if message is not none %}
+        <p>{{message}}</p>
+    {% endif %}
+{% endblock %}

@@ -17,8 +17,8 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
             {%  for division in divisions_created %}
                 <tr>
                     <td>{{ division.name }}</td>
-                    <td>{{division.leader_link }}</td>
-                    <td>{{division.member_link }}</td>
+                    <td><a href="{{ ta_links[loop.index0] }}">Link</a></td>
+                    <td><a href="{{ student_links[loop.index0] }}">Link</a></td>
                 </tr>
             {% endfor %}
         </table>

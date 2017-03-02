@@ -6,6 +6,7 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from pig.login.login_handler import login_handler
 from pig.login.registration_handler import registration_handler
 from pig.scripts.create_division import create_division
+import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import get_divisions
 from pig.db.database import database
 
@@ -15,6 +16,8 @@ app = Flask(__name__, template_folder='templates')
 database = database(app)
 
 from pig.db.models import *
+
+pig_key = "supersecretpigkey"
 app.secret_key = "key"
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -29,7 +32,6 @@ divisions_get = get_divisions(database, User)
 @login_manager.user_loader
 def user_loader(user_id):
     return login_handler.get_user_with_id(user_id)
-
 
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
 
@@ -79,15 +81,26 @@ def home():
 
 @app.route("/show_divisions")
 def show_divisions():
-    divisions_participating, divisions_created = divisions_get.fetch_divisions(current_user)
+    divisions_participating, divisions_created, ta_links, student_links = divisions_get.fetch_divisions(current_user, pig_key)
     return render_template("show_divisions.html", user=current_user,
-                           divisions_participating=divisions_participating, divisions_created=divisions_created)
+                           divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
 
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect(url_for("home"))
+
+@app.route("/register_division")
+def register_division():
+    arg = request.args.get("values")
+    if not arg is None:
+        values = encryption.decode(pig_key, arg)
+        variables = values.split(",")
+        for i in range(0, len(variables)):
+            variables[i] = variables[i].split(":")[1]
+        return render_template("register_division.html", user=current_user, message="Successfully registered you for the group: " + variables[0] + " as a " + ("TA" if int(variables[2]) == 1 else "student"))
+    return render_template("register_division.html", user=current_user)
 
 @app.route("/404")
 def not_found():
