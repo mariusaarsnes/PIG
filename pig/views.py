@@ -18,10 +18,9 @@ database = database(app)
 from pig.db.models import *
 
 pig_key = "supersecretpigkey"
-app.secret_key = "key"
+app.secret_key = pig_key
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
 division_creator = create_division(database, Division, Parameter)
@@ -42,7 +41,15 @@ def hello():
 @app.route("/apply_group")
 @login_required
 def apply_group():
-    return render_template("apply_group.html", user=current_user)
+    arg = request.args.get("values")
+    if not arg is None:
+        values = encryption.decode(pig_key, arg)
+        variables = values.split(",")
+        for i in range(0, len(variables)):
+            variables[i] = variables[i].split(":")[1]
+        if int(variables[2]) == 1:
+            return render_template("apply_group.html", user=current_user, message="Successfully registered you as a TA for the division: " + variables[0])
+    return render_template("apply_group.html", user=current_user, message=None)
 
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
@@ -80,6 +87,7 @@ def home():
 
 
 @app.route("/show_divisions")
+@login_required
 def show_divisions():
     divisions_participating, divisions_created, ta_links, student_links = divisions_get.fetch_divisions(current_user, pig_key)
     return render_template("show_divisions.html", user=current_user,
@@ -91,21 +99,10 @@ def logout():
     logout_user()
     return redirect(url_for("home"))
 
-@app.route("/register_division")
-def register_division():
-    arg = request.args.get("values")
-    if not arg is None:
-        values = encryption.decode(pig_key, arg)
-        variables = values.split(",")
-        for i in range(0, len(variables)):
-            variables[i] = variables[i].split(":")[1]
-        return render_template("register_division.html", user=current_user, message="Successfully registered you for the group: " + variables[0] + " as a " + ("TA" if int(variables[2]) == 1 else "student"))
-    return render_template("register_division.html", user=current_user)
-
 @app.route("/404")
 def not_found():
     return render_template("unauthorized.html", user=current_user)
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    return redirect(url_for("not_found"))
+    return redirect(url_for("login"))

@@ -11,6 +11,6 @@ class get_divisions:
         divisions_created = self.database.get_session().query(self.User).filter(self.User.id ==current_user.id).first().divisions_created
         ta_links, student_links  = [], []
         for division in divisions_created:
-            ta_links.append("../register_division?values=" + e.encode(key, "Name:"+division.name+",DivisionID:" + str(division.id) + ",Type:1"))
-            student_links.append("../register_division?values=" + e.encode(key, "Name:"+division.name+",DivisionID:" + str(division.id) + ",Type:0"))
+            ta_links.append("../apply_group?values=" + e.encode(key, "Name:"+division.name+",DivisionID:" + str(division.id) + ",Type:1"))
+            student_links.append("../apply_group?values=" + e.encode(key, "Name:"+division.name+",DivisionID:" + str(division.id) + ",Type:0"))
         return divisions_participating, divisions_created, ta_links, student_links
