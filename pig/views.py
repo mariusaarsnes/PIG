@@ -99,7 +99,7 @@ def register_division():
         variables = values.split(",")
         for i in range(0, len(variables)):
             variables[i] = variables[i].split(":")[1]
-        return render_template("register_division.html", user=current_user, message="Successfully registered you for the group: " + variables[0])
+        return render_template("register_division.html", user=current_user, message="Successfully registered you for the group: " + variables[0] + " as a " + ("TA" if int(variables[2]) == 1 else "student"))
     return render_template("register_division.html", user=current_user)
 
 @app.route("/404")
