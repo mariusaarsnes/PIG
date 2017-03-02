@@ -74,7 +74,7 @@ def register():
 
 @app.route("/home")
 def home():
-    return render_template("index.html", user=current_user)
+    return render_template("template.html", user=current_user)
 
 
 @app.route("/show_divisions")

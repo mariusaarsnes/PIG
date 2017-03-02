@@ -19,7 +19,7 @@ document.getElementById("add_button").addEventListener("click", function() {
 
 
     var cross = document.createElement("img");
-    cross.setAttribute("src", "/static/img/cross.png");
+   
     cross.setAttribute("id", "remove_button");
 
     parameterForm.appendChild(document.createElement("br"));

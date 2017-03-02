@@ -14,11 +14,12 @@ class registration_handler:
             if form[k] is "":
                 return False, "Please make sure all of the fields are filled."
         if not form["Password"] == form["PasswordConfirm"]:
-            return False, "The passwords does not match."
+            return False, "The passwords do not match."
         elif not self.validate_email(form["Email"]):
             return False, "The entered email was invalid."
         return True, None
 
     def validate_email(cls, email):
         split = email.split("@")
+
         return len(split) == 2 and "." in split[1]
