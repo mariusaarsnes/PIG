@@ -22,8 +22,6 @@ login_manager.init_app(app)
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
 division_creator = create_division(database, Division, Parameter)
 
-print(encryption.encode(pig_key, "DivisionID:255,Type:1"))
-
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
@@ -85,7 +83,6 @@ def logout():
 @app.route("/register_division")
 def register_division():
     values = encryption.decode(pig_key, request.args.get("values"))
-    print(values)
     #request.args.get("variable") - returnerer parameter med navn variable fra urlen
     return render_template("register_division.html", user=current_user)
 
