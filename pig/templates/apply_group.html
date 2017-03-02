@@ -1,15 +1,41 @@
 {% extends "template.html" %}
 {% block head %}
     {{super()}}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/division_style.css') }}">
 {% endblock %}
 {% block content %}
+
+<div class="mdl-card login-form mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+      <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+				<h2 class="mdl-card__title-text">Groups</h2>
+      </div>
+         
+      <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
     <form id="division-form">
-        <select>
-            {% for i in range(1, 11) %}
+      <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+        <select class="mdl-selectfield__select" id="professsion" name="professsion">
+          <option value=""></option>
+          {% for i in range(1, 11) %}
                 <option value="{{ i }}">{{ i }}</option>
             {% endfor %}
         </select>
-        <input type="button" id = "submit-form" value="Apply for group" id="add_button">
+        <div class="mdl-selectfield__icon"><i class="material-icons">arrow_drop_down</i></div>
+        <label class="mdl-selectfield__label" for="professsion">Group</label>
+      </div>
     </form>
+        
+      </div>
+    
+    
+          <div class="mdl-card__actions mdl-card--border">
+				<button type="submit" form="submit-form" id="submit-form"  value="apply for group "class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Apply for group</button>
+             
+
+			</div>
+
+</div>  
+
+<script src='https://rawgit.com/mebibou/mdl-selectfield/master/dist/mdl-selectfield.min.js'></script>
+
+
+    
 {% endblock %}
