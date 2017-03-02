@@ -6,6 +6,7 @@ from pig.login.login_handler import login_handler
 from pig.login.registration_handler import registration_handler
 from pig.scripts.create_division import create_division
 from pig.db.database import Database
+import pig.scripts.encryption as encryption
 
 app = Flask(__name__, template_folder='templates')
 
@@ -13,11 +14,15 @@ app = Flask(__name__, template_folder='templates')
 database = Database(app)
 
 from pig.db.models import *
+
+pig_key = "supersecretpigkey"
 app.secret_key = "key"
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
 division_creator = create_division(database, Division, Parameter)
+
+print(encryption.encode(pig_key, "DivisionID:255,Type:1"))
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -76,6 +81,13 @@ def home():
 def logout():
     logout_user()
     return redirect(url_for("home"))
+
+@app.route("/register_division")
+def register_division():
+    values = encryption.decode(pig_key, request.args.get("values"))
+    print(values)
+    #request.args.get("variable") - returnerer parameter med navn variable fra urlen
+    return render_template("register_division.html", user=current_user)
 
 @app.route("/404")
 def not_found():
