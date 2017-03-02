@@ -14,13 +14,20 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/division_style.css') }}">
 {% endblock %}
 {% block content %}
-    <form id="division-form">
-        <select>
-            {% for i in range(1, 11) %}
-                <option value="{{ i }}">{{ i }}</option>
-            {% endfor %}
-        </select>
-        <input type="button" id = "submit-form" value="Apply for group" id="add_button">
-    </form>
+    {% if message is not none %}
+        <p>{{message}}</p>
+    {% endif %}
+    {% if message is none %}
+        <form id="division-form">
+            <select>
+                {% for i in range(1, 11) %}
+                    <option value="{{ i }}">{{ i }}</option>
+                {% endfor %}
+            </select>
+            <input type="button" id = "submit-form" value="Apply for group" id="add_button">
+        </form>
+    {% endif %}
 {% endblock %}
+
+
 
