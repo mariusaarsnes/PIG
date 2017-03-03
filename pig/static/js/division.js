@@ -53,6 +53,7 @@ document.getElementById("add_button").addEventListener("click", function() {
     parameterForm.appendChild(document.createElement("br"));
     parameterForm.appendChild(enumForm());
 
+
     deleteBtn.addEventListener("click", function() {
         document.getElementById("division-form").removeChild(parameterForm);
     });
@@ -64,7 +65,7 @@ function typeSelection() {
     select.name = "Type" + paramId;
 
     var numOption = document.createElement("option");
-    numOption.text = "Numberic";
+    numOption.text = "Numeric";
     numOption.value = "Number";
     var enumOption = document.createElement("option");
     enumOption.text = "Enumeration";
@@ -72,6 +73,11 @@ function typeSelection() {
 
     select.options.add(numOption);
     select.options.add(enumOption);
+
+
+    select.addEventListener("change", function() {
+        console.log(select.value); // TODO
+    });
     return select;
 }
 
@@ -136,6 +142,3 @@ function addVariantFormTo(container) {
         container.removeChild(variantForm);
     });
 }
-
-
-// TODO legg inn div med fixed width før enum selection? Eller samme width som typeSelection?
