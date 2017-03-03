@@ -1,5 +1,26 @@
+// Dynamic form for division configuration
+//
+// The `name`s of form elements are the keys to the form dictionary that is 
+// received and processed in scripts/create_division.py.
+// They must be unique, so for parameter `N`, the `name`s will be:
+//
+// ParameterN
+// TypeN
+// MinN
+// MaxN
+// OptionN_0
+// OptionN_1
+// ...
+//
+// Where Options for that particular parameter are enumerated with `variantId`
+// -- also note that "variant" and "option" are used interchangeably; we should
+// probably stick to one.
+
+
 var paramId = 0;
-function newId() { return (++ paramId); }
+var variantId = 0;
+function newParamId() { return (++ paramId); }
+function newVariantId() { return (++ variantId); }
 
 document.getElementById("add_button").addEventListener("click", function() {
     var parameterForm = document.createElement("div");
@@ -14,7 +35,7 @@ document.getElementById("add_button").addEventListener("click", function() {
 
     var nameField = document.createElement("input");
     nameField.type = "text";
-    nameField.name = "Parameter" + newId();
+    nameField.name = "Parameter" + newParamId();
     nameField.id = "parameter";
     nameField.placeholder = "Parameter name";
 
@@ -98,7 +119,7 @@ function addVariantFormTo(container) {
 
     var textField = document.createElement("input");
     textField.placeholder = "Option name";
-    textField.name = "Option" + paramId;
+    textField.name = "Option" + paramId + "_" + newVariantId();
 
     var deleteButton = document.createElement("button");
     deleteButton.type = "button";
