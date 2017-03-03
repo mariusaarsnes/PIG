@@ -17,3 +17,4 @@ class create_division:
                 division.parameters.append(parameter)
         self.database.get_session().add(division)
         self.database.get_session().commit()
+

@@ -38,6 +38,17 @@ user_division_parameter_value = db.Table('user_division_parameter_value',
                                              db.Column('value_id',db.Integer, db.ForeignKey('value.id'))
 )
 
+#class UserDivision(db.Model):
+#
+#    __tablename__ = "user_division"
+#
+#    division_id = db.Column(db.Integer, primary_key = True)
+#    user_id = db.Column(db.Integer, primary_key = True)
+#    role = db.Column(db.String(255))
+#
+#    def __repr__(self):
+#        return "DivisionID: " + str(self.division_id) + " UserID: " + str(self.user_id) + " Role: " + str(self.role)
+#
 class User(db.Model):
 
     __tablename__ = "users"
