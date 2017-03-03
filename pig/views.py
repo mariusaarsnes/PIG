@@ -27,7 +27,7 @@ login_handler, registration_handler = login_handler(database, User), registratio
 division_creator = create_division(database, Division, Parameter)
 divisions_get, division_registrator = get_divisions(database, User), division_registrator(database, User, Division, user_division)
 
-print(database.get_session().query(User).filter(User.id == 1).first().divisions)
+print(database.get_session().query(User).filter(User.id == 2).first().divisions)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with

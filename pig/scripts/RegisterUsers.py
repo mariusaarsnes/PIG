@@ -1,4 +1,5 @@
 __author__ = 'owner_000'
+from sqlalchemy.sql import text
 
 class RegisterUser():
 
@@ -9,10 +10,5 @@ class RegisterUser():
         self.user_division = user_division
 
     def register_user(self, current_user, division_id, role):
-        #user = self.database.get_session().query(self.User).filter(self.User.id == current_user.id).first()
-        #division = self.database.get_session().query(self.Division).filter(self.Division.id == division_id).first()
-        #user.divisions.append(division)
-        #self.database.get_session().add(self.user_division(division_id = division_id, user_id = current_user.id, role = role))
-        div = self.user_division(user_id = current_user.id, division_id = division_id, role = role)
-        self.database.get_session().add(div)
+        self.database.get_session().execute("INSERT INTO user_division VALUES(:user_id, :division_id, :role)", {"user_id": current_user.id, "division_id": int(division_id), "role": role})
         self.database.get_session().commit()
