@@ -109,9 +109,20 @@ class Parameter(db.Model):
     # users = db.relationship('User', secondary=user_division_parameter_value, backref=db.backref('parameter', lazy='dynamic'))
     # divisions = db.relationship('Division', secondary=user_division_parameter_value, backref=db.backref('parameter',lazy='dynamic'))
 
-
     def __repr__(self):
         return "ID: " + str(self.id) + ", description: " + str(self.description)
+
+class NumberParam(db.Model):
+    __tablename__="number_param"
+    min = db.Column(db.Integer)
+    max = db.Column(db.Integer)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameter.id'), primary_key=True)
+
+    parameter = db.relationship('Parameter', backref=db.backref('number_param',lazy='joined', uselist=False))
+
+    def __repr__(self):
+        return "min: " + str(self.min) + ", max: " + str(self.max) + ", parameter_id: " + str(self.parameter_id)
+
 
 
 class Value(db.Model):
