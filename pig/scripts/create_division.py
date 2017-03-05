@@ -1,15 +1,20 @@
 from sqlalchemy import func
 import sys
 
+# Idea for the future: Make classes to put in 'specializations' rather than checking if it's a list etc.
+
 class create_division:
 
-    def __init__(self, database, Division, Parameter, NumberParam):
+    def __init__(self, database, Division, Parameter, NumberParam, EnumVariant):
         self.database = database
         self.Division = Division
         self.Parameter = Parameter
         self.NumberParam = NumberParam
+        self.EnumVariant = EnumVariant
+        # Parameters under construction
         self.parameters = {} # int -> Parameter
-        self.specializations = {} # int -> NumberParam or EnumParam
+        # Specialization of each Parameter
+        self.specs = {} # int -> NumberParam or [EnumVariant]
 
     def register_division(self, current_user, form):
         print('Registering division...', file=sys.stderr)
@@ -32,7 +37,6 @@ class create_division:
                 if parameter is None:
                     # Create new Parameter only if it does not exist
                     parameter = self.Parameter(description=value.strip())
-                    print("Create parameter with ID = %s" % parameter.id, file=sys.stderr)
                     self.database.get_session().add(parameter)
                     self.parameters[param_nr] = parameter
                 else:
@@ -40,55 +44,54 @@ class create_division:
                     # Setting it to None here signifies for later that we should not add a specialization for it
                     self.parameters[param_nr] = None
                     pass
-
                 division.parameters.append(parameter)
-
-                self.specializations[param_nr] = None
 
             elif key.startswith("Type"):
                 param_nr = int(key[4])
                 if value == "Number":
-                    self.specializations[param_nr] = self.NumberParam(min=None, max=None)
-                else:
-                    print("Haven't implemented enum yet", file=sys.stderr)
-                    exit(1)
+                    self.specs[param_nr] = self.NumberParam(min=None, max=None)
+                elif value == "Enum":
+                    if (param_nr in self.specs) and isinstance(self.specs[param_nr], self.NumberParam):
+                        pass
+                    else:
+                        self.specs[param_nr] = []
+
+        # Commit the new Parameters so that they get assigned primary keys
+        self.database.get_session().commit()
 
         # Second pass: Find the configurations for each parameters
         for (key, value) in form.items():
 
-            if key.startswith("Min"):
+            if key.startswith("Min") or key.startswith("Max"):
                 param_nr = int(key[3])
-                if isinstance(self.specializations[param_nr], self.NumberParam):
-                    print("Min: Parameter is Number", file=sys.stderr)
-                    self.specializations[param_nr].min = int(value)
-                else:
-                    print("Min: Parameter is not Number.. %s" % self.specializations[param_nr], file=sys.stderr)
-                    pass
-
-            elif key.startswith("Max"):
-                param_nr = int(key[3])
-                if isinstance(self.specializations[param_nr], self.NumberParam):
-                    self.specializations[param_nr].max = int(value)
-                else:
-                    pass
-
             elif key.startswith("Option"):
                 param_nr = int(key[6])
-                # TODO
 
-        # Commit the new Parameters so that they get assigned primary keys - these will be used in the next pass
-        self.database.get_session().commit()
+            if not self.parameters[param_nr] is None:
+                if isinstance(self.specs[param_nr], self.NumberParam):
+                    if key.startswith("Min"):
+                        self.specs[param_nr].min = int(value)
+                    elif key.startswith("Max"):
+                        self.specs[param_nr].max = int(value)
+                elif isinstance(self.specs[param_nr], list):
+                    # self.specs[param_nr] is a list of EnumVariant
+                    if key.startswith("Option"):
+                        self.specs[param_nr].append(self.EnumVariant(name=value))
 
-        # For every parameter, add it and its specialization to the database
-        for param_nr in self.specializations.keys():
+        # Third pass: For every parameter, add it and its specialization to the database
+        for param_nr in self.specs.keys():
             param = self.parameters[param_nr]
-            spec = self.specializations[param_nr]
             # `param is None` signifies that the parameter was already in the Database, and that we should not
             # make another specialization
             if not param is None:
-                print("Param ID = %s" % param.id, file=sys.stderr)
-                spec.parameter = param
-                self.database.get_session().add(spec)
+                if isinstance(self.specs[param_nr], self.NumberParam):
+                    spec = self.specs[param_nr]
+                    spec.parameter = param
+                    self.database.get_session().add(spec)
+                elif isinstance(self.specs[param_nr], list):
+                    for variant in self.specs[param_nr]:
+                        variant.parameter = param
+                        self.database.get_session().add(variant)
 
         self.database.get_session().add(division)
         self.database.get_session().commit()

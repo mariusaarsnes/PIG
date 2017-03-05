@@ -109,7 +109,8 @@ class Parameter(db.Model):
     # users = db.relationship('User', secondary=user_division_parameter_value, backref=db.backref('parameter', lazy='dynamic'))
     # divisions = db.relationship('Division', secondary=user_division_parameter_value, backref=db.backref('parameter',lazy='dynamic'))
 
-    number_param = db.relationship('NumberParam', back_populates="parameter")
+    number_param = db.relationship('NumberParam', back_populates="parameter") # One-to-One
+    enum_variants = db.relationship('EnumVariant', back_populates="parameter") #One-to-Many
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", description: " + str(self.description)
@@ -125,6 +126,12 @@ class NumberParam(db.Model):
     def __repr__(self):
         return "min: " + str(self.min) + ", max: " + str(self.max) + ", parameter_id: " + str(self.parameter_id)
 
+class EnumVariant(db.Model):
+    __tablename__="enum_variant"
+    name = db.Column(db.String(50), primary_key=True)
+    parameter_id = db.Column(db.Integer, db.ForeignKey('parameter.id'), primary_key=True)
+
+    parameter = db.relationship('Parameter', back_populates="enum_variants")
 
 
 
