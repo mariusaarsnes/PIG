@@ -87,7 +87,7 @@ class create_division:
             # make another specialization
             if not param is None:
                 print("Param ID = %s" % param.id, file=sys.stderr)
-                spec.parameter_id = param.id
+                spec.parameter = param
                 self.database.get_session().add(spec)
 
         self.database.get_session().add(division)
