@@ -13,6 +13,9 @@ class PigTestCase(unittest.TestCase):
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
+    def register(self, username, password):
+        return self.app.post("/register", data=dict(Email=""))
+
     def test_login_logout(self):
         rv = self.login('example1@gmail.com', 'password')
         assert b'Example' in rv.data
@@ -24,6 +27,8 @@ class PigTestCase(unittest.TestCase):
 
         rv = self.login('example@gmail.com','fewfewfw')
         assert b'hello' not in rv.data
+
+
 
 
 
