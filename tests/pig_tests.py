@@ -13,7 +13,6 @@ class PigTestCase(unittest.TestCase):
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
-
     def test_login_logout(self):
         rv = self.login('example1@gmail.com', 'password')
         assert b'Example' in rv.data
