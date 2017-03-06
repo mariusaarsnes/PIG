@@ -10,5 +10,9 @@ class database:
         self.app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
         self.db = SQLAlchemy(self.app)
 
+
+    def set_uri(self,value):
+        self.app.config['SQLALCHEMY_DATABASE_URI'] = value
+
     def get_session(self):
         return self.db.session
