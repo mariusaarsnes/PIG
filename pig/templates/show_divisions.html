@@ -17,8 +17,8 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
             {%  for division in divisions_created %}
                 <tr>
                     <td>{{ division.name }}</td>
-                    <td>{{division.leader_link }}</td>
-                    <td>{{division.member_link }}</td>
+                    <td><button onclick="copyToClipboard('{{ ta_links[loop.index0] }}')">Kopier lenken</button></td>
+                    <td><button onclick="copyToClipboard('{{ student_links[loop.index0] }}')">Kopier lenken</button></td>
                 </tr>
             {% endfor %}
         </table>
@@ -37,4 +37,7 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
         </table>
 
     </div>
+{% endblock %}
+{% block bottom %}
+    <script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 {% endblock %}
