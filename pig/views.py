@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from pig.login.login_handler import login_handler
@@ -66,6 +66,7 @@ def login():
     if request.method == 'POST':
         user = login_handler.get_user(request.form["Username"], request.form["Password"])
         if user is not None:
+            flash('You were logged in')
             login_user(user)
             return redirect(url_for("home"))
         else:
