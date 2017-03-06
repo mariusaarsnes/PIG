@@ -52,7 +52,6 @@ class User(db.Model):
     parameters = db.relationship('Parameter', secondary=user_division_parameter_value, backref=db.backref('users',lazy='dynamic'))
     values = db.relationship('Value', secondary=user_division_parameter_value, backref = db.backref('users', lazy='dynamic'))
 
-
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.firstname)+str(self.lastname)+ ", Email: " + str(self.email)
 
