@@ -15,8 +15,6 @@ class PigTestCase(unittest.TestCase):
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
-
-
     # Testing connection to db
     # This is done by just fetching an entry in users
     def test_connect_to_db(self):
@@ -47,4 +45,3 @@ class PigTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
