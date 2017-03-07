@@ -20,6 +20,10 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
       </div>
          
       <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
+          {% if message is not none %}
+        <p>{{message}}</p>
+    {% endif %}
+    {% if message is none %}
     <form id="division-form">
       <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
         <select class="mdl-selectfield__select" id="groupno" name="groupno">
@@ -78,7 +82,7 @@ var groupNumber = selectGroup.options[selectGroup.selectedIndex].text;
 }());
 </script>
 
-
-    
 {% endblock %}
+
+
 

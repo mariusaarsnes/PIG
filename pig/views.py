@@ -1,11 +1,12 @@
 # encoding=UTF-8
 
-from flask import Flask, redirect, url_for, request, render_template
+from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 from pig.login.login_handler import login_handler
 from pig.login.registration_handler import registration_handler
 from pig.scripts.create_division import create_division
+import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import get_divisions
 from pig.db.database import database
 
@@ -15,10 +16,11 @@ app = Flask(__name__, template_folder='templates')
 database = database(app)
 
 from pig.db.models import *
-app.secret_key = "key"
+
+pig_key = "supersecretpigkey"
+app.secret_key = pig_key
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
 division_creator = create_division(database, Division, Parameter)
@@ -30,7 +32,6 @@ divisions_get = get_divisions(database, User)
 def user_loader(user_id):
     return login_handler.get_user_with_id(user_id)
 
-
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
 
 @app.route("/")
@@ -40,7 +41,13 @@ def hello():
 @app.route("/apply_group")
 @login_required
 def apply_group():
-    return render_template("apply_group.html", user=current_user)
+    arg = request.args.get("values")
+    if not arg is None:
+        values = encryption.decode(pig_key, arg)
+        variables = values.split(",")
+        if int(variables[2]) == 1:
+            return render_template("apply_group.html", user=current_user, message="Successfully registered you as a TA for the division: " + variables[0])
+    return render_template("apply_group.html", user=current_user, message=None)
 
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
@@ -55,6 +62,7 @@ def login():
     if request.method == 'POST':
         user = login_handler.get_user(request.form["Username"], request.form["Password"])
         if user is not None:
+            flash('You were logged in')
             login_user(user)
             return redirect(url_for("home"))
         else:
@@ -78,10 +86,11 @@ def home():
 
 
 @app.route("/show_divisions")
+@login_required
 def show_divisions():
-    divisions_participating, divisions_created = divisions_get.fetch_divisions(current_user)
+    divisions_participating, divisions_created, ta_links, student_links = divisions_get.fetch_divisions(current_user, pig_key)
     return render_template("show_divisions.html", user=current_user,
-                           divisions_participating=divisions_participating, divisions_created=divisions_created)
+                           divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
 
 @app.route("/logout")
 @login_required
@@ -95,4 +104,4 @@ def not_found():
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    return redirect(url_for("not_found"))
+    return redirect(url_for("login"))
