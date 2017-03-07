@@ -7,36 +7,41 @@ PURPOSE: Provide a way for users to create an instance of group division
 
 {% extends "template.html" %}
 {% block head %}
-    {{super()}}
+{{super()}}
 {% endblock %}
 {% block content %}
 
-  <div class="mdl-card login-form mdl-cell mdl-cell--6-col mdl-shadow--6dp">
-      <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-				<h2 class="mdl-card__title-text">Divisions</h2>
-      </div>
-      
-      <form id="division-form" method="post">
-        <input type= "text" name= "Division" placeholder= "Divisjonsnavn">
-          
-        <input type="button" value="Add parameter" id="add_button">
-    </form>
-         
-      <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
-          
-        
-      </div>
-          <div class="mdl-card__actions mdl-card--border">
-				<button type="submit" id="submit-form" value="Create Division" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Create Division</button>
-             
+<div class="mdl-card login-form mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+    <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+        <h2 class="mdl-card__title-text">Divisions</h2>
+    </div>
 
-			</div>
-                
+
+
+    <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
+
+        <form id="division-form" method="post">
+            
+            <input class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="button" value="Add parameter" id="add_button">
+
+
+
+
+        </form>
+
+    </div>
+    <div class="mdl-card__actions mdl-card--border">
+        <button type="submit" id="submit-form" value="Create Division" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Create Division</button>
+
+
+    </div>
+
 
 </div>  
 <script src="{{ url_for('static', filename='js/division.js') }}"></script>
 
 {% endblock %}
 {% block bottom %}
-    <script src="{{ url_for('static', filename='js/division.js') }}"></script>
+<script src="{{ url_for('static', filename='js/division.js') }}"></script>
+
 {% endblock %}

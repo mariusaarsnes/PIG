@@ -12,7 +12,7 @@ document.getElementById("add_button").addEventListener("click", function() {
     paraId += 1;
     textField.setAttribute("placeholder", "Parameternavn");
     var cross = document.createElement("img");
-   
+    cross.setAttribute("src", "/static/img/cross.png");
     cross.setAttribute("id", "remove_button");
     document.getElementById("division-form").insertBefore(label, document.getElementById("add_button"));
     document.getElementById("division-form").insertBefore(textField, document.getElementById("add_button"));
