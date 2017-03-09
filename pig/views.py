@@ -24,8 +24,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
-division_creator = create_division(database, Division, Parameter)
-divisions_get, division_registrator = get_divisions(database, User), division_registrator(database, User, Division, user_division)
+division_creator = create_division(database, Division, Parameter, NumberParam, EnumVariant)
+divisions_get = get_divisions(database, User)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -84,7 +84,7 @@ def register():
 
 @app.route("/home")
 def home():
-    return render_template("index.html", user=current_user)
+    return render_template("template.html", user=current_user)
 
 
 @app.route("/show_divisions")

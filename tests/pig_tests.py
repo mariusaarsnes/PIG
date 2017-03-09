@@ -93,6 +93,5 @@ class PigTestCase(unittest.TestCase):
         user = database.get_session().query(User).filter(User.email == "asd@asd.com").first()
         assert user is None
 
-
 if __name__ == '__main__':
     unittest.main()
