@@ -18,12 +18,13 @@ class PigTestCase(unittest.TestCase):
         return self.app.get('/logout', follow_redirects=True)
 
     # A helper method to setup the connection to the postgresDB on heroku
-    def setup_db(self, uri):
+    def setup_db(self, uri="postgres://wtsceqpjdsbhxw:34df69f4132d39ea5b95e52822d6dedc8e3eb368915cb8888526f896f21bce75@ec2-54-75-229-201.eu-west-1.compute.amazonaws.com:5432/dfa7tvu04d7t6i" ):
         temp = database(Flask(__name__))
         temp.set_uri(uri)
         return temp
 
-    # Testing connection to db
+    # Testing connection to db with invalid uri, this is done by setting up a new connection to the db, and then changing the uri,
+    # see setup_db.
     def test_connect_to_db_with_invalid_uri(self):
         data = None
         database = self.setup_db(uri = "postgres://wtsceqpjdsbhxw")
@@ -36,7 +37,7 @@ class PigTestCase(unittest.TestCase):
 
     def test_connect_to_db_with_valid_uri(self):
         data = None
-        database = self.setup_db(uri="postgres://wtsceqpjdsbhxw:34df69f4132d39ea5b95e52822d6dedc8e3eb368915cb8888526f896f21bce75@ec2-54-75-229-201.eu-west-1.compute.amazonaws.com:5432/dfa7tvu04d7t6i")
+        database = self.setup_db()
         try:
             data = database.get_session().query(User).first()
         except Exception as e:
@@ -44,21 +45,31 @@ class PigTestCase(unittest.TestCase):
         finally:
             assert data is not None
 
-    # Testing login and logout.
-    # First check tests with valid username and password
-    # Second check test with invalid username but a valid password
-    # Thid check tests with valid username but but invalid password
-    def test_login_logout(self):
-        rv = self.login('example1@gmail.com', 'password')
-        assert b'Example' in rv.data
+
+    def test_login_invalid_username(self):
+        self.register('valid@email.com','password','password','firstname','firstname')
+        rv = self.login('invalid','password')
+
+        self.delete_user('valid@email.com')
+        assert b'firstname' not in rv.data
+
+    def test_login_invalid_password(self):
+        self.register('valid@email.com','password','password','firstname','lastname')
+        rv = self.login('valid@email.com','wrong password')
+
+        self.delete_user('valid@email.com')
+        assert b'firstname' not in rv.data
+
+
+    def test_login_and_logout_valid_username_and_password(self):
+        self.register('valid@email.com','password','password','firstname','lastname')
+        rv = self.login('valid@email.com','password')
+
+        assert b'firstname' in rv.data
         rv = self.logout()
-        assert b'Example' not in rv.data
+        assert b'firstname' not in rv.data
 
-        rv = self.login('ugyldig', 'password')
-        assert b'ugyldig' not in rv.data
-
-        rv = self.login('example@gmail.com','fewfewfw')
-        assert b'hello' not in rv.data
+        self.delete_user('valid@email.com')
 
     def test_create_division(self):
         pass
