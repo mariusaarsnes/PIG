@@ -1,5 +1,5 @@
 import os, pig, unittest
-from flask_sqlalchemy import SQLAlchemy
+from pig.views import get_divisions, pig_key
 from pig.db.models import *
 from pig.db.database import *
 from flask import Flask
@@ -76,6 +76,27 @@ class PigTestCase(unittest.TestCase):
     def register(self, email, password, password_confirm, first_name, last_name):
         return self.app.post("/register", data=dict(Email=email, Password=password, PasswordConfirm=password_confirm, FirstName=first_name, LastName=last_name))
 
+    def delete_user(self, email):
+        self.database.get_session().execute("DELETE FROM users WHERE email = '" + email + "'")
+        self.database.get_session().commit()
+
+    def create_division(self, name, creator_id):
+        division = Division(name=name, creator_id=creator_id)
+        self.database.get_session().add(division)
+        self.database.get_session().commit()
+
+    def delete_division(self, id):
+        self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
+        self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
+        self.database.get_session().commit()
+
+    def get_user(self, email):
+        return self.database.get_session().query(User).filter(User.email == email).first()
+
+    def go_to_division(self, link):
+        return self.app.get("/" + link)
+
+
     #Testing registration of a user with two different passwords
     def test_register_user_with_two_different_password_inputs(self):
         rv = self.register("asd@asd.com", "test", "test1", "tester", "testing")
@@ -112,13 +133,31 @@ class PigTestCase(unittest.TestCase):
         assert user is not None
 
     def test_remove_user_from_database(self):
-        user = self.database.get_session().query(User).filter(User.email == "asd@asd.com").first()
+        user = self.get_user("asd@asd.com")
         if user is None:
             return
-        self.database.get_session().execute("DELETE FROM users WHERE email = 'asd@asd.com'")
-        self.database.get_session().commit()
-        user = self.database.get_session().query(User).filter(User.email == "asd@asd.com").first()
+        self.delete_user("asd@asd.com")
+        user = self.get_user("asd@asd.com")
         assert user is None
+
+    def test_register_user_as_student_for_division(self):
+        self.register("tester@asd.com", "test", "test", "Asd", "asdtest")
+        self.register("tester1@asd.com", "test", "test", "Asd1", "asdtest")
+        user = self.get_user("tester@asd.com")
+        user1 = self.get_user("tester1@asd.com")
+        self.create_division("testing_division", user.id)
+        division = self.database.get_session().query(Division).filter(Division.creator_id == user.id, Division.name == "testing_division").first()
+        self.login("tester1@asd.com", "test")
+        link = get_divisions.get_link(pig_key, division.name, division.id, 1)
+        rv = self.go_to_division(link)
+        assert b'registered you as a' in rv.data
+        self.delete_division(division.id)
+        self.delete_user(user.email)
+        self.delete_user(user1.email)
+
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
