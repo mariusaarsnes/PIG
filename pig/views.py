@@ -8,6 +8,7 @@ from pig.login.registration_handler import registration_handler
 from pig.scripts.create_division import create_division
 import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import get_divisions
+from pig.scripts.RegisterUsers import RegisterUser as division_registrator
 from pig.db.database import database
 
 app = Flask(__name__, template_folder='templates')
@@ -24,7 +25,12 @@ login_manager.init_app(app)
 
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
 division_creator = create_division(database, Division, Parameter)
-divisions_get = get_divisions(database, User)
+divisions_get, division_registrator = get_divisions(database, User), division_registrator(database, User, Division, user_division)
+
+for user in database.get_session().query(User).filter(True).all():
+    print(user)
+
+#print(database.get_session().execute("SELECT * FROM user_divison;").all())# WHERE division_id = 8 AND role = 'Student';").all())
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -46,6 +52,7 @@ def apply_group():
         values = encryption.decode(pig_key, arg)
         variables = values.split(",")
         if int(variables[2]) == 1:
+            division_registrator.register_user(current_user, variables[1], "TA")
             return render_template("apply_group.html", user=current_user, message="Successfully registered you as a TA for the division: " + variables[0])
     return render_template("apply_group.html", user=current_user, message=None)
 

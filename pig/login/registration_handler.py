@@ -1,4 +1,8 @@
+from re import match
+
 class registration_handler:
+
+    email_regex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
     def __init__(self, database, User):
         self.database = database
@@ -15,10 +19,9 @@ class registration_handler:
                 return False, "Please make sure all of the fields are filled."
         if not form["Password"] == form["PasswordConfirm"]:
             return False, "The passwords does not match."
-        elif not self.validate_email(form["Email"]):
+        elif not match(self.email_regex, form["Email"]) or "." not in form["Email"].split("@")[1]:
             return False, "The entered email was invalid."
+        user = self.database.get_session().query(self.User).filter(self.User.email == form["Email"]).first()
+        if not user is None:
+            return False, "A user with that email already exist."
         return True, None
-
-    def validate_email(cls, email):
-        split = email.split("@")
-        return len(split) == 2 and "." in split[1]
