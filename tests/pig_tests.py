@@ -51,12 +51,14 @@ class PigTestCase(unittest.TestCase):
         self.register('valid@email.com','password','password','firstname','firstname')
         rv = self.login('invalid','password')
 
+        self.delete_user('valid@email.com')
         assert b'firstname' not in rv.data
 
     def test_login_invalid_password(self):
         self.register('valid@email.com','password','password','firstname','lastname')
         rv = self.login('valid@email.com','wrong password')
 
+        self.delete_user('valid@email.com')
         assert b'firstname' not in rv.data
 
 
@@ -65,9 +67,10 @@ class PigTestCase(unittest.TestCase):
         rv = self.login('valid@email.com','password')
 
         assert b'firstname' in rv.data
-
         rv = self.logout()
         assert b'firstname' not in rv.data
+
+        self.delete_user('valid@email.com')
 
     def test_create_division(self):
         pass
