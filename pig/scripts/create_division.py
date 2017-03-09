@@ -16,9 +16,13 @@ class DivisionCreator:
         # Specialization of each Parameter
         self.specs = {} # int -> NumberParam or [EnumVariant]
 
+    # Returns false if there was an error
     def register_division(self, current_user, form):
-        #print('Registering division...', file=sys.stderr)
-        #print('Input: %s' % form, file=sys.stderr)
+        print('Registering division...', file=sys.stderr)
+        print('Input: %s' % form, file=sys.stderr)
+        if len(form) == 0 or form["Division"] is None:
+            return false
+
         division = self.Division(name = form["Division"], creator_id = current_user.id)
 
         # First pass: Find the type of each parameter
@@ -95,6 +99,7 @@ class DivisionCreator:
 
         self.database.get_session().add(division)
         self.database.get_session().commit()
+        return true
 
     def make_parameter(self, desc):
         parameter = self.database.get_session() \
