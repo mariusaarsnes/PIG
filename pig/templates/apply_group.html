@@ -14,7 +14,7 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
 
 <div class="mdl-card login-form mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-        <h2 class="mdl-card__title-text">Apply for group</h2>
+        <h2 class="mdl-card__title-text">Sign up for "{{div_name}}"</h2>
     </div>
 
     <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
@@ -27,24 +27,35 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
             <br>
             ((no division specified))
         {% else %}
-            <form id="division-form" method="post">
-                <!-- FORM CONTENTS HERE -->
+            <form id="signup-form" method="post", action="/apply_group">
+                <!-- FORM CONTENTS -->
                 {% for param in params %}
+                    {{param.description}}:
+
                     {% if param.number_param is none %}
-                        Some enum parameter or invalid <br>
+                        <select>
+                            {% for variant in param.enum_variants %}
+                                <option value="{{variant.name}}">
+                                    {{variant.name}}
+                                </option>
+                            {% endfor %}
+                        </select>
                     {% else %}
-                        Some number parameter {{param.number_param.min}} .. {{param.number_param.max}} <br>
+                        <input type="text" placeholder="{{param.number_param.min}}-{{param.number_param.max}}" />
                     {% endif %}
+
+                    <br>
+
                 {% endfor %}
-                <!-- Submit button: -->
             </form>
         {% endif %}
     </div>
 
 
 
+    <!-- Submit button: -->
     <div class="mdl-card__actions mdl-card--border">
-        <button id="demo-show-snackbar" type="submit" form="submit-form" id="submit-form"  value="apply for group "class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Apply for group</button>
+        <button id="demo-show-snackbar" type="submit" form="signup-form" id="submit-form"  value="apply for group "class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Apply for group</button>
         <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
             <div class="mdl-snackbar__text"></div>
             <button class="mdl-snackbar__action" type="button"></button>
@@ -82,7 +93,6 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
     }());
 </script>
 
->>>>>>> origin/master
 {% endblock %}
 
 

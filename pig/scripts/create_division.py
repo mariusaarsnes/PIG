@@ -16,12 +16,12 @@ class DivisionCreator:
         # Specialization of each Parameter
         self.specs = {} # int -> NumberParam or [EnumVariant]
 
-    # Returns false if there was an error
+    # Returns False if there was an error
     def register_division(self, current_user, form):
         print('Registering division...', file=sys.stderr)
         print('Input: %s' % form, file=sys.stderr)
         if len(form) == 0 or form["Division"] is None:
-            return false
+            return False
 
         division = self.Division(name = form["Division"], creator_id = current_user.id)
 
@@ -74,9 +74,15 @@ class DivisionCreator:
             if not self.parameters[param_nr] is None:
                 if isinstance(self.specs[param_nr], self.NumberParam):
                     if key.startswith("Min"):
-                        self.specs[param_nr].min = int(value)
+                        try:
+                            self.specs[param_nr].min = int(value)
+                        except:
+                            self.specs[param_nr].min = None
                     elif key.startswith("Max"):
-                        self.specs[param_nr].max = int(value)
+                        try:
+                            self.specs[param_nr].max = int(value)
+                        except:
+                            self.specs[param_nr].max = None
                 elif isinstance(self.specs[param_nr], list):
                     # self.specs[param_nr] is a list of EnumVariant
                     if key.startswith("Option"):
@@ -99,7 +105,7 @@ class DivisionCreator:
 
         self.database.get_session().add(division)
         self.database.get_session().commit()
-        return true
+        return True
 
     def make_parameter(self, desc):
         parameter = self.database.get_session() \

@@ -58,21 +58,20 @@ def apply_group():
                 .first()
 
         if request.method == 'POST':
+            return redirect(url_for("home"))
             # TODO Actually register the person
+            """
             if int(div_role) == 0:
                 return render_template("apply_group.html", user=current_user,\
                         message="Successfully registered you as a TEAM MEMBER for the division: " + div_name)
             elif int(div_role) == 1:
                 return render_template("apply_group.html", user=current_user,\
                         message="Successfully registered you as a LEADER for the division: " + div_name)
+        """
         else:
             # Make the form
-            #  params = map(lambda param: , division.parameters)
             params = division.parameters
-            for param in params:
-                if param.number_param is not None:
-                    print("%s --- %s" % (param.number_param.min, param.number_param.max), file=sys.stderr)
-            return render_template("apply_group.html", user=current_user, message=None, params=params)
+            return render_template("apply_group.html", user=current_user, message=None, params=params, div_name=div_name)
 
     return render_template("apply_group.html", user=current_user, message=None, params=None)
 

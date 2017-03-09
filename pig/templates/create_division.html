@@ -16,29 +16,18 @@ PURPOSE: Provide a way for users to create an instance of group division
         <h2 class="mdl-card__title-text">Divisions</h2>
     </div>
 
-
-
     <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
 
         <form id="division-form" method="post">
-            
             <input type= "text" name= "Division" placeholder= "Division name">
             <br>
             <input class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="button" value="Add parameter" id="add_button">
-
-
-
-
         </form>
 
     </div>
     <div class="mdl-card__actions mdl-card--border">
         <button type="submit" id="submit-form" value="Create Division" form="division-form" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Create Division</button>
-
-
     </div>
-
-
 
 <script src="{{ url_for('static', filename='js/division.js') }}"></script>
 
