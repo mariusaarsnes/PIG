@@ -104,6 +104,18 @@ body .demo-layout-transparent {
   padding: 16px;
     min-height: 100px;
     
+    
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+}
+
+#showdivisions    {
+  padding: 16px;
+    min-height: 100px;
+    max-height: 100px;
+    
+    
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -132,8 +144,8 @@ body .demo-layout-transparent {
 }
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
-  padding: 16px;
   min-height: 64px;
+ 
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -141,6 +153,14 @@ body .demo-layout-transparent {
       -ms-flex-align: center;
           align-items: center;
 }
+
+
+.mdl-data-table {
+    width: 100%;
+   
+    
+}
+
 .demo-layout-transparent .mdl-card__supporting-text strong {
   font-weight: 400;
 }
@@ -176,5 +196,39 @@ body .demo-layout-transparent {
   margin-top: 0.5em;
 }
 
+#division-form {
+    margin: auto;
+    width: 80%; 
+    border-radius: 5px;
+    
+    
+}
+
+
+
+input[id=create_division] {
+    width: 100%;
+    padding: 8px 15px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 25px;
+}
+input[id=parameter] {
+    width: 80%;
+    padding: 8px 15px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+#remove_button {
+    cursor: pointer;
+    width: 10%;
+    max-width: 40px;
+    margin: -2% 5%;
+}
 
 
