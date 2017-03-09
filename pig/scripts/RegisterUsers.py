@@ -1,5 +1,4 @@
 __author__ = 'owner_000'
-from sqlalchemy.sql import text
 
 class RegisterUser():
 
