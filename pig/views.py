@@ -3,20 +3,20 @@
 from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-from pig.login.login_handler import login_handler
-from pig.login.registration_handler import registration_handler
+from pig.login.login_handler import LoginHandler
+from pig.login.registration_handler import RegistrationHandler
 from pig.scripts.create_division import DivisionCreator
 import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import get_divisions
 from pig.scripts.RegisterUsers import RegisterUser
-from pig.db.database import database
+from pig.db.database import Database
 import sys
 
 
 app = Flask(__name__, template_folder='templates')
 
 # Instatiating different classes that are used by the functions below.
-database = database(app)
+database = Database(app)
 
 from pig.db.models import *
 
@@ -25,7 +25,7 @@ app.secret_key = pig_key
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
+login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
 
 
 division_creator = DivisionCreator(database, Division, Parameter, NumberParam, EnumVariant)

@@ -10,7 +10,7 @@ class PigTestCase(unittest.TestCase):
     def setUp(self):
         pig.app.config['TESTING'] = True
         self.app = pig.app.test_client()
-        self.database = database(Flask(__name__))
+        self.database = Database(Flask(__name__))
 
     def login(self,username,password):
         return self.app.post("/login", data=dict(Username=username,Password=password),follow_redirects=True)
@@ -20,7 +20,7 @@ class PigTestCase(unittest.TestCase):
 
     # A helper method to setup the connection to the postgresDB on heroku
     def setup_db(self, uri="postgres://wtsceqpjdsbhxw:34df69f4132d39ea5b95e52822d6dedc8e3eb368915cb8888526f896f21bce75@ec2-54-75-229-201.eu-west-1.compute.amazonaws.com:5432/dfa7tvu04d7t6i" ):
-        temp = database(Flask(__name__))
+        temp = Database(Flask(__name__))
         temp.set_uri(uri)
         return temp
 
