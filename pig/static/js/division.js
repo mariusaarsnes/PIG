@@ -7,6 +7,7 @@ document.getElementById("add_button").addEventListener("click", function() {
     label.innerHTML = "Parameter: ";
     var textField = document.createElement("input");
     textField.setAttribute("type", "text");
+    textField.setAttribute("id", "create_division");
     textField.setAttribute("name", "Parameter" + paraId);
     textField.setAttribute("id", "parameter");
     paraId += 1;

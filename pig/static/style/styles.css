@@ -206,7 +206,7 @@ body .demo-layout-transparent {
 
 
 
-input[type=text] {
+input[id=create_division] {
     width: 100%;
     padding: 8px 15px;
     margin: 8px 0;
