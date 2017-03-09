@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-class dividide_groups_to_leaders:
+class DivideGroupsToLeaders:
 
     def __init__(self,database, Division, user_division):
         self.database = database

@@ -3,6 +3,8 @@ from pig.views import get_divisions, pig_key
 from pig.db.models import *
 from pig.db.database import *
 from flask import Flask
+from random import randint
+
 
 class PigTestCase(unittest.TestCase):
 
@@ -23,6 +25,30 @@ class PigTestCase(unittest.TestCase):
         temp = database(Flask(__name__))
         temp.set_uri(uri)
         return temp
+
+    #A helper method that sends a post request to the register page containing all of the registration-info
+    def register(self, email, password, password_confirm, first_name, last_name):
+        return self.app.post("/register", data=dict(Email=email, Password=password, PasswordConfirm=password_confirm, FirstName=first_name, LastName=last_name))
+
+    def delete_user(self, email):
+        self.database.get_session().execute("DELETE FROM users WHERE email = '" + email + "'")
+        self.database.get_session().commit()
+
+    def create_division(self, name, creator_id):
+        division = Division(name=name, creator_id=creator_id)
+        self.database.get_session().add(division)
+        self.database.get_session().commit()
+
+    def delete_division(self, id):
+        self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
+        self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
+        self.database.get_session().commit()
+
+    def get_user(self, email):
+        return self.database.get_session().query(User).filter(User.email == email).first()
+
+    def go_to_division(self, link):
+        return self.app.get("/" + link)
 
     # Testing connection to db with invalid uri, this is done by setting up a new connection to the db, and then changing the uri,
     # see setup_db.
@@ -74,30 +100,6 @@ class PigTestCase(unittest.TestCase):
 
     def test_create_division(self):
         pass
-
-    #A helper method that sends a post request to the register page containing all of the registration-info
-    def register(self, email, password, password_confirm, first_name, last_name):
-        return self.app.post("/register", data=dict(Email=email, Password=password, PasswordConfirm=password_confirm, FirstName=first_name, LastName=last_name))
-
-    def delete_user(self, email):
-        self.database.get_session().execute("DELETE FROM users WHERE email = '" + email + "'")
-        self.database.get_session().commit()
-
-    def create_division(self, name, creator_id):
-        division = Division(name=name, creator_id=creator_id)
-        self.database.get_session().add(division)
-        self.database.get_session().commit()
-
-    def delete_division(self, id):
-        self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
-        self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
-        self.database.get_session().commit()
-
-    def get_user(self, email):
-        return self.database.get_session().query(User).filter(User.email == email).first()
-
-    def go_to_division(self, link):
-        return self.app.get("/" + link)
 
 
     #Testing registration of a user with two different passwords
@@ -157,6 +159,23 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user(user.email)
         self.delete_user(user1.email)
+
+
+    def test_divide_groups_to_leaders(self):
+        self.register("creator@email.com","password","password",'firstCreator','lastCreator')
+
+        for i in range(randint(75,125)):
+            self.register('member'+i+'@email.com','password','password','firstMember'+i,'lastMember'+i)
+
+        for i in range(randint(7,13)):
+            self.register('leader'+i+'@email.com','password','password','firstLeader'+i,'lastLeader'+i)
+
+        creator = self.get_user('creator@email.com')
+
+        members
+
+        self.create_division('testDivision',creator.id)
+
 
 
 
