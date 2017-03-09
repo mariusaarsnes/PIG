@@ -3,7 +3,7 @@ import sys
 
 # Idea for the future: Make classes to put in 'specializations' rather than checking if it's a list etc.
 
-class create_division:
+class DivisionCreator:
 
     def __init__(self, database, Division, Parameter, NumberParam, EnumVariant):
         self.database = database

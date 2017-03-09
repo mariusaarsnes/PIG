@@ -1,10 +1,8 @@
 <!--
 FILE NAME: pig/templates/apply_group.html
-WRITTEN BY: Daniel Romanich
+WRITTEN BY: Daniel Romanich & Erlend Hofstad Langseth
 WHEN: February 2017
 PURPOSE: Provide a way for users to apply for a group in an instance of a divisions
-
-------------------------------- WORK IN PROGRESS------------------------------------
 -->
 
 
@@ -13,19 +11,38 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
     {{super()}}
 {% endblock %}
 {% block content %}
-    {% if message is not none %}
-        <p>{{message}}</p>
-    {% endif %}
-    {% if message is none %}
-        <form id="division-form">
-            <select>
-                {% for i in range(1, 11) %}
-                    <option value="{{ i }}">{{ i }}</option>
-                {% endfor %}
-            </select>
-            <input type="button" id = "submit-form" value="Apply for group" id="add_button">
-        </form>
-    {% endif %}
+    <div class="mdl-card login-form mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+        {% if params is none %}
+            (this page is intentionally left blank)
+            <br>
+            ((no division specified))
+        {% else %}
+            {% if message is none %}
+                <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
+                    <h2 class="mdl-card__title-text">Apply for group / sign up</h2>
+                </div>
+                {% if message is not none %}
+                    <p>{{message}}</p>
+                {% endif %}
+                <form id="division-form" method="post">
+                    <!-- FORM CONTENTS HERE -->
+                    {% for param in params %}
+                        {% if param.number_param is none %}
+                            Some enum parameter or invalid <br>
+                        {% else %}
+                            Some number parameter {{param.number_param.min}} .. {{param.number_param.max}} <br>
+                        {% endif %}
+                    {% endfor %}
+                    <!-- Submit button: -->
+                    <div class="mdl-card__actions mdl-card--border">
+                        <button type="submit" id="submit-form" value="Create Division" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+                            Apply for group
+                        </button>
+                    </div>
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
 {% endblock %}
 
 

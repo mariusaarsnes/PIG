@@ -5,10 +5,12 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 from pig.login.login_handler import login_handler
 from pig.login.registration_handler import registration_handler
-from pig.scripts.create_division import create_division
+from pig.scripts.create_division import DivisionCreator
+from pig.scripts.apply_group import GroupApplier
 import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import get_divisions
 from pig.db.database import database
+import sys
 
 app = Flask(__name__, template_folder='templates')
 
@@ -23,7 +25,8 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
-division_creator = create_division(database, Division, Parameter, NumberParam, EnumVariant)
+division_creator = DivisionCreator(database, Division, Parameter, NumberParam, EnumVariant)
+group_applier = GroupApplier(database, Division, Parameter, NumberParam, EnumVariant)
 divisions_get = get_divisions(database, User)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
@@ -43,11 +46,30 @@ def hello():
 def apply_group():
     arg = request.args.get("values")
     if not arg is None:
-        values = encryption.decode(pig_key, arg)
-        variables = values.split(",")
-        if int(variables[2]) == 1:
-            return render_template("apply_group.html", user=current_user, message="Successfully registered you as a TA for the division: " + variables[0])
-    return render_template("apply_group.html", user=current_user, message=None)
+        [div_name, div_id, div_role] = encryption.decode(pig_key, arg).split(",")
+        division = database.get_session() \
+                .query(Division) \
+                .filter(Division.id == div_id) \
+                .first()
+
+        if request.method == 'POST':
+            # TODO Actually register the person
+            if int(div_role) == 0:
+                return render_template("apply_group.html", user=current_user,\
+                        message="Successfully registered you as a TEAM MEMBER for the division: " + div_name)
+            elif int(div_role) == 1:
+                return render_template("apply_group.html", user=current_user,\
+                        message="Successfully registered you as a LEADER for the division: " + div_name)
+        else:
+            # Make the form
+            #  params = map(lambda param: , division.parameters)
+            params = division.parameters
+            for param in params:
+                if param.number_param is not None:
+                    print("%s --- %s" % (param.number_param.min, param.number_param.max), file=sys.stderr)
+            return render_template("apply_group.html", user=current_user, message=None, params=params)
+
+    return render_template("apply_group.html", user=current_user, message=None, params=None)
 
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
