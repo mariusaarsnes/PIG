@@ -11,7 +11,6 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
 {% extends "template.html" %}
 {% block head %}
     {{super()}}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/division_style.css') }}">
 {% endblock %}
 {% block content %}
     {% if message is not none %}
