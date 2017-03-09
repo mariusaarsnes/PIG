@@ -6,7 +6,6 @@ from flask import Flask
 
 class PigTestCase(unittest.TestCase):
 
-
     def setUp(self):
         pig.app.config['TESTING'] = True
         self.app = pig.app.test_client()
