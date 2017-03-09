@@ -30,22 +30,46 @@ class PigTestCase(unittest.TestCase):
     def register(self, email, password, password_confirm, first_name, last_name):
         return self.app.post("/register", data=dict(Email=email, Password=password, PasswordConfirm=password_confirm, FirstName=first_name, LastName=last_name))
 
+    def create_user(self, email, password, first_name, last_name):
+        self.database.get_session().execute("INSERT INTO users (firstname,lastname,email,password) VALUES('" +first_name+"','" + last_name+"','" + email +"','"+password+"')")
+        self.database.get_session().commit()
+
+
+    def create_users_with_given_parameters_for_usertype_and_count(self,type,count):
+        for i in range(count):
+            self.database.get_session().execute("INSERT INTO users (firstname,lastname,email,password) VALUES('first"+type+str(i)+"','last"+type+str(i)+"','"+type+str(i)+"@email.com','password')")
+        self.database.get_session().commit()
+
+
     def delete_user(self, email):
         self.database.get_session().execute("DELETE FROM users WHERE email = '" + email + "'")
         self.database.get_session().commit()
+
 
     def create_division(self, name, creator_id):
         division = Division(name=name, creator_id=creator_id)
         self.database.get_session().add(division)
         self.database.get_session().commit()
 
+
     def delete_division(self, id):
         self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
         self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
         self.database.get_session().commit()
 
+
     def get_user(self, email):
         return self.database.get_session().query(User).filter(User.email == email).first()
+
+
+    def get_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(self,minVal,size):
+        return self.database.get_session().query(User).filter(User.id>=minVal,User.id < minVal+size)
+
+
+    def delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(self,minVal,size):
+        self.database.get_session().execute("DELETE FROM users WHERE id >= " + str(minVal) + " AND id <" + str(minVal+size))
+        self.database.get_session().commit()
+
 
     def go_to_division(self, link):
         return self.app.get("/" + link)
@@ -164,19 +188,24 @@ class PigTestCase(unittest.TestCase):
     def test_divide_groups_to_leaders(self):
         self.register("creator@email.com","password","password",'firstCreator','lastCreator')
 
-        for i in range(randint(75,125)):
-            self.register('member'+i+'@email.com','password','password','firstMember'+i,'lastMember'+i)
+        member_count = randint(75,125)
+        self.create_users_with_given_parameters_for_usertype_and_count("member",member_count)
 
-        for i in range(randint(7,13)):
-            self.register('leader'+i+'@email.com','password','password','firstLeader'+i,'lastLeader'+i)
+        leader_count = randint(7,13)
+        self.create_users_with_given_parameters_for_usertype_and_count("leader",leader_count)
 
         creator = self.get_user('creator@email.com')
 
-        members
+        first_member = self.get_user('member0@email.com')
+        members = self.get_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_member.id,member_count)
 
-        self.create_division('testDivision',creator.id)
 
+        first_leader = self.get_user('leader0@email.com')
+        leaders = self.get_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
+        self.delete_user('creator@email.com')
+        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_member.id, member_count)
+        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
 
 
