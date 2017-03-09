@@ -9,4 +9,5 @@ function copyToClipboard(link) {
 
     document.execCommand("copy");
     document.body.removeChild(aux);
+
 }

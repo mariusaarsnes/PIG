@@ -6,11 +6,12 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 from pig.login.login_handler import login_handler
 from pig.login.registration_handler import registration_handler
 from pig.scripts.create_division import DivisionCreator
-from pig.scripts.apply_group import GroupApplier
 import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import get_divisions
+from pig.scripts.RegisterUsers import RegisterUser
 from pig.db.database import database
 import sys
+
 
 app = Flask(__name__, template_folder='templates')
 
@@ -25,15 +26,19 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
-division_creator = DivisionCreator(database, Division, Parameter, NumberParam, EnumVariant)
-group_applier = GroupApplier(database, Division, Parameter, NumberParam, EnumVariant)
-divisions_get = get_divisions(database, User)
 
+
+division_creator = DivisionCreator(database, Division, Parameter, NumberParam, EnumVariant)
+get_divisions = get_divisions(database, User)
+division_registrator = RegisterUser(database, User, Division, user_division)
+
+database.get_session().commit()
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
     return login_handler.get_user_with_id(user_id)
+
 
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
 
@@ -110,7 +115,7 @@ def home():
 @app.route("/show_divisions")
 @login_required
 def show_divisions():
-    divisions_participating, divisions_created, ta_links, student_links = divisions_get.fetch_divisions(current_user, pig_key)
+    divisions_participating, divisions_created, ta_links, student_links = get_divisions.fetch_divisions(current_user, pig_key)
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
 

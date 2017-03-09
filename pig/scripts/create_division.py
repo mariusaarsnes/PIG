@@ -17,8 +17,8 @@ class DivisionCreator:
         self.specs = {} # int -> NumberParam or [EnumVariant]
 
     def register_division(self, current_user, form):
-        print('Registering division...', file=sys.stderr)
-        print('Input: %s' % form, file=sys.stderr)
+        #print('Registering division...', file=sys.stderr)
+        #print('Input: %s' % form, file=sys.stderr)
         division = self.Division(name = form["Division"], creator_id = current_user.id)
 
         # First pass: Find the type of each parameter

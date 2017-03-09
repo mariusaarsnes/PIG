@@ -1,4 +1,4 @@
-__author__ = 'owner_000'
+# encoding=UTF-8
 
 import base64
 
