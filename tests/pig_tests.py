@@ -1,13 +1,16 @@
 import os, pig, unittest
 from flask_sqlalchemy import SQLAlchemy
 from pig.db.models import *
+from pig.db.database import *
+from flask import Flask
 
 class PigTestCase(unittest.TestCase):
+
 
     def setUp(self):
         pig.app.config['TESTING'] = True
         self.app = pig.app.test_client()
-
+        self.database = database(Flask(__name__))
 
     def login(self,username,password):
         return self.app.post("/login", data=dict(Username=username,Password=password),follow_redirects=True)
@@ -15,14 +18,30 @@ class PigTestCase(unittest.TestCase):
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
+    # A helper method to setup the connection to the postgresDB on heroku
+    def setup_db(self, uri):
+        temp = database(Flask(__name__))
+        temp.set_uri(uri)
+        return temp
+
     # Testing connection to db
-    # This is done by just fetching an entry in users
-    def test_connect_to_db(self):
+    def test_connect_to_db_with_invalid_uri(self):
         data = None
+        database = self.setup_db(uri = "postgres://wtsceqpjdsbhxw")
         try:
             data = database.get_session().query(User).first()
         except Exception as e1:
             print(e1)
+        finally:
+            assert data is None
+
+    def test_connect_to_db_with_valid_uri(self):
+        data = None
+        database = self.setup_db(uri="postgres://wtsceqpjdsbhxw:34df69f4132d39ea5b95e52822d6dedc8e3eb368915cb8888526f896f21bce75@ec2-54-75-229-201.eu-west-1.compute.amazonaws.com:5432/dfa7tvu04d7t6i")
+        try:
+            data = database.get_session().query(User).first()
+        except Exception as e:
+            print(e)
         finally:
             assert data is not None
 
@@ -81,16 +100,16 @@ class PigTestCase(unittest.TestCase):
     #Testing if its possible to register a user
     def test_register_user_with_valid_data(self):
         self.register("asd@asd.com", "test", "test", "test", "test")
-        user = database.get_session().query(User).filter(User.email == "asd@asd.com").first()
+        user = self.database.get_session().query(User).filter(User.email == "asd@asd.com").first()
         assert user is not None
 
     def test_remove_user_from_database(self):
-        user = database.get_session().query(User).filter(User.email == "asd@asd.com").first()
+        user = self.database.get_session().query(User).filter(User.email == "asd@asd.com").first()
         if user is None:
             return
-        database.get_session().execute("DELETE FROM users WHERE email = 'asd@asd.com'")
-        database.get_session().commit()
-        user = database.get_session().query(User).filter(User.email == "asd@asd.com").first()
+        self.database.get_session().execute("DELETE FROM users WHERE email = 'asd@asd.com'")
+        self.database.get_session().commit()
+        user = self.database.get_session().query(User).filter(User.email == "asd@asd.com").first()
         assert user is None
 
 if __name__ == '__main__':
