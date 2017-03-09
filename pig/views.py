@@ -23,7 +23,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
-division_creator = create_division(database, Division, Parameter)
+division_creator = create_division(database, Division, Parameter, NumberParam, EnumVariant)
 divisions_get = get_divisions(database, User)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
