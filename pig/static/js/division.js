@@ -1,28 +1,144 @@
-var paraId = 0;
+// Dynamic form for division configuration
+//
+// The `name`s of form elements are the keys to the form dictionary that is 
+// received and processed in scripts/create_division.py.
+// They must be unique, so for parameter `N`, the `name`s will be:
+//
+// ParameterN
+// TypeN
+// MinN
+// MaxN
+// OptionN_0
+// OptionN_1
+// ...
+//
+// Where Options for that particular parameter are enumerated with `variantId`
+// -- also note that "variant" and "option" are used interchangeably; we should
+// probably stick to one.
+
+
+var paramId = 0;
+var variantId = 0;
+function newParamId() { return (++ paramId); }
+function newVariantId() { return (++ variantId); }
 
 document.getElementById("add_button").addEventListener("click", function() {
-   
+    var parameterForm = document.createElement("div");
+    parameterForm.style.borderStyle = "solid";
+    document.getElementById("division-form").insertBefore(parameterForm, document.getElementById("add_button"));
+
+    // Display a form to add a parameter to a division.
     console.log(document.getElementById("division-form").childElementCount);
+
     var label = document.createElement("label");
-    label.innerHTML = "Parameter: ";
-    var textField = document.createElement("input");
-    textField.setAttribute("type", "text");
-    textField.setAttribute("name", "Parameter" + paraId);
-    textField.setAttribute("id", "parameter");
-    paraId += 1;
-    textField.setAttribute("placeholder", "Parameternavn");
-    var cross = document.createElement("img");
-    cross.setAttribute("src", "/static/img/cross.png");
-    cross.setAttribute("id", "remove_button");
-    document.getElementById("division-form").insertBefore(label, document.getElementById("add_button"));
-    document.getElementById("division-form").insertBefore(textField, document.getElementById("add_button"));
-    document.getElementById("division-form").insertBefore(cross, document.getElementById("add_button"));
-    cross.addEventListener("click", function() {
-       
-        document.getElementById("division-form").removeChild(textField);
-        document.getElementById("division-form").removeChild(label);
-        document.getElementById("division-form").removeChild(cross);
-        
-        
+    label.innerHTML = "Parameter:";
+
+    var nameField = document.createElement("input");
+    nameField.type = "text";
+    nameField.name = "Parameter" + newParamId();
+    nameField.id = "parameter";
+    nameField.placeholder = "Parameter name";
+
+
+    var deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.innerHTML = "-";
+
+    parameterForm.appendChild(label);
+    parameterForm.appendChild(nameField);
+    parameterForm.appendChild(deleteBtn);
+    parameterForm.appendChild(document.createElement("br"));
+    parameterForm.appendChild(typeSelection());
+    parameterForm.appendChild(numberForm());
+    parameterForm.appendChild(document.createElement("br"));
+    parameterForm.appendChild(enumForm());
+
+
+    deleteBtn.addEventListener("click", function() {
+        document.getElementById("division-form").removeChild(parameterForm);
     });
 });
+
+function typeSelection() {
+    var select = document.createElement("select");
+    select.id = "type";
+    select.name = "Type" + paramId;
+
+    var numOption = document.createElement("option");
+    numOption.text = "Numeric";
+    numOption.value = "Number";
+    var enumOption = document.createElement("option");
+    enumOption.text = "Enumeration";
+    enumOption.value = "Enum";
+
+    select.options.add(numOption);
+    select.options.add(enumOption);
+
+
+    select.addEventListener("change", function() {
+        console.log(select.value); // TODO
+    });
+    return select;
+}
+
+// If type of parameter is number - the form to be shown with number-specific configuration
+function numberForm() {
+    var min = document.createElement("input");
+    min.name = "Min" + paramId;
+    min.id = "min";
+    min.placeholder = "min";
+    var max = document.createElement("input");
+    max.name = "Max" + paramId;
+    max.id = "max";
+    max.placeholder = "max";
+
+    // Container so that we may change visibility of both fields
+    var container = document.createElement("span");
+    container.appendChild(min);
+    container.innerHTML += " - ";
+    container.appendChild(max);
+    container.style.visibility = "visible";
+
+    return container;
+}
+
+// TODO names?
+function enumForm() {
+    var addButton = document.createElement("button");
+    addButton.id = "add_variant_button";
+    addButton.type = "button";
+    addButton.innerHTML = "+"
+
+    var container = document.createElement("span");
+    container.appendChild(addButton);
+
+    addButton.addEventListener("click", function() {
+        // Add another variant form
+        addVariantFormTo(container);
+    });
+
+    return container;
+}
+
+function addVariantFormTo(container) {
+    var variantForm = document.createElement("div");
+
+    var textField = document.createElement("input");
+    textField.placeholder = "Option name";
+    textField.name = "Option" + paramId + "_" + newVariantId();
+
+    var deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.innerHTML = "-";
+
+    variantForm.appendChild(textField);
+    variantForm.appendChild(deleteButton);
+
+
+    var addButton = container.querySelector("#add_variant_button");
+    container.insertBefore(variantForm, addButton);
+
+    deleteButton.addEventListener("click", function() {
+        container.removeChild(variantForm);
+    });
+}
