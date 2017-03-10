@@ -7,89 +7,94 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 {% extends "template.html" %}
 {% block content %}
 
+<script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 
 
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
-    <div class="mdl-card__title showdivisons mdl-color--primary mdl-color-text--white" id="showdivisions">
+    <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Your Divisions</h2>
     </div>
-
     <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
         <div>
-
-            <table id="show_divisions_created_table" class="mdl-data-table mdl-js-data-table">
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+                <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Teamleader Signup link</th>
-                    <th>Teammember Signup link</th>
+                    <th class="mdl-data-table__cell--non-numeric full-width">Name</th>
+                    <th>Leader signup link</th>
+                    <th>Member signup link</th>
                 </tr>
-                {%  for division in divisions_created %}
-                <tr>
-                    <td>{{ division.name }}</td>
-                    <td><button onclick="copyToClipboard('{{ ta_links[loop.index0] }}')">Kopier lenken</button></td>
-                    <td><button onclick="copyToClipboard('{{ student_links[loop.index0] }}')">Kopier lenken</button></td>
-                </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                    {%  for division in divisions_created %}
+                    <tr>
+                        <td class="mdl-data-table__cell--non-numeric">{{ division.name }}</td>
+                        <td><button id="snackbar_button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" type="button" onclick="copyToClipboard('{{ ta_links[loop.index0] }}')">Kopier lenken</button></td>
+                        <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+                            <div class="mdl-snackbar__text"></div>
+                            <button class="mdl-snackbar__action" type="button"></button>
+                        </div>
+                        <td><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" onclick="copyToClipboard('{{ student_links[loop.index0] }}')">Kopier lenken</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
-        <div>
-            The divisions you are signed up for:
-            <table id="show_divisions_participating_table" class="mdl-data-table mdl-js-data-table">
-                <tr>
-                    <th>Name</th>
-                </tr>
-                {%  for division in divisions_participating %}
-                <tr>
-                    <td>{{ division.name }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-
-        </div>
-
-
-
-
     </div>
-
-
-
 </div>  
 
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Divisions you are signed up for</h2>
     </div>
-
     <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
-
         <div>
-
-            <table id="show_divisions_participating_table" class="mdl-data-table mdl-js-data-table">
-                <tr>
-                    <th>Name</th>
-                </tr>
-                {%  for division in divisions_participating %}
-                <tr>
-                    <td>{{ division.name }}</td>
-                </tr>
-                {% endfor %}
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+                <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric full-width">Name</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%  for division in divisions_participating %}
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric">{{ division[3].name }}</td>
+                            <td>{{ division[2] }}</td>
+                        </tr>
+                    {% endfor %}x
+                </tbody>
             </table>
-
         </div>
-
-
-
-
     </div>
-
-
-
 </div> 
 
 
+<script>
+    (function() {
+        'use strict';
+        var snackbarContainer = document.querySelector('#snackbar_button');
+        var showSnackbarButton = document.querySelector('#demo-show-snackbar');
+        var selectGroup = document.getElementById("groupno");
+        var groupNumber = selectGroup.options[selectGroup.selectedIndex].text;
+        console.log(selectGroup);
+        console.log(groupNumber)
+        var handler = function(event) {
+            showSnackbarButton.style.backgroundColor = '';
+        };
+        showSnackbarButton.addEventListener('click', function() {
+            'use strict';
+
+            var data = {
+                message: ("Successfully applied to group."),
+                timeout: 2000,
+                actionHandler: handler,
+                actionText: 'Undo'
+            };
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        });
+    }());
+</script>
 
 {% endblock %}
 {% block bottom %}
-<script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 {% endblock %}

@@ -27,10 +27,8 @@ login_manager.init_app(app)
 login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
 division_registrator = RegisterUser(database, User, Division, user_division)
 division_creator = create_division(database, Division, Parameter, NumberParam, EnumVariant)
-get_divisions = get_divisions(database, User)
+get_divisions = get_divisions(database, User, Division, user_division)
 
-
-database.get_session().commit()
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
@@ -52,8 +50,10 @@ def apply_group():
         values = encryption.decode(pig_key, arg)
         variables = values.split(",")
         if int(variables[2]) == 1:
-            division_registrator.register_user(current_user, variables[1], "TA")
-            return render_template("apply_group.html", user=current_user, message="Successfully registered you as a TA for the division: " + variables[0])
+            if not division_registrator.is_group_leader(current_user, variables[1]):
+                division_registrator.register_user(current_user, variables[1], "Leader")
+                return render_template("apply_group.html", user=current_user, message="Successfully registered you as a leader for the division: " + variables[0])
+            return render_template("apply_group.html", user=current_user, message="You cannot register as a leader for your own division!")
     return render_template("apply_group.html", user=current_user, message=None)
 
 @app.route("/create_division", methods=['GET', 'POST'])

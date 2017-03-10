@@ -7,10 +7,22 @@ background-color:#E6FFE7;
 .demo-layout-transparent .mdl-layout__header,
 .demo-layout-transparent .mdl-layout__drawer-button {
   /* This background is dark, so we set text to white. Use 87% black instead if
-     your background is light. */
+     your background is light. */show_divisions_created_table
   color: white;
 }
-    
+
+.full-width {
+    width: 90%;
+}
+.button_style {
+    font-size: 14px !important;
+    text-transform: none;
+    padding-top: -5% !important;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    max-width: 85%;
+    max-height: 80%;
+}
     
     #view-source {
       position: fixed;
@@ -145,7 +157,7 @@ body .demo-layout-transparent {
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
   min-height: 64px;
- 
+  align: center;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -154,12 +166,6 @@ body .demo-layout-transparent {
           align-items: center;
 }
 
-
-.mdl-data-table {
-    width: 100%;
-   
-    
-}
 
 .demo-layout-transparent .mdl-card__supporting-text strong {
   font-weight: 400;
