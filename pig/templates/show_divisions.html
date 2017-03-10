@@ -10,7 +10,7 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 <script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 
 
-<div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+<div class="mdl-card showdivisions mdl-cell mdl-cell--8-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Your Divisions</h2>
     </div>
@@ -28,30 +28,27 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
                     {%  for division in divisions_created %}
                     <tr>
                         <td class="mdl-data-table__cell--non-numeric">{{ division.name }}</td>
-                        <td><button id="snackbar_button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" type="button" onclick="copyToClipboard('{{ ta_links[loop.index0] }}')">Kopier lenken</button></td>
-                        <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
-                            <div class="mdl-snackbar__text"></div>
-                            <button class="mdl-snackbar__action" type="button"></button>
-                        </div>
-                        <td><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" onclick="copyToClipboard('{{ student_links[loop.index0] }}')">Kopier lenken</button></td>
+                        <td><button id="show_button_leader" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" type="button" onclick="copyToClipboard('{{ ta_links[loop.index0] }}')">Kopier</button></td>
+                        <td><button id="show_button_member" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" type="button" onclick="copyToClipboard('{{ student_links[loop.index0] }}')">Kopier</button></td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-</div>  
+</div>
 
-<div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+<div class="mdl-card showdivisions mdl-cell mdl-cell--8-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Divisions you are signed up for</h2>
     </div>
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
+    <div class="mdl-color-text--grey-600 mdl-card__supporting-text anchor-top">
         <div>
             <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
                 <thead>
                     <tr>
                         <th class="mdl-data-table__cell--non-numeric full-width">Name</th>
+                        <th>Division leader</th>
                         <th>Role</th>
                     </tr>
                 </thead>
@@ -59,40 +56,50 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
                     {%  for division in divisions_participating %}
                         <tr>
                             <td class="mdl-data-table__cell--non-numeric">{{ division[3].name }}</td>
+                            <td>{{ division[4].firstname }} {{ division[4].lastname }}</td>
                             <td>{{ division[2] }}</td>
                         </tr>
-                    {% endfor %}x
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-</div> 
-
-
-<script>
-    (function() {
-        'use strict';
-        var snackbarContainer = document.querySelector('#snackbar_button');
-        var showSnackbarButton = document.querySelector('#demo-show-snackbar');
-        var selectGroup = document.getElementById("groupno");
-        var groupNumber = selectGroup.options[selectGroup.selectedIndex].text;
-        console.log(selectGroup);
-        console.log(groupNumber)
+</div>
+                        <div id="demo-snackbar" class="mdl-js-snackbar mdl-snackbar">
+                            <div class="mdl-snackbar__text"></div>
+                            <button class="mdl-snackbar__action" type="button"></button>
+                        </div>
+<script type="text/javascript">
+        var snackbarContainer = document.getElementById("demo-snackbar");
         var handler = function(event) {
             showSnackbarButton.style.backgroundColor = '';
         };
-        showSnackbarButton.addEventListener('click', function() {
+        all = document.getElementsByTagName("*");
+        for (i = 0; i < all.length; i++) {
+            if (all[i].id.startsWith("show_button")) {
+                all[i].addEventListener('click', function() {
+                    var data = {
+                        message: ("Successfully copied the link."),
+                        timeout: 1000,
+                        actionHandler: handler,
+                        actionText: ' '
+                    };
+
+                    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+                });
+            }
+        }
+        /*showSnackbarButton.addEventListener('click', function() {
             'use strict';
 
             var data = {
                 message: ("Successfully applied to group."),
-                timeout: 2000,
+                timeout: 1000,
                 actionHandler: handler,
-                actionText: 'Undo'
+                actionText: ' '
             };
             snackbarContainer.MaterialSnackbar.showSnackbar(data);
-        });
-    }());
+        });*/
 </script>
 
 {% endblock %}

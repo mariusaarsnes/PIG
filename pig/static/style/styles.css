@@ -12,12 +12,14 @@ background-color:#E6FFE7;
 }
 
 .full-width {
-    width: 90%;
+    width: 95%;
 }
+
 .button_style {
     font-size: 14px !important;
+    text-align: none !important;
     text-transform: none;
-    padding-top: -5% !important;
+    margin: 0 !important;
     padding-left: 2.5%;
     padding-right: 2.5%;
     max-width: 85%;
@@ -71,9 +73,11 @@ background-color:#E6FFE7;
   }
 }
 body .demo-layout-transparent {
-  font-family: 'Roboto', 'Helvetica', sans-serif;
+  font-family: "Trebuchet MS", 'Helvetica', sans-serif;
 }
-
+.fifty-transparent {
+    background: rgba(0, 150, 136, 0.3);
+}
 .demo-layout-transparent .demo-blog__posts {
   max-width: 900px;
     align-content: center;
