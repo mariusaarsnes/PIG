@@ -2,6 +2,7 @@ import os, pig, unittest
 from pig.views import get_divisions, pig_key
 from pig.db.models import *
 from pig.db.database import *
+from pig.scripts.DivideGroupsToLeaders import DivideGroupsToLeaders
 from flask import Flask
 from random import randint
 
@@ -13,6 +14,7 @@ class PigTestCase(unittest.TestCase):
         pig.app.config['TESTING'] = True
         self.app = pig.app.test_client()
         self.database = database(Flask(__name__))
+        self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database,Division,user_division)
 
     def login(self,username,password):
         return self.app.post("/login", data=dict(Username=username,Password=password),follow_redirects=True)
@@ -71,8 +73,15 @@ class PigTestCase(unittest.TestCase):
         self.database.get_session().commit()
 
 
+
     def go_to_division(self, link):
         return self.app.get("/" + link)
+
+
+    #TDOO SKRIV FERDIG TEST
+    def sign_up_members_for_division_no_parameters_answered(self,members):
+        return
+
 
     # Testing connection to db with invalid uri, this is done by setting up a new connection to the db, and then changing the uri,
     # see setup_db.
@@ -203,6 +212,7 @@ class PigTestCase(unittest.TestCase):
         first_leader = self.get_user('leader0@email.com')
         leaders = self.get_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
+        self.divide_groups_to_leaders.fetch_groups()
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_member.id, member_count)
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
