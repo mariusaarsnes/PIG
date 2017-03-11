@@ -1,6 +1,6 @@
 import pig.scripts.encryption as e
 
-class get_divisions:
+class Task_GetDivisions:
 
     def __init__(self, database, User):
         self.database = database

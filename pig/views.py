@@ -5,10 +5,10 @@ from flask_login import LoginManager, login_required, login_user, logout_user, c
 
 from pig.login.login_handler import LoginHandler
 from pig.login.registration_handler import RegistrationHandler
-from pig.scripts.create_division import DivisionCreator
+from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
-from pig.scripts.get_divisions import get_divisions
-from pig.scripts.RegisterUsers import RegisterUser
+from pig.scripts.get_divisions import Task_GetDivisions
+from pig.scripts.register_user import Task_RegisterUser
 from pig.db.database import Database
 import sys
 
@@ -28,9 +28,9 @@ login_manager.init_app(app)
 login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
 
 
-division_creator = DivisionCreator(database, Division, Parameter, NumberParam, EnumVariant)
-get_divisions = get_divisions(database, User)
-division_registrator = RegisterUser(database, User, Division, user_division)
+division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
+get_divisions = Task_GetDivisions(database, User)
+division_registrator = Task_RegisterUser(database, User, Division, user_division)
 
 database.get_session().commit()
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
