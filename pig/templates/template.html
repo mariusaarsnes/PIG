@@ -10,7 +10,7 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
     {% block head %}
         <title>PIG-Partition Into Groups</title>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-blue.min.css" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='style/material.min.css') }}"><!--href="https://code.getmdl.io/1.3.0/material.teal-blue.min.css" />-->
         <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/styles.css') }}">
         <link rel='stylesheet prefetch' href='https://rawgit.com/mebibou/mdl-selectfield/master/dist/mdl-selectfield.min.css'>
@@ -22,7 +22,7 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
 
 
     <div class="demo-layout-transparent mdl-layout mdl-js-layout">
-        <header class="mdl-layout__header mdl-layout__header--waterfall fifty-transparent">
+        <header class="mdl-layout__header mdl-layout__header--transparent fifty-transparent">
             <div class="mdl-layout__header-row">
                 <!-- Title -->
                 <span class="mdl-layout-title">PIG</span>

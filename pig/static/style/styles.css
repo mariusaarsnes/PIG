@@ -1,9 +1,10 @@
-    html {
-background-color:#E6FFE7;
+html {
+    background-color:#444444;
 }
     
 .demo-layout-transparent {
-    background: url(../img/trondheim.jpg) center / cover;}
+    background: url(../img/trondheim.jpg) center / cover;
+}
 .demo-layout-transparent .mdl-layout__header,
 .demo-layout-transparent .mdl-layout__drawer-button {
   /* This background is dark, so we set text to white. Use 87% black instead if
@@ -19,6 +20,7 @@ background-color:#E6FFE7;
     font-size: 14px !important;
     text-align: none !important;
     text-transform: none;
+    line-height: 0 !important;
     margin: 0 !important;
     padding-left: 2.5%;
     padding-right: 2.5%;
@@ -72,11 +74,19 @@ background-color:#E6FFE7;
     background-image: url('images/bg_2880.jpg');
   }
 }
+
+.card-align {
+    bottom: 0px !important;
+
+}
+
 body .demo-layout-transparent {
   font-family: "Trebuchet MS", 'Helvetica', sans-serif;
 }
 .fifty-transparent {
-    background: rgba(0, 150, 136, 0.3);
+      /*background: rgba(22, 22, 22, 1);
+     /*background: rgba(0, 0, 0, 0.8);
+     background: rgba(0, 0, 0, 1);*/
 }
 .demo-layout-transparent .demo-blog__posts {
   max-width: 900px;
@@ -95,7 +105,7 @@ body .demo-layout-transparent {
 }
 
 .demo-layout-transparent.mdl-layout .mdl-layout__content {
-  padding-top: 230px;
+  padding-top: 100px;
   position: relative;
   -webkit-overflow-scrolling: touch;
 }
@@ -104,6 +114,7 @@ body .demo-layout-transparent {
     align-content: center;
     align-items: center;
     align-self: center;
+    min-width: 400px;
     margin: auto;
   display: -ms-flexbox;
   display: flex;
