@@ -3,7 +3,7 @@ __author__ = 'owner_000'
 from flask_sqlalchemy import SQLAlchemy
 
 #Class that handles the database connection
-class database:
+class Database:
 
     def __init__(self, app):
         self.app = app
