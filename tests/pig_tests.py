@@ -109,7 +109,8 @@ class PigTestCase(unittest.TestCase):
             self.database.get_session().execute("DELETE FROM user_division WHERE division_id=" + str(division_id))
         self.database.get_session().commit()
 
-
+    def get_user_division_on_given_division_id(self,division_id):
+        return self.database.get_session().query(user_division).filter(user_division._columns.get("division_id")==division_id).all()
 
     # Testing connection to db with invalid uri, this is done by setting up a new connection to the db, and then changing the uri,
     # see setup_db.
@@ -225,10 +226,11 @@ class PigTestCase(unittest.TestCase):
         self.delete_user(user1.email)
     """
 
-    def test_divide_groups_to_leaders(self):
 
-        group_count = randint(45, 55)
-        leader_count = randint(7, 13)
+    def test_divide_groups_to_leaders_with_varying_range_of_leaders_and_groups(self):
+
+        group_count = randint(15, 25)
+        leader_count = randint(3, 7)
 
         self.create_user("creator@email.com","password",'firstCreator','lastCreator')
         self.create_users_with_given_parameters_for_usertype_and_count("leader",leader_count)
@@ -247,12 +249,16 @@ class PigTestCase(unittest.TestCase):
 
         self.divide_groups_to_leaders.assign_leaders_to_groups(current_user=creator,division_id=division.id)
 
+        groups = self.database.get_session().query(Group).filter(Group.division_id == division.id)
+
+        for element in groups:
+            assert (element.leader_id >= first_leader.id and element.leader_id < first_leader.id + leader_count)
+
         self.delete_all_groups_in_given_division(division.id)
         self.delete_from_user_division_with_given_division_id(division.id, leader_count)
         self.delete_division(division.id)
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
-
 
 
 if __name__ == '__main__':

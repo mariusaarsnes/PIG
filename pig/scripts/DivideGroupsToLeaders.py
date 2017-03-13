@@ -27,8 +27,6 @@ class DivideGroupsToLeaders:
 
 
     def assign_leaders_to_groups(self,current_user,division_id):
-        print("current user: " + str(current_user))
-        print("division id:" + str(division_id))
         leaders, groups = self.fetch_groups(current_user,division_id)
 
         groups_per_leader = len(groups)//len(leaders)
