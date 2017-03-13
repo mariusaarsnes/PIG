@@ -1,0 +1,44 @@
+<!--
+FILE NAME: pig/templates/show_divisions.html
+WRITTEN BY: Marius Aarsnes
+WHEN: March 2017
+PURPOSE: Provide a page where users can view all the pages that they are currently being a leader of.
+-->
+{% extends "template.html" %}
+{% block content %}
+
+
+
+<div class="mdl-card showgroupsleader mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+    <div class="mdl-card__title showgroupsleader mdl-color--primary mdl-color-text--white" id="showgroupsleader">
+        <h2 class="mdl-card__title-text">GROUPS</h2>
+    </div>
+
+    <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
+        <div>
+
+            <table id="show_groups_leader_created_table" class="mdl-data-table mdl-js-data-table">
+                <tr>
+                    <th>Divsion</th>
+                    <th>Group</th>
+                </tr>
+                {% for i in range(5) %}
+                <tr>
+                    <td>Du er en dass</td>
+                    <td>Du er en dass</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Hvis det ikke er her, men bare 'bottom' block, lastes det ikke for meg -->
+<script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
+
+
+{% endblock %}
+<!--
+{% block bottom %}
+{% endblock %}
+-->
