@@ -86,8 +86,8 @@ def create_division():
 @app.route("/show_groups_leader")
 @login_required
 def show_groups_leader():
-    divisions_leading = get_divisions.fetch_divisions(current_user=current_user,key= pig_key)[4]
-    return render_template("show_groups_leader.html", user=current_user,divisions_leading = divisions_leading)
+    groups_leading = get_divisions.fetch_divisions(current_user=current_user,key= pig_key)[4]
+    return render_template("show_groups_leader.html", user=current_user,divisions_leading = groups_leading)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -120,7 +120,7 @@ def home():
 @app.route("/show_divisions")
 @login_required
 def show_divisions():
-    divisions_participating, divisions_created, ta_links, student_links, divisions_leading = get_divisions.fetch_divisions(current_user, pig_key)
+    divisions_participating, divisions_created, ta_links, student_links = get_divisions.fetch_divisions(current_user, pig_key)
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
 

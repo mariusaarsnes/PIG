@@ -8,14 +8,13 @@ class Task_GetDivisions:
         self.Group = Group
     #Fetches the divisions related to the user and creates signup links for the divisions
     def fetch_divisions(self, current_user, key):
-        divisions_leading = self.database.get_session().query(self.Group).filter(self.Group.leader_id==current_user.id).all()
         divisions_participating = self.database.get_session().query(self.User).filter(self.User.id==current_user.id).first().divisions
         divisions_created = self.database.get_session().query(self.User).filter(self.User.id ==current_user.id).first().divisions_created
         ta_links, student_links  = [], []
         for division in divisions_created:
             ta_links.append(self.get_link(key, division.name, division.id, 1))
             student_links.append(self.get_link(key, division.name, division.id, 0))
-        return divisions_participating, divisions_created, ta_links, student_links, divisions_leading
+        return divisions_participating, divisions_created, ta_links, student_links
 
     @classmethod
     def get_link(self, key, division_name, division_id, leader):
