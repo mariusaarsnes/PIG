@@ -13,8 +13,10 @@ class PigTestCase(unittest.TestCase):
     def setUp(self):
         pig.app.config['TESTING'] = True
         self.app = pig.app.test_client()
-        self.database = database(Flask(__name__))
+        self.database = Database(Flask(__name__))
+        #self.user_division = user_division
         self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database,Division,user_division)
+
 
     def login(self,username,password):
         return self.app.post("/login", data=dict(Username=username,Password=password),follow_redirects=True)
@@ -24,7 +26,7 @@ class PigTestCase(unittest.TestCase):
 
     # A helper method to setup the connection to the postgresDB on heroku
     def setup_db(self, uri="postgres://wtsceqpjdsbhxw:34df69f4132d39ea5b95e52822d6dedc8e3eb368915cb8888526f896f21bce75@ec2-54-75-229-201.eu-west-1.compute.amazonaws.com:5432/dfa7tvu04d7t6i" ):
-        temp = database(Flask(__name__))
+        temp = Database(Flask(__name__))
         temp.set_uri(uri)
         return temp
 
@@ -53,6 +55,10 @@ class PigTestCase(unittest.TestCase):
         self.database.get_session().add(division)
         self.database.get_session().commit()
 
+    def get_division(self,name,creator_id):
+        return self.database.get_session()\
+            .query(Division).filter(Division.creator_id == creator_id, Division.name == name).first()
+
 
     def delete_division(self, id):
         self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
@@ -72,15 +78,37 @@ class PigTestCase(unittest.TestCase):
         self.database.get_session().execute("DELETE FROM users WHERE id >= " + str(minVal) + " AND id <" + str(minVal+size))
         self.database.get_session().commit()
 
-
-
     def go_to_division(self, link):
         return self.app.get("/" + link)
 
+    def create_single_group_with_given_division_id(self, division_id):
+        group = Group(division_id= division_id)
+        self.database.get_session().add(group)
+        self.database.get_session().commit()
 
-    #TDOO SKRIV FERDIG TEST
-    def sign_up_members_for_division_no_parameters_answered(self,members):
-        return
+    def create_multiple_groups_with_given_division_id(self,division_id, count):
+        for i in range(count):
+            self.database.get_session().execute("INSERT INTO groups (division_id) VALUES('"+str(division_id)+"')")
+        self.database.get_session().commit()
+
+
+    def get_groups_using_only_division_id(self,division_id):
+        return self.database.get_session().query(Group).filter(Group.division_id == division_id)
+
+    def sign_up_users_for_division_as_leader(self,leaders,division_id):
+        for leader in leaders:
+            self.database.get_session().execute\
+                ("INSERT INTO user_division (user_id, division_id,role) VALUES('"+str(leader.id)+ "','" + str(division_id)+"','Leader')")
+        self.database.get_session().commit()
+
+    def delete_all_groups_in_given_division(self,division_id):
+        self.database.get_session().execute("DELETE FROM groups WHERE division_id ="+str(division_id))
+
+    def delete_from_user_division_with_given_division_id(self,division_id,count):
+        for i in range(count):
+            self.database.get_session().execute("DELETE FROM user_division WHERE division_id=" + str(division_id))
+        self.database.get_session().commit()
+
 
 
     # Testing connection to db with invalid uri, this is done by setting up a new connection to the db, and then changing the uri,
@@ -105,24 +133,25 @@ class PigTestCase(unittest.TestCase):
         finally:
             assert data is not None
 
-
+    # Testing login with an invalid username
     def test_login_invalid_username(self):
-        self.register('valid@email.com','password','password','firstname','firstname')
+        self.create_user('valid@email.com','password','firstname','firstname')
         rv = self.login('invalid','password')
 
         self.delete_user('valid@email.com')
         assert b'firstname' not in rv.data
 
+    # Testing login with a valid username, but invalid password
     def test_login_invalid_password(self):
-        self.register('valid@email.com','password','password','firstname','lastname')
+        self.create_user('valid@email.com','password','firstname','lastname')
         rv = self.login('valid@email.com','wrong password')
 
         self.delete_user('valid@email.com')
         assert b'firstname' not in rv.data
 
-
+    # Testing login with valid username and password, and then logging out.
     def test_login_and_logout_valid_username_and_password(self):
-        self.register('valid@email.com','password','password','firstname','lastname')
+        self.create_user('valid@email.com','password','firstname','lastname')
         rv = self.login('valid@email.com','password')
 
         assert b'firstname' in rv.data
@@ -131,6 +160,7 @@ class PigTestCase(unittest.TestCase):
 
         self.delete_user('valid@email.com')
 
+    # TODO: Skriv ferdig denne!!
     def test_create_division(self):
         pass
 
@@ -178,6 +208,7 @@ class PigTestCase(unittest.TestCase):
         user = self.get_user("asd@asd.com")
         assert user is None
 
+    """
     def test_register_user_as_student_for_division(self):
         self.register("tester@asd.com", "test", "test", "Asd", "asdtest")
         self.register("tester1@asd.com", "test", "test", "Asd1", "asdtest")
@@ -192,31 +223,35 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user(user.email)
         self.delete_user(user1.email)
-
+    """
 
     def test_divide_groups_to_leaders(self):
-        self.register("creator@email.com","password","password",'firstCreator','lastCreator')
 
-        member_count = randint(75,125)
-        self.create_users_with_given_parameters_for_usertype_and_count("member",member_count)
+        group_count = randint(45, 55)
+        leader_count = randint(7, 13)
 
-        leader_count = randint(7,13)
+        self.create_user("creator@email.com","password",'firstCreator','lastCreator')
         self.create_users_with_given_parameters_for_usertype_and_count("leader",leader_count)
 
         creator = self.get_user('creator@email.com')
-
-        first_member = self.get_user('member0@email.com')
-        members = self.get_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_member.id,member_count)
-
-
         first_leader = self.get_user('leader0@email.com')
         leaders = self.get_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
-        self.divide_groups_to_leaders.fetch_groups()
-        self.delete_user('creator@email.com')
-        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_member.id, member_count)
-        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
+        self.create_division("test division",creator.id)
+        division = self.get_division("test division", creator.id)
 
+        self.create_multiple_groups_with_given_division_id(division_id=division.id,count=group_count)
+
+        self.sign_up_users_for_division_as_leader(leaders=leaders,division_id=division.id)
+
+
+        self.divide_groups_to_leaders.assign_leaders_to_groups(current_user=creator,division_id=division.id)
+
+        self.delete_all_groups_in_given_division(division.id)
+        self.delete_from_user_division_with_given_division_id(division.id, leader_count)
+        self.delete_division(division.id)
+        self.delete_user('creator@email.com')
+        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
 
 
