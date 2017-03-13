@@ -14,7 +14,6 @@ class PigTestCase(unittest.TestCase):
         pig.app.config['TESTING'] = True
         self.app = pig.app.test_client()
         self.database = Database(Flask(__name__))
-        #self.user_division = user_division
         self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database,Division,user_division)
 
 
@@ -209,7 +208,7 @@ class PigTestCase(unittest.TestCase):
         user = self.get_user("asd@asd.com")
         assert user is None
 
-    """
+
     def test_register_user_as_student_for_division(self):
         self.register("tester@asd.com", "test", "test", "Asd", "asdtest")
         self.register("tester1@asd.com", "test", "test", "Asd1", "asdtest")
@@ -224,7 +223,7 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user(user.email)
         self.delete_user(user1.email)
-    """
+
 
 
     def test_divide_groups_to_leaders_with_varying_range_of_leaders_and_groups(self):
