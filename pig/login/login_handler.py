@@ -1,7 +1,7 @@
 from pig.login.user import user as LoginUser
 
 #Class that handles the login process
-class login_handler:
+class LoginHandler:
 
     def __init__(self, database, User):
         self.database = database
