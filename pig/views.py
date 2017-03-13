@@ -10,6 +10,7 @@ import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import get_divisions
 from pig.scripts.RegisterUsers import RegisterUser
 from pig.db.database import database
+from pig.scripts.GetStudents import GetStudents
 
 
 app = Flask(__name__, template_folder='templates')
@@ -28,6 +29,7 @@ login_handler, registration_handler = login_handler(database, User), registratio
 division_registrator = RegisterUser(database, User, Division, user_division)
 division_creator = create_division(database, Division, Parameter, NumberParam, EnumVariant)
 get_divisions = get_divisions(database, User)
+get_students = GetStudents(database, Division, user_division)
 
 
 database.get_session().commit()
@@ -98,6 +100,14 @@ def show_divisions():
     divisions_participating, divisions_created, ta_links, student_links = get_divisions.fetch_divisions(current_user, pig_key)
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
+
+
+@app.route("/show_all_students")
+@login_required
+def show_all_students():
+    print(get_students.get_all_students(current_user, 86))
+    return render_template("show_all_students.html", user=current_user, students=get_students.get_all_students(current_user, 86))
+
 
 @app.route("/logout")
 @login_required

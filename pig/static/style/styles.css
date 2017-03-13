@@ -97,8 +97,9 @@ body .demo-layout-transparent {
   -webkit-align-items: stretch;
       -ms-flex-align: stretch;
           align-items: stretch;
-  min-height: 360px;
-    margin-bottom: 50px;
+    min-height: 360px;
+    margin-top: 30px;
+
 }
 .demo-layout-transparent .mdl-card__title {
   padding: 16px;
