@@ -10,6 +10,7 @@ import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import get_divisions
 from pig.scripts.RegisterUsers import RegisterUser
 from pig.db.database import database
+from pig.scripts.UserScripts import UserScripts
 
 
 app = Flask(__name__, template_folder='templates')
@@ -28,16 +29,14 @@ login_handler, registration_handler = login_handler(database, User), registratio
 division_registrator = RegisterUser(database, User, Division, user_division)
 division_creator = create_division(database, Division, Parameter, NumberParam, EnumVariant)
 get_divisions = get_divisions(database, User, Division, user_division)
-
+user_scripts = UserScripts(database, User, Division, user_division)
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
     return login_handler.get_user_with_id(user_id)
 
-
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
-
 @app.route("/")
 def hello():
     return render_template('index.html', user=current_user)
@@ -98,6 +97,13 @@ def show_divisions():
     divisions_participating, divisions_created, ta_links, student_links = get_divisions.fetch_divisions(current_user, pig_key)
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
+
+@app.route("/show_groupless_users")
+@login_required
+def show_groupless_users():
+    if request.args.get("divisionId") is not None:
+        return render_template("show_groupless_users.html", user=current_user, groups=user_scripts.get_groups(int(request.args.get("divisionId"))))
+    return redirect(url_for("home"))
 
 @app.route("/logout")
 @login_required

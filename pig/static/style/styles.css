@@ -12,8 +12,12 @@ html {
   color: white;
 }
 
+.half-width {
+    width: 47.5%;
+}
+
 .full-width {
-    width: 95%;
+    width: 95% !important;
 }
 
 .button_style {
@@ -105,7 +109,8 @@ body .demo-layout-transparent {
 }
 
 .demo-layout-transparent.mdl-layout .mdl-layout__content {
-  padding-top: 100px;
+  padding-top: 50px;
+  padding-bottom: 50px;
   position: relative;
   -webkit-overflow-scrolling: touch;
 }
@@ -114,7 +119,7 @@ body .demo-layout-transparent {
     align-content: center;
     align-items: center;
     align-self: center;
-    min-width: 400px;
+    min-width: 200px;
     margin: auto;
   display: -ms-flexbox;
   display: flex;
@@ -125,7 +130,7 @@ body .demo-layout-transparent {
       -ms-flex-align: stretch;
           align-items: stretch;
   min-height: 360px;
-    margin-bottom: 50px;
+    margin-top: 25px;
 }
 .demo-layout-transparent .mdl-card__title {
   padding: 16px;
