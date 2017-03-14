@@ -16,16 +16,19 @@ PURPOSE: Provide a page where users can view all the pages that they are current
 
     <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
         <div>
-
+<!--
+    TODO: fiks slik at en får navnet til divisjonen istedenfor ID.
+    TODO: legg til at når en trykker på et innlegg tabellen så får man opp alle meldemmer
+--!>
             <table id="show_groups_leader_created_table" class="mdl-data-table mdl-js-data-table">
                 <tr>
                     <th>Divsion</th>
                     <th>Group</th>
                 </tr>
-                {% for group  in  %}
+                {% for group  in groups_leading %}
                 <tr>
-                    <td></td>
-                    <td>Du er en dass</td>
+                    <td>{% print(group.division_id) %}</td>
+                    <td>{% print(group.id) %}</td>
                 </tr>
                 {% endfor %}
             </table>

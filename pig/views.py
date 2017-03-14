@@ -9,6 +9,7 @@ from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import Task_GetDivisions
 from pig.scripts.register_user import Task_RegisterUser
+from pig.scripts.Task_GetGroups import Task_GetGroups
 from pig.db.database import Database
 import sys
 
@@ -29,7 +30,8 @@ login_handler, registration_handler = LoginHandler(database, User), Registration
 
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
-get_divisions = Task_GetDivisions(database, User, Group)
+get_divisions = Task_GetDivisions(database, User)
+get_groups = Task_GetGroups(database,Group)
 division_registrator = Task_RegisterUser(database, User, Division, user_division)
 
 database.get_session().commit()
@@ -86,8 +88,8 @@ def create_division():
 @app.route("/show_groups_leader")
 @login_required
 def show_groups_leader():
-    groups_leading = get_divisions.fetch_divisions(current_user=current_user,key= pig_key)[4]
-    return render_template("show_groups_leader.html", user=current_user,divisions_leading = groups_leading)
+    groups_leading = get_groups.get_groups_leading(current_user=current_user)
+    return render_template("show_groups_leader.html", user=current_user,groups_leading = groups_leading)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():

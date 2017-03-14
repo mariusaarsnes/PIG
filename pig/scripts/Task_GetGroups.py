@@ -1,8 +1,7 @@
-class GetGroups:
+class Task_GetGroups:
 
-    def __init__(self,database, User, Group):
+    def __init__(self,database, Group):
         self.database = database
-        self.User = User
         self.Group = Group
 
     def get_groups_leading(self,current_user):
