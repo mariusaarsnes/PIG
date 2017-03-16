@@ -17,6 +17,31 @@ class DbGetters:
         self.user_division_parameter_value = user_division_parameter_value
         return
 
+    def get_all_divisions(self):
+        return self.database.get_session().query(self.Division).all()
+
+    def get_all_divisions_where_creator_for_given_user(self,current_user):
+        divisions = self.database.get_session().query(self.Division)\
+            .filter(self.Division.creator_id == current_user.id).all()
+
+    def get_all_divisions_where_leader_for_given_user(self,current_user):
+        divisions = self.database.get_session().query(self.Division) \
+            .filter(self.user_division._columns.get('division_id') == self.Division.id) \
+            .filter(self.user_division._columns.get('user_id') == current_user.id) \
+            .filter(self.user_division._columns.get('role') == 'Leader') \
+            .order_by(self.Division.id).all()
+
+        if (len(divisions) <1):
+            print("ERROR: No divisions where user is leader")
+            return None
+        else:
+            return divisions
+
+    def get_all_divisions_where_member_for_given_user(self,current_user):
+        return self.database.get_session().query(self.Division)\
+            .filter(self.user_division._columns.get('user_id')==current_user.id)\
+            .filter(self.user_division._columns.get('role') == 'Member').all()
+
     def get_all_groups_in_division_for_given_creator_and_division_id(self, creator, division_id):
         division = self.database.get_session().query(self.Division) \
             .filter(self.Division.creator_id == creator.id, self.Division.id == division_id).first()
@@ -34,17 +59,3 @@ class DbGetters:
             print("ERROR_ No leaders signed up for division ",division_id)
             return None
         return leaders
-
-    def get_all_divisions_where_leader_for_given_user(self,current_user):
-        divisions_where_is_leader = self.database.get_session().query(self.Division) \
-            .filter(self.user_division._columns.get('division_id') == self.Division.id) \
-            .filter(self.user_division._columns.get('user_id') == current_user.id) \
-            .filter(self.user_division._columns.get('role') == 'Leader') \
-            .order_by(self.Division.id).all()
-
-        if (len(divisions_where_is_leader) <1):
-            print("ERROR: No divisions where user is leader")
-            return None
-        else:
-            return divisions_where_is_leader
-
