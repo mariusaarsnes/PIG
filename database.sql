@@ -42,8 +42,9 @@ CREATE TABLE number_param (
     parameter_id    integer primary key references parameter on delete cascade
 );
 CREATE TABLE enum_variant (
-    name            varchar(50) not null,
-    parameter_id    integer primary key references parameter on delete cascade
+    name            varchar(50),
+    parameter_id    integer references parameter on delete cascade
+    primary key ( name, parameter_id )
 );
 CREATE TABLE parameter_value (
     parameter_id    integer references parameter on delete cascade,
