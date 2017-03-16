@@ -16,4 +16,4 @@ class DbGetters:
         self.parameter_value = parameter_value
         self.user_division_parameter_value = user_division_parameter_value
 
-    def 
+    def
