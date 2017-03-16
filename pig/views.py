@@ -46,9 +46,10 @@ def user_loader(user_id):
 def hello():
     return render_template('index.html', user=current_user)
 
-@app.route("/apply_group")
+@app.route("/apply_group", methods=['GET', 'POST'])
 @login_required
 def apply_group():
+    # TODO split into separate module
     arg = request.args.get("values")
     if not arg is None:
         [div_name, div_id, div_role] = encryption.decode(pig_key, arg).split(",")
@@ -58,6 +59,7 @@ def apply_group():
                 .first()
 
         if request.method == 'POST':
+            division_registrator.register_user(current_user, div_id, div_role)
             return redirect(url_for("home"))
             # TODO Actually register the person
             """
@@ -78,8 +80,11 @@ def apply_group():
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
 def create_division():
+    print("Entered create_division")
     if request.method == 'POST':
         division_creator.register_division(current_user, request.form)
+        print("Create division %s" % type(request.form))
+        print("Create division %s" % request.form)
         return redirect(url_for("home"))
     return render_template("create_division.html", user=current_user)
 

@@ -58,7 +58,7 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255), unique =False)
     divisions_created = db.relationship("Division", backref='creators')
-    divisions = db.relationship('Division', secondary=user_division, backref=db.backref('users', lazy='dynamic'))
+    divisions = db.relationship('Division', secondary=user_division, back_populates='users')
     groups = db.relationship('Group',secondary=user_group, backref=db.backref('users', lazy='dynamic'))
     parameters = db.relationship('Parameter', secondary=user_division_parameter_value, backref=db.backref('users',lazy='dynamic'))
     values = db.relationship('Value', secondary=user_division_parameter_value, backref = db.backref('users', lazy='dynamic'))
@@ -72,10 +72,8 @@ class Division(db.Model):
     name = db.Column(db.String(255))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     groups = db.relationship('Group',backref='division')
-    #users = db.relationship('User', secondary=user_division, backref=db.backref('division', lazy='dynamic'))
+    users = db.relationship('User', secondary=user_division, back_populates='divisions')
     parameters = db.relationship('Parameter', secondary=division_parameter,  backref=db.backref('division', lazy='dynamic'))
-
-
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.name)+ ", creator: " + str(self.creator_id)
