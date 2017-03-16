@@ -99,10 +99,12 @@ body .demo-layout-transparent {
           align-items: stretch;
   min-height: 360px;
     margin-bottom: 50px;
+  max-height: 360px;
 }
 .demo-layout-transparent .mdl-card__title {
   padding: 16px;
     min-height: 100px;
+    max-height: 100px;
     
     
   -webkit-flex-grow: 1;

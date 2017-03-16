@@ -95,7 +95,7 @@ def show_groups_leader():
         for groups in element.groups:
             print(groups.users.all())
     """
-    return render_template("show_groups_leader.html", user=current_user,)
+    return render_template("show_groups_leader.html", user=current_user, divisions = divisions)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
