@@ -89,12 +89,6 @@ def create_division():
 @login_required
 def show_groups_leader():
     divisions = get_divisions_where_leader.get_divisions_where_leader(current_user=current_user)
-    """
-    for element in divisions:
-        print(element.name)
-        for groups in element.groups:
-            print(groups.users.all())
-    """
     return render_template("show_groups_leader.html", user=current_user, divisions = divisions)
 
 @app.route("/login", methods=['GET', 'POST'])
