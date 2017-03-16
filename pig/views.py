@@ -11,6 +11,8 @@ from pig.scripts.get_divisions import Task_GetDivisions
 from pig.scripts.register_user import Task_RegisterUser
 from pig.scripts.Task_GetDivisionsWhereLeader import Task_GetDivisionsWhereLeader
 from pig.db.database import Database
+from pig.scripts.DbGetters import DbGetters
+
 import sys
 
 
@@ -18,8 +20,11 @@ app = Flask(__name__, template_folder='templates')
 
 # Instatiating different classes that are used by the functions below.
 database = Database(app)
-
 from pig.db.models import *
+db_getters = DbGetters(database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
+                 user_division, user_group, division_parameter,parameter_value ,user_division_parameter_value)
+
+
 
 pig_key = "supersecretpigkey"
 app.secret_key = pig_key
