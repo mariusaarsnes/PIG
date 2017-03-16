@@ -57,7 +57,7 @@ class User(db.Model):
     lastname = db.Column(db.String(255), unique = False)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255), unique =False)
-    divisions_created = db.relationship("Division", backref='creators')
+    divisions_created = db.relationship("Division", backref='creator')
     divisions = db.relationship('Division', secondary=user_division, backref=db.backref('users', lazy='dynamic'))
     groups = db.relationship('Group',secondary=user_group, backref=db.backref('users', lazy='dynamic'))
     parameters = db.relationship('Parameter', secondary=user_division_parameter_value, backref=db.backref('users',lazy='dynamic'))
