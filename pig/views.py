@@ -12,7 +12,6 @@ from pig.scripts.get_divisions import Task_GetDivisions
 from pig.scripts.register_user import Task_RegisterUser
 from pig.db.database import Database
 
-
 app = Flask(__name__, template_folder='templates')
 
 # Instatiating different classes that are used by the functions below.
@@ -25,9 +24,7 @@ app.secret_key = pig_key
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
 login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
-
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
 get_divisions = Task_GetDivisions(database, User, Division, user_division)

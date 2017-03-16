@@ -12,6 +12,12 @@ html {
   color: white;
 }
 
+#table-header:hover > [id^="table-caret"] {
+    color: #999999;
+}
+
+[id^
+
 .half-width {
     width: 47.5%;
 }
@@ -25,6 +31,8 @@ html {
     margin-left: 8px;
     margin-right: 8px;
     margin-bottom: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .button_style {
