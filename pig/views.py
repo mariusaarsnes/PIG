@@ -9,7 +9,7 @@ from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
 from pig.scripts.get_divisions import Task_GetDivisions
 from pig.scripts.register_user import Task_RegisterUser
-from pig.scripts.Task_GetGroups import Task_GetGroups
+from pig.scripts.Task_GetDivisionsWhereLeader import Task_GetDivisionsWhereLeader
 from pig.db.database import Database
 import sys
 
@@ -31,7 +31,7 @@ login_handler, registration_handler = LoginHandler(database, User), Registration
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
 get_divisions = Task_GetDivisions(database, User)
-get_groups = Task_GetGroups(database,Group)
+get_divisions_where_leader = Task_GetDivisionsWhereLeader(database, Division, user_division)
 division_registrator = Task_RegisterUser(database, User, Division, user_division)
 
 database.get_session().commit()
@@ -88,8 +88,14 @@ def create_division():
 @app.route("/show_groups_leader")
 @login_required
 def show_groups_leader():
-    groups_leading = get_groups.get_groups_leading(current_user=current_user)
-    return render_template("show_groups_leader.html", user=current_user,groups_leading = groups_leading)
+    divisions = get_divisions_where_leader.get_divisions_where_leader(current_user=current_user)
+    """
+    for element in divisions:
+        print(element.name)
+        for groups in element.groups:
+            print(groups.users.all())
+    """
+    return render_template("show_groups_leader.html", user=current_user,)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():

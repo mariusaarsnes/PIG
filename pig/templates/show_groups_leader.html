@@ -26,9 +26,10 @@ PURPOSE: Provide a page where users can view all the pages that they are current
                     <th>Group</th>
                 </tr>
                 {% for group  in groups_leading %}
+                {% print(group) %}
                 <tr>
-                    <td>{% print(group.division_id) %}</td>
-                    <td>{% print(group.id) %}</td>
+                    <td>{% print(group[4]) %}</td>
+                    <td></td>
                 </tr>
                 {% endfor %}
             </table>
