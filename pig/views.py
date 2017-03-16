@@ -119,11 +119,11 @@ def show_divisions():
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
 
-@app.route("/show_groupless_users")
+@app.route("/division_groups")
 @login_required
 def show_groupless_users():
     if request.args.get("divisionId") is not None:
-        return render_template("show_groupless_users.html", user=current_user, groups=user_scripts.get_groups(int(request.args.get("divisionId"))), groupless_users=user_scripts.get_groupless_users(int(request.args.get("divisionId"))))
+        return render_template("division_groups.html", user=current_user, groups=user_scripts.get_groups(int(request.args.get("divisionId"))), groupless_users=user_scripts.get_groupless_users(int(request.args.get("divisionId"))))
     return redirect(url_for("home"))
 
 @app.route("/logout")

@@ -6,12 +6,11 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 -->
 {% extends "template.html" %}
 {% block content %}
-
+<script src="{{ url_for('static', filename='js/show_hidden_elements.js') }}"></script>
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Groups</h2>
     </div>
-    {% set count = 1 %}
     {% for i in range(0, groups|length) %}
         {% set group = groups[i] %}
         <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
@@ -19,10 +18,10 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
                 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
                     <thead>
                         <tr>
-                            <th class="mdl-data-table__cell--non-numeric full-width">Group {{ i + 1 }}</th>
+                            <th class="mdl-data-table__cell--non-numeric full-width" onclick="showHiddenElement('group{{ i + 1 }}')">Group {{ i + 1 }}</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="group{{ i + 1 }}">
                         {% for i in range(0, group.users.all()|length) %}
                             <tr>
                                 <td class="mdl-data-table__cell--non-numeric full-width">{{ group.users[i].firstname }} {{ group.users[i].lastname }}</td>
@@ -32,7 +31,6 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
                 </table>
             </div>
         </div>
-        {% set count = count + 1 %}
     {% endfor %}
 </div>
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
