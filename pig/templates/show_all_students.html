@@ -20,27 +20,27 @@ PURPOSE: Shows all students for a given division
     </div>
 
 
-        
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
+
+    <div class="mdl-color-text--grey-600 mdl-card__supporting-text .table" id="table">
         <table class="mdl-data-table mdl-js-data-table">
 
-          <tr>
-            <th>ID</th>
-            <th>Division Id</th>
-            <th>Role</th>
-            
-          </tr>
-        
-          {% for student in students %}
             <tr>
-              <td>{{ student }}</td>
-                <td>{{ student }}</td>
-                <td>{{ student }}</td>
-            
               
-              
+                <th>Name</th>
+                <th>Group Number</th>
+                
+
             </tr>
-          {% endfor %}
+
+            {% for student in students %}
+            <tr>
+                <td>{{ student.firstname  }} {{ student.lastname }}</td>
+                <td>Insert group number</td>
+
+
+            </tr>
+
+            {% endfor %}
         </table>
 
 

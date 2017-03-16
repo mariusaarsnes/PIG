@@ -29,7 +29,7 @@ login_handler, registration_handler = login_handler(database, User), registratio
 division_registrator = RegisterUser(database, User, Division, user_division)
 division_creator = create_division(database, Division, Parameter, NumberParam, EnumVariant)
 get_divisions = get_divisions(database, User)
-get_students = GetStudents(database, Division, user_division)
+get_students = GetStudents(database, Division, user_division, User)
 
 
 database.get_session().commit()

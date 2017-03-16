@@ -146,7 +146,18 @@ body .demo-layout-transparent {
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
   min-height: 64px;
- 
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#table {
+  width: 100%;
+  min-height: 64px;
+ padding: 0px;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
