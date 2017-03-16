@@ -8,7 +8,8 @@ CREATE TABLE users (
 CREATE TABLE groups (
     id              serial primary key,
     division_id     integer references division on delete set null,
-    leader_id       integer references users on delete set null
+    leader_id       integer references users on delete set null,
+    number          integer,
 );
 
 -- To fix circular deps:
@@ -43,7 +44,7 @@ CREATE TABLE number_param (
 );
 CREATE TABLE enum_variant (
     name            varchar(50),
-    parameter_id    integer references parameter on delete cascade
+    parameter_id    integer references parameter on delete cascade,
     primary key ( name, parameter_id )
 );
 CREATE TABLE parameter_value (
