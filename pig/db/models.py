@@ -119,7 +119,7 @@ class Parameter(db.Model):
     # users = db.relationship('User', secondary=user_division_parameter_value, backref=db.backref('parameter', lazy='dynamic'))
     # divisions = db.relationship('Division', secondary=user_division_parameter_value, backref=db.backref('parameter',lazy='dynamic'))
 
-    number_param = db.relationship('NumberParam', back_populates="parameter") # One-to-One
+    number_param = db.relationship('NumberParam', back_populates="parameter", uselist=False) # One-to-One
     enum_variants = db.relationship('EnumVariant', back_populates="parameter") #One-to-Many
 
     def __repr__(self):

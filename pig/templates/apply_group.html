@@ -1,10 +1,8 @@
 <!--
 FILE NAME: pig/templates/apply_group.html
-WRITTEN BY: Daniel Romanich
+WRITTEN BY: Daniel Romanich & Erlend Hofstad Langseth
 WHEN: February 2017
 PURPOSE: Provide a way for users to apply for a group in an instance of a divisions
-
-------------------------------- WORK IN PROGRESS------------------------------------
 -->
 
 
@@ -16,41 +14,56 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
 
 <div class="mdl-card login-form mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title mdl-color--primary mdl-color-text--white">
-        <h2 class="mdl-card__title-text">Groups</h2>
+        <h2 class="mdl-card__title-text">Sign up for "{{div_name}}"</h2>
     </div>
 
     <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
         {% if message is not none %}
-        <p>{{message}}</p>
+            <p>{{message}}</p>
         {% endif %}
         {% if message is none %}
-        <form id="division-form">
-            <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
-                <select class="mdl-selectfield__select" id="groupno" name="groupno">
-                    <option value=""></option>
-                    {% for i in range(1, 11) %}
-                    <option value="{{ i }}">{{ i }}</option>
+            {% if params is none %}
+                (this page is intentionally left blank)
+                <br>
+                ((no division specified))
+            {% else %}
+                <form id="signup-form" method="post", action="/apply_group">
+                    <!-- FORM CONTENTS -->
+                    {% for param in params %}
+                        {{param.description}}:
+
+                        {% if param.number_param is none %}
+                            <select>
+                                {% for variant in param.enum_variants %}
+                                    <option value="{{variant.name}}">
+                                        {{variant.name}}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="text" placeholder="{{param.number_param.min}}-{{param.number_param.max}}" />
+                        {% endif %}
+
+                        <br>
+
                     {% endfor %}
-                </select>
-                <div class="mdl-selectfield__icon"><i class="material-icons">arrow_drop_down</i></div>
-                <label class="mdl-selectfield__label" for="groupno">Group</label>
-            </div>
-        </form>
+                </form>
+            {% endif %}
         {% endif %}
     </div>
 
 
     {% if message is none %}
+        <!-- Submit button: -->
         <div class="mdl-card__actions mdl-card--border">
-            <button id="demo-show-snackbar" type="submit" form="submit-form" id="submit-form"  value="apply for group "class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Apply for group</button>
+            <button id="demo-show-snackbar" type="submit" form="signup-form" id="submit-form"  value="apply for group "class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Apply for group</button>
             <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
                 <div class="mdl-snackbar__text"></div>
                 <button class="mdl-snackbar__action" type="button"></button>
             </div>
-
-
         </div>
     {% endif %}
+
 </div>  
 
 <script src='https://rawgit.com/mebibou/mdl-selectfield/master/dist/mdl-selectfield.min.js'></script>
@@ -81,6 +94,5 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
 </script>
 
 {% endblock %}
-
 
 

@@ -9,27 +9,52 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
-        <h2 class="mdl-card__title-text">Your Divisions</h2>
+        <h2 class="mdl-card__title-text">Groups</h2>
     </div>
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align">
-        <div>
-            {% for group in groups %}
+    {% set count = 1 %}
+    {% for i in range(0, groups|length) %}
+        {% set group = groups[i] %}
+        <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
+            <div class="full-width">
                 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th></th>
+                            <th class="mdl-data-table__cell--non-numeric full-width">Group {{ i + 1 }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for i in range(0, group.users.all()|length) %}
                             <tr>
-                                <td>{{ group.users[i].firstname }} {{ group.users[i].lastname }}</td>
+                                <td class="mdl-data-table__cell--non-numeric full-width">{{ group.users[i].firstname }} {{ group.users[i].lastname }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-            {% endfor %}
+            </div>
+        </div>
+        {% set count = count + 1 %}
+    {% endfor %}
+</div>
+<div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+    <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
+        <h2 class="mdl-card__title-text">Users without a group</h2>
+    </div>
+    <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align">
+        <div class="full-width">
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+                <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric full-width">Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in groupless_users %}
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric">{{ user.firstname }} {{user.lastname}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

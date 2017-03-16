@@ -17,14 +17,21 @@ html {
 }
 
 .full-width {
-    width: 95% !important;
+    width: 98% !important;
+}
+
+.margin-fix {
+    margin-top: 0px;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
 }
 
 .button_style {
     font-size: 14px !important;
     text-align: none !important;
     text-transform: none;
-    line-height: 0 !important;
+   line-height: 0 !important;
     margin: 0 !important;
     padding-left: 2.5%;
     padding-right: 2.5%;
@@ -195,7 +202,6 @@ body .demo-layout-transparent {
 }
 .demo-layout-transparent .mdl-card__supporting-text:not(:last-child) {
   box-sizing: border-box;
-  min-height: 150px;
 }
 .demo-layout-transparent:not(.demo-blog--blogpost) .mdl-card__supporting-text ~ .mdl-card__supporting-text {
   border-top: 1px solid rgba(0,0,0,0.1);

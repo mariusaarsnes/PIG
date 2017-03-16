@@ -3,7 +3,7 @@ import sys
 
 # Idea for the future: Make classes to put in 'specializations' rather than checking if it's a list etc.
 
-class create_division:
+class Task_CreateDivision:
 
     def __init__(self, database, Division, Parameter, NumberParam, EnumVariant):
         self.database = database
@@ -16,9 +16,13 @@ class create_division:
         # Specialization of each Parameter
         self.specs = {} # int -> NumberParam or [EnumVariant]
 
+    # Returns False if there was an error
     def register_division(self, current_user, form):
-        #print('Registering division...', file=sys.stderr)
-        #print('Input: %s' % form, file=sys.stderr)
+        print('Registering division...', file=sys.stderr)
+        print('Input: %s' % form, file=sys.stderr)
+        if len(form) == 0 or form["Division"] is None:
+            return False
+
         division = self.Division(name = form["Division"], creator_id = current_user.id)
 
         # First pass: Find the type of each parameter
@@ -70,9 +74,15 @@ class create_division:
             if not self.parameters[param_nr] is None:
                 if isinstance(self.specs[param_nr], self.NumberParam):
                     if key.startswith("Min"):
-                        self.specs[param_nr].min = int(value)
+                        try:
+                            self.specs[param_nr].min = int(value)
+                        except:
+                            self.specs[param_nr].min = None
                     elif key.startswith("Max"):
-                        self.specs[param_nr].max = int(value)
+                        try:
+                            self.specs[param_nr].max = int(value)
+                        except:
+                            self.specs[param_nr].max = None
                 elif isinstance(self.specs[param_nr], list):
                     # self.specs[param_nr] is a list of EnumVariant
                     if key.startswith("Option"):
@@ -95,6 +105,7 @@ class create_division:
 
         self.database.get_session().add(division)
         self.database.get_session().commit()
+        return True
 
     def make_parameter(self, desc):
         parameter = self.database.get_session() \
