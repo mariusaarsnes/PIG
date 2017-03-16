@@ -10,7 +10,8 @@ class UserScripts:
         self.Group = Group
 
     def get_groups(self, division_id):
-        return self.database.get_session().query(self.Division).filter(self.Division.id == division_id).first().groups
+        division = self.database.get_session().query(self.Division).filter(self.Division.id == division_id).first()
+        return division.groups if division is not None else []
 
     def get_groupless_users(self, division_id):
         subquery = self.database.get_session().query(self.User.id).filter(

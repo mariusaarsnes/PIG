@@ -31,6 +31,14 @@ get_divisions = Task_GetDivisions(database, User, Division, user_division)
 division_registrator = Task_RegisterUser(database, User, Division, user_division)
 user_scripts = UserScripts(database, User, Division, user_division, user_group, Group)
 
+"""
+user = database.get_session().query(User).filter(User.id == 1).first()
+division = database.get_session().query(Division).filter(Division.id == 1).first()
+group = Group(division_id=1)
+user.divisions.append(division)
+user.groups.append(group)
+database.get_session().commit()
+"""
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
@@ -40,7 +48,7 @@ def user_loader(user_id):
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
 @app.route("/")
 def hello():
-    return render_template('index.html', user=current_user)
+    return redirect(url_for("home"))
 
 @app.route("/apply_group")
 @login_required
@@ -53,7 +61,7 @@ def apply_group():
                 .query(Division) \
                 .filter(Division.id == div_id) \
                 .first()
-        if division_registrator.is_group_leader(current_user, div_id):
+        if division_registrator.is_division_creator(current_user, div_id):
             message = "You cannot register for your own division!"
         if request.method == 'POST':
             return redirect(url_for("home"))
@@ -106,7 +114,7 @@ def register():
 
 @app.route("/home")
 def home():
-    return render_template("template.html", user=current_user)
+    return render_template('index.html', user=current_user)
 
 
 @app.route("/show_divisions")
@@ -120,7 +128,8 @@ def show_divisions():
 @login_required
 def show_groupless_users():
     if request.args.get("divisionId") is not None:
-        return render_template("division_groups.html", user=current_user, groups=user_scripts.get_groups(int(request.args.get("divisionId"))), groupless_users=user_scripts.get_groupless_users(int(request.args.get("divisionId"))))
+        if division_registrator.is_division_creator(current_user, int(request.args.get("divisionId"))):
+            return render_template("division_groups.html", user=current_user, groups=user_scripts.get_groups(int(request.args.get("divisionId"))), groupless_users=user_scripts.get_groupless_users(int(request.args.get("divisionId"))))
     return redirect(url_for("home"))
 
 @app.route("/logout")

@@ -13,17 +13,24 @@ html {
 }
 
 #table-header:hover > [id^="table-caret"] {
-    color: #999999;
+    color: #AAAAAA;
 }
-
-[id^
 
 .half-width {
     width: 47.5%;
 }
 
+.right-float {
+    float: right;
+}
+
+.font-size-twenty {
+    font-size: 18px !important;
+}
+
 .full-width {
     width: 98% !important;
+    max-width: 98%;
 }
 
 .margin-fix {
