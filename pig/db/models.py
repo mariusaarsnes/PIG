@@ -97,7 +97,7 @@ class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     division_id = db.Column(db.Integer, db.ForeignKey('division.id'))
     leader_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    # members = db.relationship('User', secondary=user_group, backref=db.backref('groups',lazy='dynamic'))
+    #members = db.relationship('User', secondary=user_group, backref=db.backref('groups',lazy='dynamic'))
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", divisionID: " + str(self.division_id) + ", leader: " + str(self.leader_id)
@@ -119,7 +119,7 @@ class Parameter(db.Model):
     # users = db.relationship('User', secondary=user_division_parameter_value, backref=db.backref('parameter', lazy='dynamic'))
     # divisions = db.relationship('Division', secondary=user_division_parameter_value, backref=db.backref('parameter',lazy='dynamic'))
 
-    number_param = db.relationship('NumberParam', back_populates="parameter") # One-to-One
+    number_param = db.relationship('NumberParam', back_populates="parameter", uselist=False) # One-to-One
     enum_variants = db.relationship('EnumVariant', back_populates="parameter") #One-to-Many
 
     def __repr__(self):

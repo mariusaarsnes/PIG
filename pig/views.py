@@ -3,20 +3,23 @@
 from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-from pig.login.login_handler import login_handler
-from pig.login.registration_handler import registration_handler
-from pig.scripts.create_division import create_division
+from pig.login.login_handler import LoginHandler
+from pig.login.registration_handler import RegistrationHandler
+from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
-from pig.scripts.get_divisions import get_divisions
-from pig.scripts.RegisterUsers import RegisterUser
-from pig.db.database import database
 from pig.scripts.GetStudents import GetStudents
+from pig.scripts.get_divisions import Task_GetDivisions
+from pig.scripts.register_user import Task_RegisterUser
+from pig.scripts.Task_GetDivisionsWhereLeader import Task_GetDivisionsWhereLeader
+from pig.db.database import Database
+import sys
+
 
 
 app = Flask(__name__, template_folder='templates')
 
 # Instatiating different classes that are used by the functions below.
-database = database(app)
+database = Database(app)
 
 from pig.db.models import *
 
@@ -25,19 +28,25 @@ app.secret_key = pig_key
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-login_handler, registration_handler = login_handler(database, User), registration_handler(database, User)
-division_registrator = RegisterUser(database, User, Division, user_division)
-division_creator = create_division(database, Division, Parameter, NumberParam, EnumVariant)
-get_divisions = get_divisions(database, User)
+login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
+division_registrator = Task_RegisterUser(database, User, Division, user_division)
+division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
+get_divisions = Task_GetDivisions(database, User)
 get_students = GetStudents(database, Division, user_division, User)
+LoginHandler, RegistrationHandler = LoginHandler(database, User), RegistrationHandler(database, User)
 
+
+division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
+get_divisions = Task_GetDivisions(database, User)
+get_divisions_where_leader = Task_GetDivisionsWhereLeader(database, Division, user_division)
+division_registrator = Task_RegisterUser(database, User, Division, user_division)
 
 database.get_session().commit()
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
-    return login_handler.get_user_with_id(user_id)
+    return LoginHandler.get_user_with_id(user_id)
 
 
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
@@ -51,12 +60,29 @@ def hello():
 def apply_group():
     arg = request.args.get("values")
     if not arg is None:
-        values = encryption.decode(pig_key, arg)
-        variables = values.split(",")
-        if int(variables[2]) == 1:
-            division_registrator.register_user(current_user, variables[1], "TA")
-            return render_template("apply_group.html", user=current_user, message="Successfully registered you as a TA for the division: " + variables[0])
-    return render_template("apply_group.html", user=current_user, message=None)
+        [div_name, div_id, div_role] = encryption.decode(pig_key, arg).split(",")
+        division = database.get_session() \
+                .query(Division) \
+                .filter(Division.id == div_id) \
+                .first()
+
+        if request.method == 'POST':
+            return redirect(url_for("home"))
+            # TODO Actually register the person
+            """
+            if int(div_role) == 0:
+                return render_template("apply_group.html", user=current_user,\
+                        message="Successfully registered you as a TEAM MEMBER for the division: " + div_name)
+            elif int(div_role) == 1:
+                return render_template("apply_group.html", user=current_user,\
+                        message="Successfully registered you as a LEADER for the division: " + div_name)
+        """
+        else:
+            # Make the form
+            params = division.parameters
+            return render_template("apply_group.html", user=current_user, message=None, params=params, div_name=div_name)
+
+    return render_template("apply_group.html", user=current_user, message=None, params=None)
 
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
@@ -66,10 +92,22 @@ def create_division():
         return redirect(url_for("home"))
     return render_template("create_division.html", user=current_user)
 
+@app.route("/show_groups_leader")
+@login_required
+def show_groups_leader():
+    divisions = get_divisions_where_leader.get_divisions_where_leader(current_user=current_user)
+    """
+    for element in divisions:
+        print(element.name)
+        for groups in element.groups:
+            print(groups.users.all())
+    """
+    return render_template("show_groups_leader.html", user=current_user, divisions = divisions)
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = login_handler.get_user(request.form["Username"], request.form["Password"])
+        user = LoginHandler.get_user(request.form["Username"], request.form["Password"])
         if user is not None:
             flash('You were logged in')
             login_user(user)

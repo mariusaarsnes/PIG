@@ -1,6 +1,6 @@
 from re import match
 
-class registration_handler:
+class RegistrationHandler:
 
     email_regex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
 
