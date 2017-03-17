@@ -51,7 +51,7 @@ class DbGetters:
     def get_all_groups_in_division_for_given_creator_and_division_id(self, creator, division_id):
         division = self.database.get_session().query(self.Division) \
             .filter(self.Division.creator_id == creator.id, self.Division.id == division_id).first()
-        if (len(division)<1):
+        if (division is None):
             print("ERROR: No created division with id: ", division_id, "created by ",creator.id)
             return None
         return division.groups
