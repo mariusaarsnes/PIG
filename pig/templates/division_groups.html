@@ -1,0 +1,71 @@
+<!--
+FILE NAME: pig/templates/show_divisions.html
+WRITTEN BY: Marius Aarsnes
+WHEN: February 2017
+PURPOSE: Provide a page where users can view all the divisions they are signed up for.
+-->
+{% extends "template.html" %}
+{% block content %}
+<script src="{{ url_for('static', filename='js/show_hidden_elements.js') }}"></script>
+<div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+    <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
+        <h2 class="mdl-card__title-text">Groups</h2>
+    </div>
+    {% set count = [] %}
+    {% if groups|length <= 0 %}
+        <p style="padding-left: 5px;">There are no groups registered for this division.</p>
+    {% else %}
+        {% for i in range(0, groups|length) %}
+            {% set group = groups[i] %}
+            <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
+                <div class="full-width">
+                    <table style="table-layout: fixed;" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+                        <thead>
+                            <tr>
+                                <th id="table-header" class="mdl-data-table__cell--non-numeric full-width" onclick="showHiddenElement('{{ i + 1 }}')">Group {{ i + 1 }} <i id="table-caret{{ i + 1 }}" class="fa fa-caret-down right-float font-size-twenty"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody id="group{{ i + 1 }}" style="display: none;" class="dropdown">
+                            {% for i in range(0, group.users.all()|length) %}
+                                {% set __ = count.append(1) %}
+                                <tr>
+                                    <td class="mdl-data-table__cell--non-numeric full-width">{{ group.users[i].firstname }} {{ group.users[i].lastname }} <text style="float: right;"> {{ group.users[i].email }}</text></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+<div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+    <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
+        <h2 class="mdl-card__title-text">Users without a group</h2>
+    </div>
+    {% if groupless_users|length <= 0 %}
+        <p style="padding-left: 5px;"> {% if count|length == 0 %} No users has signed up for this division! {% else %} All users who was signed up for this division has a group! {% endif %}</p>
+    {% else %}
+        <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
+            <div class="full-width">
+                <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+                    <thead>
+                        <tr>
+                            <th id="table-header" class="mdl-data-table__cell--non-numeric full-width" onclick="showHiddenElement('0')">Name <i id="table-caret0" class="fa fa-caret-down right-float font-size-twenty"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody id="group0" style="display: none;">
+                        {% for user in groupless_users %}
+                            <tr>
+                                <td class="mdl-data-table__cell--non-numeric">{{ user.firstname }} {{user.lastname}} <text style="float: right;"> {{ user.email }}</text></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+{% block bottom %}
+{% endblock %}
