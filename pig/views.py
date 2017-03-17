@@ -129,9 +129,11 @@ def home():
 @app.route("/show_divisions")
 @login_required
 def show_divisions():
-    divisions_participating2 = db_getters.get_all_divisions_where_member_for_given_user(current_user=current_user)
+    divisions_participating2 = db_getters.get_all_divisions_where_member_or_leader_for_given_user(current_user=current_user)
+    divisions_created2 = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
     divisions_participating, divisions_created, ta_links, student_links = get_divisions.fetch_divisions(current_user, pig_key)
     print(divisions_participating == divisions_participating2)
+    print(divisions_created == divisions_created2)
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
 

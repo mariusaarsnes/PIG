@@ -21,8 +21,9 @@ class DbGetters:
         return self.database.get_session().query(self.Division).all()
 
     def get_all_divisions_where_creator_for_given_user(self,current_user):
-        divisions = self.database.get_session().query(self.Division)\
-            .filter(self.Division.creator_id == current_user.id).all()
+        return self.database.get_session().query(self.User)\
+            .filter(self.User.id == current_user.id).first().divisions_created
+
 
     def get_all_divisions_where_leader_for_given_user(self,current_user):
 
@@ -38,6 +39,10 @@ class DbGetters:
         else:
             return divisions
 
+    def get_all_divisions_where_member_or_leader_for_given_user(self,current_user):
+        return self.database.get_session().query(self.User).filter(self.User.id == current_user.id).first().divisions
+
+
     def get_all_divisions_where_member_for_given_user(self,current_user):
         return self.database.get_session().query(self.Division)\
             .filter(self.user_division._columns.get('user_id') == current_user.id)\
@@ -50,6 +55,7 @@ class DbGetters:
             print("ERROR: No created division with id: ", division_id, "created by ",creator.id)
             return None
         return division.groups
+
 
     def get_all_leaders_in_division_for_given_creator_and_division_id(self,creator,division_id):
         leaders = self.database.get_session().query(self.User)\
