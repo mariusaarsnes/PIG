@@ -8,12 +8,9 @@ from pig.login.registration_handler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
 from pig.scripts.register_user import Task_RegisterUser
-from pig.scripts.Task_GetDivisionsWhereLeader import Task_GetDivisionsWhereLeader
 from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
-
-import sys
 
 
 app = Flask(__name__, template_folder='templates')
@@ -33,7 +30,6 @@ login_handler, registration_handler = LoginHandler(database, User), Registration
 
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
-get_divisions_where_leader = Task_GetDivisionsWhereLeader(database, Division, user_division)
 division_registrator = Task_RegisterUser(database, User, Division, user_division)
 db_getters = DbGetters(
                 database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
