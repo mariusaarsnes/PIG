@@ -26,12 +26,19 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
                             </tr>
                         </thead>
                         <tbody id="group{{ i + 1 }}" style="display: none;" class="dropdown">
-                            {% for i in range(0, group.users.all()|length) %}
+                            {% set users = group.users.all() %}
+                            {% set size = 4 - users|length %}
+                            {% for i in range(0, users|length) %}
                                 {% set __ = count.append(1) %}
                                 <tr>
-                                    <td class="mdl-data-table__cell--non-numeric full-width">{{ group.users[i].firstname }} {{ group.users[i].lastname }} <text style="float: right;"> {{ group.users[i].email }}</text></td>
+                                    <td class="mdl-data-table__cell--non-numeric full-width">{{ users[i].firstname }} {{ users[i].lastname }} <text style="float: right;"> {{ users[i].email }}</text></td>
                                 </tr>
                             {% endfor %}
+                            {% if size > 0 %}
+                                <tr id="button{{ i + 1 }}" class="mdl-data-table__cell--non-numeric full-width">
+                                    <td><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" type="button" onclick="addData('{{ i + 1 }}', 4)">Legg til bruker</button></td>
+                                </tr>
+                            {% endif %}
                         </tbody>
                     </table>
                 </div>

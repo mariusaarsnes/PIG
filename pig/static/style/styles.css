@@ -32,6 +32,11 @@ html {
     max-width: 98%;
 }
 
+.max-width {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
 .margin-fix {
     margin-top: 0px;
     margin-left: 8px;
