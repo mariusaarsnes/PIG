@@ -28,19 +28,11 @@ login_manager.init_app(app)
 login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
-get_divisions = Task_GetDivisions(database, User)
+get_divisions = Task_GetDivisions(database, User, Division, user_division)
 get_divisions_where_leader = Task_GetDivisionsWhereLeader(database, Division, user_division)
 division_registrator = Task_RegisterUser(database, User, Division, user_division)
 user_scripts = UserScripts(database, User, Division, user_division, user_group, Group)
 
-"""
-user = database.get_session().query(User).filter(User.id == 1).first()
-division = database.get_session().query(Division).filter(Division.id == 1).first()
-group = Group(division_id=1)
-user.divisions.append(division)
-user.groups.append(group)
-database.get_session().commit()
-"""
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
