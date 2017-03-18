@@ -97,6 +97,7 @@ class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     division_id = db.Column(db.Integer, db.ForeignKey('division.id'))
     leader_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    number = db.Column(db.Integer)
     # members = db.relationship('User', secondary=user_group, backref=db.backref('groups',lazy='dynamic'))
 
     def __repr__(self):

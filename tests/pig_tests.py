@@ -104,7 +104,9 @@ class PigTestCase(unittest.TestCase):
         self.database.get_session().commit()
 
     def delete_all_groups_in_given_division(self,division_id):
+        print("skal slette gruppene")
         self.database.get_session().execute("DELETE FROM groups WHERE division_id ="+str(division_id))
+        print("nettopp slettet gruppene")
 
     def delete_from_user_division_with_given_division_id(self,division_id,count):
         for i in range(count):
@@ -256,16 +258,17 @@ class PigTestCase(unittest.TestCase):
         for element in groups:
             assert (element.leader_id >= first_leader.id and element.leader_id < first_leader.id + leader_count)
 
-
-        print("føkk this")
+        """
         self.delete_all_groups_in_given_division(division.id)
         print("får slettet grupper")
+
         self.delete_division(division.id)
         print("får slettet divsion")
         self.delete_user('creator@email.com')
         print("får slettet creator")
-        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
+        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id, leader_count)
         print("får slettet brukere")
+        """
 
 if __name__ == '__main__':
     unittest.main()
