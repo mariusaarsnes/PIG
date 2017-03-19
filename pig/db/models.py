@@ -2,7 +2,6 @@ from pig.views import database as database
 
 db = database.db
 
-
  # Helper tables to connect the tables in the DB
  # Connects users to the divisoins they are a part of
  # This connection is mainly to access which role a user has i a certain divsion

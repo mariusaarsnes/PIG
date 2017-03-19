@@ -37,6 +37,28 @@ html {
     max-width: 100% !important;
 }
 
+.fixed-table {
+    table-layout: fixed;
+}
+
+.twenty-seven-width {
+    width: 27% !important;
+    max-width: 27% !important;
+}
+
+.thirty-three-width {
+    width: 33.3% !important;
+    max-width: 33.3% !important;
+}
+.twenty-width {
+    width: 20% !important;
+    max-width: 20% !important;
+}
+.fourty-width {
+    width: 40% !important;
+    max-width: 40% !important;
+}
+
 .margin-fix {
     margin-top: 0px;
     margin-left: 8px;
@@ -283,4 +305,53 @@ input[id=parameter] {
     margin: -2% 5%;
 }
 
+/* Dropdown Button */
+.dropdown-button {
+    background-color: Transparent;
+    color: #FFFFFF;
+    font-family: "Helvetica","Arial",sans-serif;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+}
 
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    color: white;
+    position: absolute;
+    background-color: rgba(100, 100, 100, 0.6);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content .dropdown-link {
+    color: white;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-link:hover {
+    background-color: rgba(170, 170, 170, 0.5);
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover dropdown-button {
+    background-color: #3e8e41;
+}
