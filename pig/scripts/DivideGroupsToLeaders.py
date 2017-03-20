@@ -1,6 +1,6 @@
 # encoding=UTF-8
 
-class dividide_groups_to_leaders:
+class DivideGroupsToLeaders:
 
     def __init__(self,database, Division, user_division):
         self.database = database
@@ -17,25 +17,26 @@ class dividide_groups_to_leaders:
 
         leaders = self.database.get_session().query(self.user_division)\
             .filter(self.user_division._columns.get('division_id')== division_id,
-                    self.user_division._columns.get('role')=='leader').first()
+                    self.user_division._columns.get('role')=='Leader').all()
         if (leaders is None):
             print("ERROR: No leaders signed up for divisions ", division_id)
             return
         groups = groups.groups
+        leaders = leaders
         return leaders, groups
 
 
     def assign_leaders_to_groups(self,current_user,division_id):
         leaders, groups = self.fetch_groups(current_user,division_id)
+
         groups_per_leader = len(groups)//len(leaders)
         counter = 0
         for group in groups:
-            group.leader_id = leaders[counter]
+            group.leader_id = leaders[counter].user_id
             counter +=1
-            if (counter == len(leaders)):
+            if (counter == groups_per_leader):
                 counter = 0
         self.database.get_session().commit()
-
 
 
 
