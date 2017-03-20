@@ -7,10 +7,10 @@ from pig.login.login_handler import LoginHandler
 from pig.login.registration_handler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
-from pig.scripts.get_divisions import Task_GetDivisions
 from pig.scripts.register_user import Task_RegisterUser
 from pig.db.database import Database
-import sys
+from pig.scripts.DbGetters import DbGetters
+from pig.scripts.Tasks import Tasks
 
 
 app = Flask(__name__, template_folder='templates')
@@ -19,6 +19,7 @@ app = Flask(__name__, template_folder='templates')
 database = Database(app)
 
 from pig.db.models import *
+
 
 pig_key = "supersecretpigkey"
 app.secret_key = pig_key
@@ -29,8 +30,11 @@ login_handler, registration_handler = LoginHandler(database, User), Registration
 
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
-get_divisions = Task_GetDivisions(database, User)
 division_registrator = Task_RegisterUser(database, User, Division, user_division)
+db_getters = DbGetters(
+                database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
+                user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
+tasks = Tasks()
 
 database.get_session().commit()
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
@@ -83,6 +87,12 @@ def create_division():
         return redirect(url_for("home"))
     return render_template("create_division.html", user=current_user)
 
+@app.route("/show_groups_leader")
+@login_required
+def show_groups_leader():
+    divisions = db_getters.get_all_divisions_where_leader_for_given_user(current_user= current_user)
+    return render_template("show_groups_leader.html", user=current_user, divisions = divisions)
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -114,9 +124,11 @@ def home():
 @app.route("/show_divisions")
 @login_required
 def show_divisions():
-    divisions_participating, divisions_created, ta_links, student_links = get_divisions.fetch_divisions(current_user, pig_key)
+    divisions_participating = db_getters.get_all_divisions_where_member_or_leader_for_given_user(current_user=current_user)
+    divisions_created = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
+    leader_links, member_links = tasks.generate_links(pig_key,divisions_created)
     return render_template("show_divisions.html", user=current_user,
-                           divisions_participating=divisions_participating, divisions_created=divisions_created, ta_links=ta_links, student_links=student_links)
+                           divisions_participating=divisions_participating, divisions_created=divisions_created, leader_links=leader_links, member_links=member_links)
 
 @app.route("/logout")
 @login_required

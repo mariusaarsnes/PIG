@@ -1,8 +1,8 @@
 import os, pig, unittest
-from pig.views import get_divisions, pig_key
 from pig.db.models import *
 from pig.db.database import *
 from pig.scripts.DivideGroupsToLeaders import DivideGroupsToLeaders
+from pig.scripts.DbGetters import *
 from flask import Flask
 from random import randint
 
@@ -14,7 +14,10 @@ class PigTestCase(unittest.TestCase):
         pig.app.config['TESTING'] = True
         self.app = pig.app.test_client()
         self.database = Database(Flask(__name__))
-        self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database,Division,user_division)
+        self.db_getters = DbGetters(
+                self.database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
+                user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
+        self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database,Division,user_division, self.db_getters)
 
 
     def login(self,username,password):
@@ -60,7 +63,7 @@ class PigTestCase(unittest.TestCase):
 
 
     def delete_division(self, id):
-        self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
+        #self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
         self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
         self.database.get_session().commit()
 
@@ -209,6 +212,7 @@ class PigTestCase(unittest.TestCase):
         assert user is None
 
 
+    """
     def test_register_user_as_student_for_division(self):
         self.register("tester@asd.com", "test", "test", "Asd", "asdtest")
         self.register("tester1@asd.com", "test", "test", "Asd1", "asdtest")
@@ -223,8 +227,7 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user(user.email)
         self.delete_user(user1.email)
-
-
+    """
 
     def test_divide_groups_to_leaders_with_varying_range_of_leaders_and_groups(self):
 
@@ -248,17 +251,16 @@ class PigTestCase(unittest.TestCase):
 
         self.divide_groups_to_leaders.assign_leaders_to_groups(current_user=creator,division_id=division.id)
 
-        groups = self.database.get_session().query(Group).filter(Group.division_id == division.id)
+        groups = self.db_getters.get_all_groups_in_division_for_given_creator_and_division_id(creator, division.id)
+
 
         for element in groups:
             assert (element.leader_id >= first_leader.id and element.leader_id < first_leader.id + leader_count)
 
         self.delete_all_groups_in_given_division(division.id)
-        self.delete_from_user_division_with_given_division_id(division.id, leader_count)
         self.delete_division(division.id)
         self.delete_user('creator@email.com')
-        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
-
+        self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id, leader_count)
 
 if __name__ == '__main__':
     unittest.main()
