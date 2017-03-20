@@ -57,10 +57,10 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255), unique =False)
     divisions_created = db.relationship("Division", backref='creators')
-    divisions = db.relationship('Division', secondary=user_division, backref=db.backref('users', lazy='dynamic'))
+    divisions = db.relationship('Division', secondary=user_division, back_populates='users')
     groups = db.relationship('Group',secondary=user_group, backref=db.backref('users', lazy='dynamic'))
-    parameters = db.relationship('Parameter', secondary=user_division_parameter_value, backref=db.backref('users',lazy='dynamic'))
-    values = db.relationship('Value', secondary=user_division_parameter_value, backref = db.backref('users', lazy='dynamic'))
+    parameters = db.relationship('Parameter', secondary=user_division_parameter_value, backref=db.backref('users',lazy='dynamic'), passive_deletes=True)
+    values = db.relationship('Value', secondary=user_division_parameter_value, backref = db.backref('users', lazy='dynamic'), passive_deletes=True)
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.firstname)+str(self.lastname)+ ", Email: " + str(self.email)
@@ -71,10 +71,8 @@ class Division(db.Model):
     name = db.Column(db.String(255))
     creator_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     groups = db.relationship('Group',backref='division')
-    #users = db.relationship('User', secondary=user_division, backref=db.backref('division', lazy='dynamic'))
-    parameters = db.relationship('Parameter', secondary=division_parameter,  backref=db.backref('division', lazy='dynamic'))
-
-
+    users = db.relationship('User', secondary=user_division, back_populates='divisions')
+    parameters = db.relationship('Parameter', secondary=division_parameter,  backref=db.backref('division', lazy='dynamic'), passive_deletes=True)
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", name: " + str(self.name)+ ", creator: " + str(self.creator_id)
@@ -119,8 +117,8 @@ class Parameter(db.Model):
     # users = db.relationship('User', secondary=user_division_parameter_value, backref=db.backref('parameter', lazy='dynamic'))
     # divisions = db.relationship('Division', secondary=user_division_parameter_value, backref=db.backref('parameter',lazy='dynamic'))
 
-    number_param = db.relationship('NumberParam', back_populates="parameter", uselist=False) # One-to-One
-    enum_variants = db.relationship('EnumVariant', back_populates="parameter") #One-to-Many
+    number_param = db.relationship('NumberParam', back_populates="parameter", uselist=False, passive_deletes=True) # One-to-One
+    enum_variants = db.relationship('EnumVariant', back_populates="parameter", passive_deletes=True) #One-to-Many
 
     def __repr__(self):
         return "ID: " + str(self.id) + ", description: " + str(self.description)
