@@ -141,6 +141,7 @@ def show_divisions():
 @login_required
 def show_all_students():
     print(get_students.get_all_students(current_user, 86))
+    print(get_students.get_all_divisions_where_creator_for_given_user(current_user))
     return render_template("show_all_students.html", user=current_user, students=get_students.get_all_students(current_user, 86))
 
 

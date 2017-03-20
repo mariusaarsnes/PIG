@@ -2,7 +2,7 @@
 
 class GetStudents:
 
-    print("print a calss")
+    print("On GetStudents")
 
     def __init__(self,database, Division, user_division, User):
         self.User = User
@@ -18,7 +18,9 @@ class GetStudents:
         return students
         
 
-
+    def get_all_divisions_where_creator_for_given_user(self,current_user):
+        return self.database.get_session().query(self.User)\
+            .filter(self.User.id == current_user.id).first().divisions_created
 
     
     
