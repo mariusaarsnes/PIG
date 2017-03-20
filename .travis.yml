@@ -3,7 +3,9 @@ sudo: required
 python:
   - "3.6"
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install:
+ - "pip install -r requirements.txt"
+ - "pip install coverage"
 # command to run tests
 script:
  - coverage run pig_tests.py
