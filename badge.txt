@@ -1,0 +1,1 @@
+!https://coveralls.io/repos/github/mariiuus/PIG/badge.svg?branch=master(Coverage Status)!:https://coveralls.io/github/mariiuus/PIG?branch=master
