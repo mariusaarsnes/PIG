@@ -3,6 +3,7 @@ background-color:#E6FFE7;
 }
     
 .demo-layout-transparent {
+
     background: url(../img/trondheim.jpg) center / cover;}
 .demo-layout-transparent .mdl-layout__header,
 .demo-layout-transparent .mdl-layout__drawer-button {
@@ -214,10 +215,10 @@ body .demo-layout-transparent {
     margin: auto;
     width: 80%; 
     border-radius: 5px;
-    
-    
 }
-
+#showgroupsleader_no_divisions h3 {
+    margin: 0 auto;
+}
 
 
 input[id=create_division] {
