@@ -1,4 +1,4 @@
-import pig, unittest
+import os, pig, unittest
 from pig.db.models import *
 from pig.db.database import *
 from pig.scripts.DivideGroupsToLeaders import DivideGroupsToLeaders
@@ -15,7 +15,7 @@ class PigTestCase(unittest.TestCase):
         self.app = pig.app.test_client()
         self.database = Database(Flask(__name__))
         self.db_getters = DbGetters(
-                database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
+                self.database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
                 user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
         self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database,Division,user_division, self.db_getters)
 
@@ -63,7 +63,7 @@ class PigTestCase(unittest.TestCase):
 
 
     def delete_division(self, id):
-        self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
+        #self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
         self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
         self.database.get_session().commit()
 
@@ -104,9 +104,7 @@ class PigTestCase(unittest.TestCase):
         self.database.get_session().commit()
 
     def delete_all_groups_in_given_division(self,division_id):
-        print("skal slette gruppene")
         self.database.get_session().execute("DELETE FROM groups WHERE division_id ="+str(division_id))
-        print("nettopp slettet gruppene")
 
     def delete_from_user_division_with_given_division_id(self,division_id,count):
         for i in range(count):
@@ -255,20 +253,14 @@ class PigTestCase(unittest.TestCase):
 
         groups = self.db_getters.get_all_groups_in_division_for_given_creator_and_division_id(creator, division.id)
 
+
         for element in groups:
             assert (element.leader_id >= first_leader.id and element.leader_id < first_leader.id + leader_count)
 
-        """
         self.delete_all_groups_in_given_division(division.id)
-        print("får slettet grupper")
-
         self.delete_division(division.id)
-        print("får slettet divsion")
         self.delete_user('creator@email.com')
-        print("får slettet creator")
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id, leader_count)
-        print("får slettet brukere")
-        """
 
 if __name__ == '__main__':
     unittest.main()
