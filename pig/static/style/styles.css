@@ -79,7 +79,7 @@ html {
     max-width: 85%;
     max-height: 80%;
 }
-    
+
     #view-source {
       position: fixed;
       display: block;
@@ -89,7 +89,7 @@ html {
       margin-bottom: 40px;
       z-index: 900;
     }
-    
+
     body::before {
     background-size: cover;
     background-attachment: fixed;
@@ -184,8 +184,8 @@ body .demo-layout-transparent {
   padding: 16px;
     min-height: 100px;
     max-height: 100px;
-    
-    
+
+
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -195,8 +195,8 @@ body .demo-layout-transparent {
   padding: 16px;
     min-height: 100px;
     max-height: 100px;
-    
-    
+
+
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -272,7 +272,7 @@ body .demo-layout-transparent {
 
 #division-form {
     margin: auto;
-    width: 80%; 
+    width: 80%;
     border-radius: 5px;
 }
 #showgroupsleader_no_divisions h3 {
@@ -318,7 +318,6 @@ input[id=parameter] {
 /* The container <div> - needed to position the dropdown content */
 .dropdown {
     position: relative;
-    display: inline-block;
 }
 
 /* Dropdown Content (Hidden by Default) */
