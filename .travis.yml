@@ -6,6 +6,6 @@ python:
 install: "pip install -r requirements.txt"
 # command to run tests
 script:
- - coverage run pig_tests.py test
+ - coverage run pig_tests.py
 
 after_success: coveralls
