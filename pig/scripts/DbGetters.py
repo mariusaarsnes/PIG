@@ -49,9 +49,12 @@ class DbGetters:
             .filter(self.user_division._columns.get('role') == 'Member').all()
 
     def get_all_groups_in_division_for_given_creator_and_division_id(self, creator, division_id):
-        return self.database.get_session().query(self.Group)\
-            .filter(self.Group.division_id == division_id)\
-            .all()
+        division = self.database.get_session().query(self.Division) \
+            .filter(self.Division.creator_id == creator.id, self.Division.id == division_id).first()
+        if (division is None):
+            print("ERROR: No created division with id: ", division_id, "created by ",creator.id)
+            return None
+        return division.groups
 
 
     def get_all_leaders_in_division_for_given_creator_and_division_id(self,creator,division_id):
