@@ -7,9 +7,6 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 {% extends "template.html" %}
 {% block content %}
 
-
-
-
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisons mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Your Divisions</h2>
@@ -27,8 +24,8 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
                 {%  for division in divisions_created %}
                 <tr>
                     <td>{{ division.name }}</td>
-                    <td><button onclick="copyToClipboard('{{ ta_links[loop.index0] }}')">Kopier lenken</button></td>
-                    <td><button onclick="copyToClipboard('{{ student_links[loop.index0] }}')">Kopier lenken</button></td>
+                    <td><button onclick="copyToClipboard('{{ leader_links[loop.index0] }}')">Kopier lenken</button></td>
+                    <td><button onclick="copyToClipboard('{{ member_links[loop.index0] }}')">Kopier lenken</button></td>
                 </tr>
                 {% endfor %}
             </table>
