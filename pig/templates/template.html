@@ -35,10 +35,10 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
                         <a class="mdl-navigation__link" href="{{ url_for('home') }}"><b>Home</b></a>
                         <a class="mdl-navigation__link" href="{{ url_for('create_division') }}"><b>Create Division</b></a>
                         <div class="dropdown">
-                            <button class="dropdown-button" disabled>My content</button>
+                            <button class="dropdown-button" disabled><b>My content</b></button>
                             <div class="dropdown-content">
-                                <a class="dropdown-link" href="{{ url_for('show_divisions') }}">My divisions</a>
-                                <a class="dropdown-link" href="{{ url_for('show_groups_leader') }}">My groups</a>
+                                <a class="dropdown-link" href="{{ url_for('show_divisions') }}"><b>My divisions</b></a>
+                                <a class="dropdown-link" href="{{ url_for('show_groups_leader') }}"><b>My groups</b></a>
                             </div>
                         </div>
                         <a class="mdl-navigation__link" href="{{ url_for('logout') }}"><b>Logout</b></a>
