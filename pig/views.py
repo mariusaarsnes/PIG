@@ -3,14 +3,15 @@
 from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-from pig.login.login_handler import LoginHandler
-from pig.login.registration_handler import RegistrationHandler
+from pig.login.LoginHandler import LoginHandler
+from pig.login.RegistrationHandler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
 from pig.scripts.register_user import Task_RegisterUser
 from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
+from sqlalchemy.sql.expression import func
 
 app = Flask(__name__, template_folder='templates')
 
@@ -33,6 +34,8 @@ db_getters = DbGetters(
                 database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
                 user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
 tasks = Tasks()
+
+print(database.get_session().query(Division).filter(Division.id == database.get_session().query(func.max(Division.id)).first()[0]).first())
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -69,7 +72,7 @@ def apply_group():
             elif int(div_role) == 1:
                 return render_template("apply_group.html", user=current_user,\
                         message="Successfully registered you as a LEADER for the division: " + div_name)
-        """
+            """
         else:
             # Make the form
             params = division.parameters
