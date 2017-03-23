@@ -70,6 +70,8 @@ class Task_CreateDivision:
                 param_nr = int(key[3])
             elif key.startswith("Option"):
                 param_nr = int(key[6])
+            else:
+                continue
 
             if not self.parameters[param_nr] is None:
                 if isinstance(self.specs[param_nr], self.NumberParam):
@@ -96,8 +98,8 @@ class Task_CreateDivision:
             if not param is None:
                 if isinstance(self.specs[param_nr], self.NumberParam):
                     spec = self.specs[param_nr]
-                    spec.parameter = param
                     self.database.get_session().add(spec)
+                    spec.parameter = param
                 elif isinstance(self.specs[param_nr], list):
                     for variant in self.specs[param_nr]:
                         variant.parameter = param
