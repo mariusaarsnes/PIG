@@ -12,8 +12,9 @@ class PigTestCase(unittest.TestCase):
 
     def setUp(self):
         pig.app.config['TESTING'] = True
+
         self.app = pig.app.test_client()
-        self.database = Database(Flask(__name__))
+        self.database = Database(Flask(__name__), "postgres://vvowlncwqspvuy:d33be97885edd47261373cdc4366e0ecc0c7608658564e159f19d84801b05145@ec2-79-125-2-69.eu-west-1.compute.amazonaws.com:5432/d76s6hbvr5lsfb")
         self.db_getters = DbGetters(
                 self.database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
                 user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
@@ -27,9 +28,8 @@ class PigTestCase(unittest.TestCase):
         return self.app.get('/logout', follow_redirects=True)
 
     # A helper method to setup the connection to the postgresDB on heroku
-    def setup_db(self, uri="postgres://wtsceqpjdsbhxw:34df69f4132d39ea5b95e52822d6dedc8e3eb368915cb8888526f896f21bce75@ec2-54-75-229-201.eu-west-1.compute.amazonaws.com:5432/dfa7tvu04d7t6i" ):
-        temp = Database(Flask(__name__))
-        temp.set_uri(uri)
+    def setup_db(self, uri="postgres://vvowlncwqspvuy:d33be97885edd47261373cdc4366e0ecc0c7608658564e159f19d84801b05145@ec2-79-125-2-69.eu-west-1.compute.amazonaws.com:5432/d76s6hbvr5lsfb" ):
+        temp = Database(Flask(__name__),uri)
         return temp
 
     #A helper method that sends a post request to the register page containing all of the registration-info
