@@ -5,6 +5,8 @@ from pig.scripts.DivideGroupsToLeaders import DivideGroupsToLeaders
 from pig.scripts.DbGetters import *
 from flask import Flask
 from random import randint
+from pig.scripts.Tasks import Tasks
+from pig.login.registration_handler import RegistrationHandler
 
 
 class PigTestCase(unittest.TestCase):
@@ -14,11 +16,28 @@ class PigTestCase(unittest.TestCase):
         pig.app.config['TESTING'] = True
 
         self.app = pig.app.test_client()
-        self.database = Database(Flask(__name__), "postgres://vvowlncwqspvuy:d33be97885edd47261373cdc4366e0ecc0c7608658564e159f19d84801b05145@ec2-79-125-2-69.eu-west-1.compute.amazonaws.com:5432/d76s6hbvr5lsfb")
+        self.database = Database(Flask(__name__), "postgres://vvowlncwqspvuy:d33be97885"
+                                                  "edd47261373cdc4366e0ecc0c7608658564e1"
+                                                  "59f19d84801b05145@ec2-79-125-2-69.eu-west-1"
+                                                  ".compute.amazonaws.com:5432/d76s6hbvr5lsfb")
         self.db_getters = DbGetters(
-                self.database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
-                user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
-        self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database,Division,user_division, self.db_getters)
+            self.database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
+            user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
+
+        self.tasks = Tasks(
+            self.database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
+            user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
+
+        self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database, Division, user_division, self.db_getters)
+        self.registration_handler = RegistrationHandler(self.database,User)
+
+    def tearDown(self):
+        tables = ["division", "division_parameter", "enum_variant",
+                  "groups", "number_param", "parameter", "parameter_value",
+                  "user_division","user_division_parameter_value", "user_group", "users", "value"]
+        for table in tables:
+            self.database.get_session().execute("DELETE FROM " + table)
+        self.database.get_session().commit()
 
 
     def login(self,username,password):
@@ -28,13 +47,22 @@ class PigTestCase(unittest.TestCase):
         return self.app.get('/logout', follow_redirects=True)
 
     # A helper method to setup the connection to the postgresDB on heroku
-    def setup_db(self, uri="postgres://vvowlncwqspvuy:d33be97885edd47261373cdc4366e0ecc0c7608658564e159f19d84801b05145@ec2-79-125-2-69.eu-west-1.compute.amazonaws.com:5432/d76s6hbvr5lsfb" ):
+    def setup_db(self, uri="postgres://vvowlncwqspvuy:d33be97885edd47261373cdc4366e0ecc"
+                           "0c7608658564e159f19d84801b05145@ec2-79-125-2-69.eu-west-1."
+                           "compute.amazonaws.com:5432/d76s6hbvr5lsfb" ):
         temp = Database(Flask(__name__),uri)
         return temp
 
     #A helper method that sends a post request to the register page containing all of the registration-info
     def register(self, email, password, password_confirm, first_name, last_name):
-        return self.app.post("/register", data=dict(Email=email, Password=password, PasswordConfirm=password_confirm, FirstName=first_name, LastName=last_name))
+        result = self.registration_handler.validate_form(
+            form=dict(
+                Email=email, Password=password,
+                PasswordConfirm=password_confirm,
+                FirstName=first_name,
+                LastName=last_name))
+        if result[0]:
+            self.registration_handler.create_user(first_name, last_name, email, password)
 
     def create_user(self, email, password, first_name, last_name):
         self.database.get_session().execute("INSERT INTO users (firstname,lastname,email,password) VALUES('" +first_name+"','" + last_name+"','" + email +"','"+password+"')")
@@ -130,6 +158,7 @@ class PigTestCase(unittest.TestCase):
         data = None
         database = self.setup_db()
         try:
+            self.create_user("test@email.com","password","name","name")
             data = database.get_session().query(User).first()
         except Exception as e:
             print(e)
@@ -155,17 +184,15 @@ class PigTestCase(unittest.TestCase):
     # Testing login with valid username and password, and then logging out.
     def test_login_and_logout_valid_username_and_password(self):
         self.create_user('valid@email.com','password','firstname','lastname')
-        rv = self.login('valid@email.com','password')
+        response = self.login('valid@email.com','password')
 
-        assert b'firstname' in rv.data
-        rv = self.logout()
-        assert b'firstname' not in rv.data
-
-        self.delete_user('valid@email.com')
+        assert '200' in response.status
+        response = self.logout()
+        assert '200' in response.status
 
     # TODO: Skriv ferdig denne!!
     def test_create_division(self):
-        response = self.login("a@a.com", "test");
+        response = self.login("a@a.com", "test")
         assert '200' in response.status
 
         name_div = "obscure_test_div"
@@ -174,7 +201,7 @@ class PigTestCase(unittest.TestCase):
         name_opt1 = "obscure_test_div_option1"
         name_opt2 = "obscure_test_div_option2"
         # 1. send form data as POST
-        response = self.app.post("/create_division", \
+        response = self.app.post("/create_division",
                 data = dict(
                     Division = name_div,
                     Parameter1 = name_param1,
@@ -191,15 +218,15 @@ class PigTestCase(unittest.TestCase):
 
         # 2. Verify contents of database and clean up
         div = self.database.get_session().query(Division) \
-                .filter(Division.name == name_div).first()
+            .filter(Division.name == name_div).first()
         assert div is not None
 
         param1 = self.database.get_session().query(Parameter) \
-                .filter(Parameter.description == name_param1).first()
+            .filter(Parameter.description == name_param1).first()
         assert param1 is not None
 
         param2 = self.database.get_session().query(Parameter) \
-                .filter(Parameter.description == name_param2).first()
+            .filter(Parameter.description == name_param2).first()
         assert param2 is not None
 
         opt1 = self.database.get_session().query(EnumVariant) \
@@ -222,37 +249,47 @@ class PigTestCase(unittest.TestCase):
 
     #Testing registration of a user with two different passwords
     def test_register_user_with_two_different_password_inputs(self):
-        rv = self.register("asd@asd.com", "test", "test1", "tester", "testing")
-        assert b'does not match.' in rv.data
+        self.register("asd@asd.com", "test", "test1", "tester", "testing")
+        user = self.get_user("asd@asd")
+        assert user is None
 
     #Testing registration of a user with invalid email
     def test_register_user_with_invalid_email(self):
-        rv = self.register("asd@asd", "test", "test", "tester", "testing")
-        assert b'email was invalid.' in rv.data
-        rv = self.register("asd@as@d", "test", "test", "tester", "testing")
-        assert b'email was invalid.' in rv.data
-        rv = self.register("as..d@asd", "test", "test", "tester", "testing")
-        assert b'email was invalid.' in rv.data
+        self.register("asd@asd", "test", "test", "tester", "testing")
+        user = self.get_user("asd@asd")
+        assert user is None
+
+        self.register("asd@as@d", "test", "test", "tester", "testing")
+        user = self.get_user("asd@asd")
+        assert user is None
+
+        self.register("as..d@asd", "test", "test", "tester", "testing")
+        user = self.get_user("as..d@asd")
+        assert user is None
 
     #Testing if it is possible to register a user with one ore more empty fields
     def test_register_user_with_one_or_more_empty_fields(self):
-        rv = self.register("asd@asd.com", "", "test", "tester", "testing")
-        assert b'fields are filled.' in rv.data
-        rv = self.register("asd@asd.com", "test", "", "tester", "testing")
-        assert b'fields are filled.' in rv.data
-        rv = self.register("", "test", "test", "tester", "testing")
-        assert b'fields are filled.' in rv.data
-        rv = self.register("asd@asd.com", "test", "test", "", "testing")
-        assert b'fields are filled.' in rv.data
-        rv = self.register("asd@asd.com", "test", "test", "tester", "")
-        assert b'fields are filled.' in rv.data
-        rv = self.register("", "", "", "", "")
-        assert b'fields are filled.' in rv.data
+
+        self.register("asd@asd.com", "", "test", "tester", "testing")
+        user = self.get_user("asd@asd")
+        assert user is None
+
+        self.register("asd@asd.com", "test", "", "tester", "testing")
+        user = self.get_user("asd@asd.com")
+        assert user is None
+
+        self.register("asd@asd.com", "test", "test", "", "testing")
+        user = self.get_user("asd@asd.com")
+        assert user is None
+
+        self.register("asd@asd.com", "test", "test", "tester", "")
+        user = self.get_user("asd@asd.com")
+        assert user is None
 
     #Testing if its possible to register a user
     def test_register_user_with_valid_data(self):
         self.register("asd@asd.com", "test", "test", "test", "test")
-        user = self.database.get_session().query(User).filter(User.email == "asd@asd.com").first()
+        user = self.get_user("asd@asd.com")
         assert user is not None
 
     def test_remove_user_from_database(self):
