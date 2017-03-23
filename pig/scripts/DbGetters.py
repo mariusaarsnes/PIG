@@ -50,8 +50,9 @@ class DbGetters:
             return divisions
 
     def get_all_divisions_where_member_or_leader_for_given_user(self,current_user):
-        return self.database.get_session().query(self.User).filter(self.User.id == current_user.id).first().divisions
-
+        return self.database.get_session().query(self.user_division, self.Division, self.User).filter(self.user_division._columns.get("user_id") == current_user.id, \
+                                                                                                              self.Division.id == self.user_division._columns.get("division_id"),\
+                                                                                                            self.User.id == self.Division.creator_id).all()
 
     def get_all_divisions_where_member_for_given_user(self,current_user):
         return self.database.get_session().query(self.Division)\
