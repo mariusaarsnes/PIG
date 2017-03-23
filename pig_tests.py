@@ -163,7 +163,6 @@ class PigTestCase(unittest.TestCase):
 
         self.delete_user('valid@email.com')
 
-    # TODO: Skriv ferdig denne!!
     def test_create_division(self):
         response = self.login("a@a.com", "test");
         assert '200' in response.status
@@ -197,10 +196,12 @@ class PigTestCase(unittest.TestCase):
         param1 = self.database.get_session().query(Parameter) \
                 .filter(Parameter.description == name_param1).first()
         assert param1 is not None
+        assert param1 in div.parameters
 
         param2 = self.database.get_session().query(Parameter) \
                 .filter(Parameter.description == name_param2).first()
         assert param2 is not None
+        assert param2 in div.parameters
 
         opt1 = self.database.get_session().query(EnumVariant) \
                 .filter(EnumVariant.name == name_opt1).first()
@@ -210,14 +211,19 @@ class PigTestCase(unittest.TestCase):
                 .filter(EnumVariant.name == name_opt2).first()
         assert opt2 is not None
 
-        # TODO assert the links too
+        #  number_param = self.database.get_session().query(NumberParam) \
+                #  .filter(NumberParam.parameter == param1).first()
+        #assert number_param is not None
+
+        # TODO: With the following, we get errors if there are already entries before test.
+        #  assert opt1 in param2.enum_variants
+        #  assert opt2 in param2.enum_variants
 
         self.database.get_session().delete(div)
         self.database.get_session().delete(param1)
         self.database.get_session().delete(param2)
 
         self.database.get_session().commit()
-        pass
 
 
     #Testing registration of a user with two different passwords
