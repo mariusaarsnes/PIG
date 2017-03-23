@@ -16,12 +16,12 @@ class Task_CreateDivision:
         # Specialization of each Parameter
         self.specs = {} # int -> NumberParam or [EnumVariant]
 
-    # Returns False if there was an error
+    # Returns a string with a message if there was an error. Else None.
     def register_division(self, current_user, form):
         print('Registering division...', file=sys.stderr)
         print('Input: %s' % form, file=sys.stderr)
-        if len(form) == 0 or form["Division"] is None:
-            return False
+        if len(form) == 0 or form["Division"] is None or len(form["Division"]) == 0:
+            return "Name for division needs to be specified"
 
         division = self.Division(name = form["Division"], creator_id = current_user.id)
 
@@ -107,7 +107,7 @@ class Task_CreateDivision:
 
         self.database.get_session().add(division)
         self.database.get_session().commit()
-        return True
+        return None
 
     def make_parameter(self, desc):
         parameter = self.database.get_session() \
