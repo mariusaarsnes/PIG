@@ -7,7 +7,6 @@ from pig.login.login_handler import LoginHandler
 from pig.login.registration_handler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
-from pig.scripts.register_user import Task_RegisterUser
 from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
@@ -30,11 +29,12 @@ login_handler, registration_handler = LoginHandler(database, User), Registration
 
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
-division_registrator = Task_RegisterUser(database, User, Division, user_division)
 db_getters = DbGetters(
                 database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
                 user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
-tasks = Tasks()
+tasks = Tasks(
+    database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
+    user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
 
 database.get_session().commit()
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
@@ -63,7 +63,7 @@ def apply_group():
                 .first()
 
         if request.method == 'POST':
-            division_registrator.register_user(current_user, div_id, div_role)
+            tasks.register_user_for_division_for_given_division_id_and_role(current_user, div_id, div_role)
             return redirect(url_for("home"))
             # TODO Actually register the person
             """
