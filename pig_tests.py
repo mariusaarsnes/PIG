@@ -288,7 +288,7 @@ class PigTestCase(unittest.TestCase):
         self.delete_user(user1.email)
         """
 
-"""
+
     def test_divide_groups_to_leaders_with_varying_range_of_leaders_and_groups(self):
         group_count = randint(15, 25)
         leader_count = randint(3, 7)
@@ -320,7 +320,6 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
-        """
 
 if __name__ == '__main__':
     unittest.main()
