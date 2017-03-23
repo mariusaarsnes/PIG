@@ -20,8 +20,6 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
 
 <body>
     <!-- Uses a transparent header that draws on top of the layout's background -->
-
-
     <div class="demo-layout-transparent mdl-layout mdl-js-layout">
         <header class="mdl-layout__header mdl-layout__header--transparent fifty-transparent">
             <div class="mdl-layout__header-row">
@@ -52,7 +50,6 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
             </div>
         </header>
         <div class="mdl-layout__drawer">
-
             <span class="mdl-layout-title">Title</span>
             <nav class="mdl-navigation">
                 {% if user.is_authenticated %}
@@ -70,25 +67,8 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
         </div>
         <main class="mdl-layout__content">
             <div class="demo-blog__posts mdl-grid">
-
-
-
                 {% block content %}{% endblock %}
-
-
             </div>
-
         </main>
-
     </div>
-
-
-
-
-
-
-
-
-
-
 </body>
