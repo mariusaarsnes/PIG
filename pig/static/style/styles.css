@@ -329,7 +329,7 @@ input[id=parameter] {
     display: none;
     color: white;
     position: absolute;
-    background-color: rgba(100, 100, 100, 0.6);
+    background-color: rgba(100, 100, 100, 0.8);
     min-width: 160px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;

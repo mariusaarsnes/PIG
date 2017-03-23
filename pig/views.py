@@ -35,8 +35,6 @@ db_getters = DbGetters(
                 user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
 tasks = Tasks()
 
-print(database.get_session().query(Division).filter(Division.id == database.get_session().query(func.max(Division.id)).first()[0]).first())
-
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
