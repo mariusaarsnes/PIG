@@ -1,0 +1,23 @@
+<!--
+FILE NAME: pig/templates/message.html
+WRITTEN BY: Erlend Hofstad Langseth
+WHEN: March 2017
+PURPOSE: Show a message to the user.
+-->
+
+{% extends "template.html" %}
+{% block head %}
+{{super()}}
+
+{% endblock %}
+{% block content %}
+
+<div class="mdl-card login-form mdl-cell mdl-cell--8-col mdl-shadow--6dp">
+
+    <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-card--expand">
+        {{ message }}
+    </div>
+</div>
+
+
+{% endblock %}
