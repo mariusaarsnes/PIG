@@ -11,6 +11,8 @@ html {
   color: white;
 }
 
+
+
 #table-header:hover > [id^="table-caret"] {
     color: #AAAAAA;
 }
