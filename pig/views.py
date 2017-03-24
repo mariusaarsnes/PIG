@@ -49,6 +49,7 @@ def hello():
 @login_required
 def apply_group():
     # TODO split into separate module
+    message = None
     arg = request.args.get("values")
     if not arg is None:
         [div_name, div_id, div_role] = encryption.decode(pig_key, arg).split(",")
@@ -58,8 +59,11 @@ def apply_group():
                 .first()
         if division_registrator.is_division_creator(current_user, div_id):
             message = "You cannot register for your own division!"
+
+        elif int(div_role) == 1:
+            division_registrator.register_user(current_user, div_id, "Leader")
+            message = "Successfully registered you as a leader in the division: " + div_name
         if request.method == 'POST':
-            division_registrator.register_user(current_user, div_id, div_role)
             return redirect(url_for("home"))
             # TODO Actually register the person
             """
@@ -72,8 +76,8 @@ def apply_group():
             """
         else:
             # Make the form
-            params = division.parameters
-            return render_template("apply_group.html", user=current_user, message=message, params=params, div_name=div_name)
+            #params = division.parameters
+            return render_template("apply_group.html", user=current_user, message=message, params=None, div_name=div_name)
 
     return render_template("apply_group.html", user=current_user, message=None, params=None)
 
