@@ -1,4 +1,4 @@
-from pig.login.user import user as LoginUser
+from pig.login.User import User as LoginUser
 
 #Class that handles the login process
 class LoginHandler:

@@ -1,11 +1,11 @@
-import os, pig, unittest
+import pig, unittest
 from pig.db.models import *
 from pig.db.database import *
 from pig.scripts.DivideGroupsToLeaders import DivideGroupsToLeaders
 from pig.scripts.DbGetters import *
 from flask import Flask
 from random import randint
-
+from sqlalchemy.sql.expression import func
 
 class PigTestCase(unittest.TestCase):
 
@@ -25,6 +25,9 @@ class PigTestCase(unittest.TestCase):
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
+    def show_divisions(self):
+        return self.app.get('/show_divisions', follow_redirects=True)
+
     # A helper method to setup the connection to the postgresDB on heroku
     def setup_db(self, uri="postgres://wtsceqpjdsbhxw:34df69f4132d39ea5b95e52822d6dedc8e3eb368915cb8888526f896f21bce75@ec2-54-75-229-201.eu-west-1.compute.amazonaws.com:5432/dfa7tvu04d7t6i" ):
         temp = Database(Flask(__name__))
@@ -38,6 +41,7 @@ class PigTestCase(unittest.TestCase):
     def create_user(self, email, password, first_name, last_name):
         self.database.get_session().execute("INSERT INTO users (firstname,lastname,email,password) VALUES('" +first_name+"','" + last_name+"','" + email +"','"+password+"')")
         self.database.get_session().commit()
+        return self.database.get_session().query(User).filter(User.email == email).first()
 
 
     def create_users_with_given_parameters_for_usertype_and_count(self,type,count):
@@ -55,6 +59,14 @@ class PigTestCase(unittest.TestCase):
         division = Division(name=name, creator_id=creator_id)
         self.database.get_session().add(division)
         self.database.get_session().commit()
+        return self.database.get_session().query(Division).filter(Division.id == database.get_session().query(func.max(Division.id)).first()[0]).first()
+
+
+    def create_group(self, division, leader_id):
+        group = Group(leader_id=leader_id)
+        division.groups.append(group)
+        self.database.get_session().commit()
+        return self.database.get_session().query(Group).filter(Group.id == database.get_session().query(func.max(Group.id)).first()[0]).first()
 
     def get_division(self,name,creator_id):
         return self.database.get_session()\
@@ -162,6 +174,7 @@ class PigTestCase(unittest.TestCase):
 
         self.delete_user('valid@email.com')
 
+    """
     def test_create_division(self):
         response = self.login("a@a.com", "test");
         assert '200' in response.status
@@ -227,6 +240,7 @@ class PigTestCase(unittest.TestCase):
         self.database.get_session().delete(param2)
 
         self.database.get_session().commit()
+    """
 
     #A helper method that sends a post request to the register page containing all of the registration-info
     def register(self, email, password, password_confirm, first_name, last_name):
@@ -344,7 +358,6 @@ class PigTestCase(unittest.TestCase):
 
         groups = self.db_getters.get_all_groups_in_division_for_given_creator_and_division_id(creator, division.id)
 
-
         for element in groups:
             assert (element.leader_id >= first_leader.id and element.leader_id < first_leader.id + leader_count)
 
@@ -352,6 +365,17 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
+"""
+    def test_(self):
+        leader = self.create_user("asd123@asd123.com", "pass", "first", "last")
+        member = self.create_user("member@member123.com", "pass", "first", "last")
+        division = self.create_division("test_div_test", leader.id)
+        group = self.create_group(division, leader)
+        self.login(leader.email, leader.password)
+        rv = self.show_divisions()
+        assert b'division.name' in rv
+        group.users.append(member)
+"""
 
 if __name__ == '__main__':
     unittest.main()

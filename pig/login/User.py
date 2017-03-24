@@ -1,6 +1,6 @@
 __author__ = 'owner_000'
 
-class user:
+class User:
 
     #Stores the user that will be passed to the login_manager
     def __init__(self, username, password, full_name, id):

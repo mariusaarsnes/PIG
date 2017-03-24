@@ -3,8 +3,8 @@
 from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
-from pig.login.login_handler import LoginHandler
-from pig.login.registration_handler import RegistrationHandler
+from pig.login.LoginHandler import LoginHandler
+from pig.login.RegistrationHandler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
 from pig.scripts.register_user import Task_RegisterUser
@@ -69,7 +69,7 @@ def apply_group():
             elif int(div_role) == 1:
                 return render_template("apply_group.html", user=current_user,\
                         message="Successfully registered you as a LEADER for the division: " + div_name)
-        """
+            """
         else:
             # Make the form
             params = division.parameters
