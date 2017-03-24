@@ -21,6 +21,7 @@ class PigTestCase(unittest.TestCase):
                                                   "edd47261373cdc4366e0ecc0c7608658564e1"
                                                   "59f19d84801b05145@ec2-79-125-2-69.eu-west-1"
                                                   ".compute.amazonaws.com:5432/d76s6hbvr5lsfb")
+        print(self.database.get_session().query(User).all())
         self.db_getters = DbGetters(
             self.database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
             user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
@@ -30,7 +31,7 @@ class PigTestCase(unittest.TestCase):
             user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
 
         self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database, Division, user_division, self.db_getters)
-        self.registration_handler = RegistrationHandler(self.database,User)
+        self.registration_handler = RegistrationHandler(self.database, User)
 
     def tearDown(self):
         tables = ["division", "division_parameter", "enum_variant",
@@ -53,7 +54,7 @@ class PigTestCase(unittest.TestCase):
     # A helper method to setup the connection to the postgresDB on heroku
     def setup_db(self, uri="postgres://vvowlncwqspvuy:d33be97885edd47261373cdc4366e0ecc"
                            "0c7608658564e159f19d84801b05145@ec2-79-125-2-69.eu-west-1."
-                           "compute.amazonaws.com:5432/d76s6hbvr5lsfb" ):
+                           "compute.amazonaws.com:5432/d76s6hbvr5lsfb"):
         temp = Database(Flask(__name__),uri)
         return temp
 
@@ -279,9 +280,6 @@ class PigTestCase(unittest.TestCase):
 >>>>>>> 5f74e55912356b9071f3870a18797f67e75d43ab
     """
 
-    #A helper method that sends a post request to the register page containing all of the registration-info
-    def register(self, email, password, password_confirm, first_name, last_name):
-        return self.app.post("/register", data=dict(Email=email, Password=password, PasswordConfirm=password_confirm, FirstName=first_name, LastName=last_name))
 
     #The methods below are pretty self explainatory; they all query the database and they are used by the testing methods
     #instead of them directly querying the database.
