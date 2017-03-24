@@ -21,7 +21,6 @@ class PigTestCase(unittest.TestCase):
                                                   "edd47261373cdc4366e0ecc0c7608658564e1"
                                                   "59f19d84801b05145@ec2-79-125-2-69.eu-west-1"
                                                   ".compute.amazonaws.com:5432/d76s6hbvr5lsfb")
-        print(self.database.get_session().query(User).all())
         self.db_getters = DbGetters(
             self.database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
             user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
@@ -361,6 +360,7 @@ class PigTestCase(unittest.TestCase):
 
     #Tests if it is able to register a certain user to a certain division through the site. It generates the link for the signup based on data from the page
     #Then follows the url and checks if it gets the desired output.
+
     """
     def test_register_user_as_student_for_division(self):
         pass
@@ -371,14 +371,13 @@ class PigTestCase(unittest.TestCase):
         self.create_division("testing_division", user.id)
         division = self.database.get_session().query(Division).filter(Division.creator_id == user.id, Division.name == "testing_division").first()
         self.login("tester1@asd.com", "test")
-        link = get_divisions.get_link(pig_key, division.name, division.id, 1)
+        link = self.tasks.get_link(pig_key, division.name, division.id, 1)
         rv = self.go_to_division(link)
         assert b'registered you as a' in rv.data
         self.delete_division(division.id)
         self.delete_user(user.email)
         self.delete_user(user1.email)
-        """
-
+    """
 
     def test_divide_groups_to_leaders_with_varying_range_of_leaders_and_groups(self):
         group_count = randint(15, 25)
