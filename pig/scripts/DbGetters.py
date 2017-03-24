@@ -90,4 +90,5 @@ class DbGetters:
         return self.database.get_session().query(self.User).filter(
                                 self.user_division._columns.get("division_id") == division_id,
                                 self.user_division._columns.get("user_id") == self.User.id,
+                                self.user_division._columns.get("role") == "Member",
                                 ~self.User.id.in_(subquery)).all()

@@ -11,7 +11,6 @@ from pig.scripts.register_user import Task_RegisterUser
 from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
-from sqlalchemy.sql.expression import func
 
 app = Flask(__name__, template_folder='templates')
 
@@ -50,6 +49,7 @@ def hello():
 @login_required
 def apply_group():
     # TODO split into separate module
+    message = None
     arg = request.args.get("values")
     if not arg is None:
         [div_name, div_id, div_role] = encryption.decode(pig_key, arg).split(",")
@@ -59,8 +59,11 @@ def apply_group():
                 .first()
         if division_registrator.is_division_creator(current_user, div_id):
             message = "You cannot register for your own division!"
+
+        elif int(div_role) == 1:
+            division_registrator.register_user(current_user, div_id, "Leader")
+            message = "Successfully registered you as a leader in the division: " + div_name
         if request.method == 'POST':
-            division_registrator.register_user(current_user, div_id, div_role)
             return redirect(url_for("home"))
             # TODO Actually register the person
             """
@@ -73,20 +76,24 @@ def apply_group():
             """
         else:
             # Make the form
-            params = division.parameters
-            return render_template("apply_group.html", user=current_user, message=message, params=params, div_name=div_name)
+            #params = division.parameters
+            return render_template("apply_group.html", user=current_user, message=message, params=None, div_name=div_name)
 
     return render_template("apply_group.html", user=current_user, message=None, params=None)
 
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
 def create_division():
-    print("Entered create_division")
     if request.method == 'POST':
-        division_creator.register_division(current_user, request.form)
-        print("Create division %s" % type(request.form))
-        print("Create division %s" % request.form)
-        return redirect(url_for("home"))
+        try:
+            msg = division_creator.register_division(current_user, request.form)
+        except:
+            msg = "An error happened internally, and the division was not created"
+
+        if msg is None:
+            msg = "Division created successfully"
+
+        return render_template("message.html", user=current_user, message=msg)
     return render_template("create_division.html", user=current_user)
 
 @app.route("/show_groups_leader")
