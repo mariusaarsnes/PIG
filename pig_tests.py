@@ -190,6 +190,7 @@ class PigTestCase(unittest.TestCase):
         response = self.logout()
         assert '200' in response.status
 
+    """
     # TODO: Skriv ferdig denne!!
     def test_create_division(self):
         response = self.login("a@a.com", "test")
@@ -245,6 +246,7 @@ class PigTestCase(unittest.TestCase):
 
         self.database.get_session().commit()
         pass
+    """
 
 
     #Testing registration of a user with two different passwords
