@@ -12,7 +12,6 @@ from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
 
-
 app = Flask(__name__, template_folder='templates')
 
 # Instatiating different classes that are used by the functions below.
@@ -28,7 +27,6 @@ login_manager.init_app(app)
 
 login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
 
-
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
 division_registrator = Task_RegisterUser(database, User, Division, user_division)
 db_getters = DbGetters(
@@ -36,19 +34,16 @@ db_getters = DbGetters(
                 user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
 tasks = Tasks()
 
-database.get_session().commit()
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
     return login_handler.get_user_with_id(user_id)
 
-
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
-
 @app.route("/")
 def hello():
-    return render_template('index.html', user=current_user)
+    return redirect(url_for("home"))
 
 @app.route("/apply_group", methods=['GET', 'POST'])
 @login_required
@@ -61,7 +56,8 @@ def apply_group():
                 .query(Division) \
                 .filter(Division.id == div_id) \
                 .first()
-
+        if division_registrator.is_division_creator(current_user, div_id):
+            message = "You cannot register for your own division!"
         if request.method == 'POST':
             division_registrator.register_user(current_user, div_id, div_role)
             return redirect(url_for("home"))
@@ -77,7 +73,7 @@ def apply_group():
         else:
             # Make the form
             params = division.parameters
-            return render_template("apply_group.html", user=current_user, message=None, params=params, div_name=div_name)
+            return render_template("apply_group.html", user=current_user, message=message, params=params, div_name=div_name)
 
     return render_template("apply_group.html", user=current_user, message=None, params=None)
 
@@ -127,7 +123,7 @@ def register():
 
 @app.route("/home")
 def home():
-    return render_template("template.html", user=current_user)
+    return render_template('index.html', user=current_user)
 
 
 @app.route("/show_divisions")
@@ -138,6 +134,14 @@ def show_divisions():
     leader_links, member_links = tasks.generate_links(pig_key,divisions_created)
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, leader_links=leader_links, member_links=member_links)
+
+@app.route("/division_groups")
+@login_required
+def show_groupless_users():
+    if request.args.get("divisionId") is not None:
+        if division_registrator.is_division_creator(current_user, int(request.args.get("divisionId"))):
+            return render_template("division_groups.html", user=current_user, groups=db_getters.get_groups(int(request.args.get("divisionId"))), groupless_users=db_getters.get_groupless_users(int(request.args.get("divisionId"))))
+    return redirect(url_for("home"))
 
 @app.route("/logout")
 @login_required

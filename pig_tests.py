@@ -9,7 +9,6 @@ from random import randint
 
 class PigTestCase(unittest.TestCase):
 
-
     def setUp(self):
         pig.app.config['TESTING'] = True
         self.app = pig.app.test_client()
@@ -229,13 +228,39 @@ class PigTestCase(unittest.TestCase):
 
         self.database.get_session().commit()
 
+    #A helper method that sends a post request to the register page containing all of the registration-info
+    def register(self, email, password, password_confirm, first_name, last_name):
+        return self.app.post("/register", data=dict(Email=email, Password=password, PasswordConfirm=password_confirm, FirstName=first_name, LastName=last_name))
+
+    #The methods below are pretty self explainatory; they all query the database and they are used by the testing methods
+    #instead of them directly querying the database.
+    def delete_user(self, email):
+        self.database.get_session().execute("DELETE FROM users WHERE email = '" + email + "'")
+        self.database.get_session().commit()
+
+    def create_division(self, name, creator_id):
+        division = Division(name=name, creator_id=creator_id)
+        self.database.get_session().add(division)
+        self.database.get_session().commit()
+
+    def delete_division(self, id):
+        self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
+        self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
+        self.database.get_session().commit()
+
+    def get_user(self, email):
+        return self.database.get_session().query(User).filter(User.email == email).first()
+
+    def go_to_division(self, link):
+        return self.app.get("/" + link)
 
     #Testing registration of a user with two different passwords
     def test_register_user_with_two_different_password_inputs(self):
         rv = self.register("asd@asd.com", "test", "test1", "tester", "testing")
         assert b'does not match.' in rv.data
 
-    #Testing registration of a user with invalid email
+    #Testing registration of a user with invalid email by checking if the feedback contains a part of the string it displays to the user
+    #when entering the wrong email.
     def test_register_user_with_invalid_email(self):
         rv = self.register("asd@asd", "test", "test", "tester", "testing")
         assert b'email was invalid.' in rv.data
@@ -244,7 +269,8 @@ class PigTestCase(unittest.TestCase):
         rv = self.register("as..d@asd", "test", "test", "tester", "testing")
         assert b'email was invalid.' in rv.data
 
-    #Testing if it is possible to register a user with one ore more empty fields
+    #Testing if it is possible to register a user with one ore more empty fields. It does this by following the redirect after posting the
+    #registration form then checking if it received the exepcted output.
     def test_register_user_with_one_or_more_empty_fields(self):
         rv = self.register("asd@asd.com", "", "test", "tester", "testing")
         assert b'fields are filled.' in rv.data
@@ -265,6 +291,7 @@ class PigTestCase(unittest.TestCase):
         user = self.database.get_session().query(User).filter(User.email == "asd@asd.com").first()
         assert user is not None
 
+    #Tests if it is able to remove a user from the database
     def test_remove_user_from_database(self):
         user = self.get_user("asd@asd.com")
         if user is None:
@@ -273,7 +300,8 @@ class PigTestCase(unittest.TestCase):
         user = self.get_user("asd@asd.com")
         assert user is None
 
-
+    #Tests if it is able to register a certain user to a certain division through the site. It generates the link for the signup based on data from the page
+    #Then follows the url and checks if it gets the desired output.
     """
     def test_register_user_as_student_for_division(self):
         pass
