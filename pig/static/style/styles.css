@@ -1,14 +1,25 @@
 html {
     background-color:#444444;
 }
-    
-.demo-layout-transparent {
-    background: url(../img/trondheim.jpg) center / cover;}
-.demo-layout-transparent .mdl-layout__header,
+
+.mdl-layout__header, .mdl-layout__drawer-button {
+    background-color: rgba(94, 73, 121, 1) !important;
+    color: white;
+}
+.demo-layout-transparent,
 .demo-layout-transparent .mdl-layout__drawer-button {
+  background-color: #CCCCCC;
   /* This background is dark, so we set text to white. Use 87% black instead if
      your background is light. */show_divisions_created_table
   color: white;
+}
+
+.mdl-data-table {
+    background-color: #E5E5E5;
+}
+
+.mdl-card {
+    background-color: #DDDDDD !important;
 }
 
 #table-header:hover > [id^="table-caret"] {
@@ -163,6 +174,7 @@ body .demo-layout-transparent {
   -webkit-overflow-scrolling: touch;
 }
 .demo-layout-transparent .mdl-card {
+    background-color: #CCCCCC;
   display: -webkit-flex;
     align-content: center;
     align-items: center;
@@ -307,20 +319,25 @@ input[id=parameter] {
 
 /* Dropdown Button */
 .dropdown-button {
+    top: 60%;
+    -webkit-transform: translateY(60%);
+    -ms-transform: translateY(60%);
+    transform: translateY(60%);
     background-color: Transparent;
     color: #FFFFFF;
     font-family: "Trebuchet MS", 'Helvetica', sans-serif;
     font-size: 14px;
     border: none;
     cursor: pointer;
+    display: block;
 }
 
 /* The container <div> - needed to position the dropdown content */
 .dropdown-box {
     position: relative;
-    min-height: 50px;
-    height: 50px;
-    line-height: 49px;
+    min-height: 100%;
+    height: 100%;
+    max-width: 100px;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -352,6 +369,7 @@ input[id=parameter] {
 /* Show the dropdown menu on hover */
 .dropdown-box:hover .dropdown-content {
     display: block;
+    top: 100%;
 }
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
