@@ -17,7 +17,8 @@ PURPOSE: Provide a page where users can view all the pages that they are current
                 <div class="mdl-card__title showgroupsleader mdl-color--primary mdl-color-text--white">
                     <h2 class="mdl-card__title-text">Division: {{ division.name }}</h2>
                 </div>
-            {% for group in division.groups  %}
+            {% for group in division.groups %}
+                {% set count = [] %}
                 {% if (group.leader_id == current_user.id) %}
                     <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
                         <div class="full-width">
@@ -37,6 +38,8 @@ PURPOSE: Provide a page where users can view all the pages that they are current
                             </table>
                         </div>
                     </div>
+                {% else %}
+                    <p style="margin: 10px">You are signed up as leader, but you have no groups!</p>
                 {% endif %}
             {% endfor %}
                <!-- <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
