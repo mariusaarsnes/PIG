@@ -21,48 +21,48 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
         {% if message is not none %}
             <p>{{message}}</p>
         {% endif %}
+        {% if message is none %}
+            {% if params is none %}
+                (this page is intentionally left blank)
+                <br>
+                ((no division specified))
+            {% else %}
+                <form id="signup-form" method="post", action="/apply_group">
+                    <!-- FORM CONTENTS -->
+                    {% for param in params %}
+                        {{param.description}}:
 
-        {% if params is none %}
-            (this page is intentionally left blank)
-            <br>
-            ((no division specified))
-        {% else %}
-            <form id="signup-form" method="post", action="/apply_group">
-                <!-- FORM CONTENTS -->
-                {% for param in params %}
-                    {{param.description}}:
+                        {% if param.number_param is none %}
+                            <select>
+                                {% for variant in param.enum_variants %}
+                                    <option value="{{variant.name}}">
+                                        {{variant.name}}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <input type="text" placeholder="{{param.number_param.min}}-{{param.number_param.max}}" />
+                        {% endif %}
 
-                    {% if param.number_param is none %}
-                        <select>
-                            {% for variant in param.enum_variants %}
-                                <option value="{{variant.name}}">
-                                    {{variant.name}}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    {% else %}
-                        <input type="text" placeholder="{{param.number_param.min}}-{{param.number_param.max}}" />
-                    {% endif %}
+                        <br>
 
-                    <br>
-
-                {% endfor %}
-            </form>
+                    {% endfor %}
+                </form>
+            {% endif %}
         {% endif %}
     </div>
 
 
-
-    <!-- Submit button: -->
-    <div class="mdl-card__actions mdl-card--border">
-        <button id="demo-show-snackbar" type="submit" form="signup-form" id="submit-form"  value="apply for group "class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Apply for group</button>
-        <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
-            <div class="mdl-snackbar__text"></div>
-            <button class="mdl-snackbar__action" type="button"></button>
+    {% if message is none %}
+        <!-- Submit button: -->
+        <div class="mdl-card__actions mdl-card--border">
+            <button id="demo-show-snackbar" type="submit" form="signup-form" id="submit-form"  value="apply for group "class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Apply for group</button>
+            <div id="demo-snackbar-example" class="mdl-js-snackbar mdl-snackbar">
+                <div class="mdl-snackbar__text"></div>
+                <button class="mdl-snackbar__action" type="button"></button>
+            </div>
         </div>
-
-
-    </div>
+    {% endif %}
 
 </div>  
 
@@ -94,6 +94,5 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
 </script>
 
 {% endblock %}
-
 
 

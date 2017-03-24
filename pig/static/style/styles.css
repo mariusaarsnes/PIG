@@ -1,18 +1,85 @@
-    html {
-background-color:#E6FFE7;
+html {
+    background-color:#444444;
 }
     
 .demo-layout-transparent {
-
     background: url(../img/trondheim.jpg) center / cover;}
 .demo-layout-transparent .mdl-layout__header,
 .demo-layout-transparent .mdl-layout__drawer-button {
   /* This background is dark, so we set text to white. Use 87% black instead if
-     your background is light. */
+     your background is light. */show_divisions_created_table
   color: white;
 }
-    
-    
+
+#table-header:hover > [id^="table-caret"] {
+    color: #AAAAAA;
+}
+
+.half-width {
+    width: 47.5%;
+}
+
+.right-float {
+    float: right;
+}
+
+.font-size-twenty {
+    font-size: 18px !important;
+}
+
+.full-width {
+    width: 98% !important;
+    max-width: 98%;
+}
+
+.max-width {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.fixed-table {
+    table-layout: fixed;
+}
+
+.twenty-seven-width {
+    width: 27% !important;
+    max-width: 27% !important;
+}
+
+.thirty-three-width {
+    width: 33.3% !important;
+    max-width: 33.3% !important;
+}
+.twenty-width {
+    width: 20% !important;
+    max-width: 20% !important;
+}
+.fourty-width {
+    width: 40% !important;
+    max-width: 40% !important;
+}
+
+.margin-fix {
+    margin-top: 0px;
+    margin-left: 8px;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+.button_style {
+    font-size: 14px !important;
+    text-align: none !important;
+    text-transform: none;
+   line-height: 0 !important;
+    margin: 0 !important;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
+    max-width: 85%;
+    max-height: 80%;
+}
+
     #view-source {
       position: fixed;
       display: block;
@@ -22,7 +89,7 @@ background-color:#E6FFE7;
       margin-bottom: 40px;
       z-index: 900;
     }
-    
+
     body::before {
     background-size: cover;
     background-attachment: fixed;
@@ -59,10 +126,20 @@ background-color:#E6FFE7;
     background-image: url('images/bg_2880.jpg');
   }
 }
-body .demo-layout-transparent {
-  font-family: 'Roboto', 'Helvetica', sans-serif;
+
+.card-align {
+    bottom: 0px !important;
+
 }
 
+body .demo-layout-transparent {
+  font-family: "Trebuchet MS", 'Helvetica', sans-serif;
+}
+.fifty-transparent {
+      /*background: rgba(22, 22, 22, 1);
+     /*background: rgba(0, 0, 0, 0.8);
+     background: rgba(0, 0, 0, 1);*/
+}
 .demo-layout-transparent .demo-blog__posts {
   max-width: 900px;
     align-content: center;
@@ -80,7 +157,8 @@ body .demo-layout-transparent {
 }
 
 .demo-layout-transparent.mdl-layout .mdl-layout__content {
-  padding-top: 230px;
+  padding-top: 50px;
+  padding-bottom: 50px;
   position: relative;
   -webkit-overflow-scrolling: touch;
 }
@@ -89,6 +167,7 @@ body .demo-layout-transparent {
     align-content: center;
     align-items: center;
     align-self: center;
+    min-width: 200px;
     margin: auto;
   display: -ms-flexbox;
   display: flex;
@@ -100,15 +179,14 @@ body .demo-layout-transparent {
           align-items: stretch;
 
   min-height: 360px;
-    margin-bottom: 50px;
-  max-height: 360px;
+    margin-top: 25px;
 }
 .demo-layout-transparent .mdl-card__title {
   padding: 16px;
     min-height: 100px;
     max-height: 100px;
-    
-    
+
+
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -118,8 +196,8 @@ body .demo-layout-transparent {
   padding: 16px;
     min-height: 100px;
     max-height: 100px;
-    
-    
+
+
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -149,6 +227,7 @@ body .demo-layout-transparent {
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
   min-height: 64px;
+<<<<<<< HEAD
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -161,6 +240,9 @@ body .demo-layout-transparent {
   width: 100%;
   min-height: 64px;
  padding: 0px;
+=======
+  align: center;
+>>>>>>> 5f74e55912356b9071f3870a18797f67e75d43ab
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -170,12 +252,6 @@ body .demo-layout-transparent {
 }
 
 
-.mdl-data-table {
-    width: 100%;
-   
-    
-}
-
 .demo-layout-transparent .mdl-card__supporting-text strong {
   font-weight: 400;
 }
@@ -184,7 +260,6 @@ body .demo-layout-transparent {
 }
 .demo-layout-transparent .mdl-card__supporting-text:not(:last-child) {
   box-sizing: border-box;
-  min-height: 150px;
 }
 .demo-layout-transparent:not(.demo-blog--blogpost) .mdl-card__supporting-text ~ .mdl-card__supporting-text {
   border-top: 1px solid rgba(0,0,0,0.1);
@@ -213,7 +288,7 @@ body .demo-layout-transparent {
 
 #division-form {
     margin: auto;
-    width: 80%; 
+    width: 80%;
     border-radius: 5px;
 }
 #showgroupsleader_no_divisions h3 {
@@ -246,4 +321,56 @@ input[id=parameter] {
     margin: -2% 5%;
 }
 
+/* Dropdown Button */
+.dropdown-button {
+    background-color: Transparent;
+    color: #FFFFFF;
+    font-family: "Trebuchet MS", 'Helvetica', sans-serif;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+}
 
+/* The container <div> - needed to position the dropdown content */
+.dropdown-box {
+    position: relative;
+    min-height: 50px;
+    height: 50px;
+    line-height: 49px;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    line-height: 1.5;
+    display: none;
+    color: white;
+    position: absolute;
+    background-color: rgba(100, 100, 100, 0.8);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content .dropdown-link {
+    color: white;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-link:hover {
+    background-color: rgba(170, 170, 170, 0.5);
+}
+
+/* Show the dropdown menu on hover */
+.dropdown-box:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown-box:hover dropdown-button {
+    background-color: #3e8e41;
+}

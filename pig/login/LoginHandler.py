@@ -1,4 +1,4 @@
-from pig.login.user import user as LoginUser
+from pig.login.User import User as LoginUser
 
 #Class that handles the login process
 class LoginHandler:
@@ -10,6 +10,8 @@ class LoginHandler:
     #Gets a user instance based on the user id
     def get_user_with_id(self, id):
         user = self.database.get_session().query(self.User).filter(self.User.id == id).first()
+        if user is None:
+            return None
         return self.get_user(user.email, user.password)
 
     #Queries the database for a user with the provided email & password, then crates a new user object with database data
