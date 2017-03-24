@@ -24,6 +24,16 @@ class DbGetters:
         return self.database.get_session().query(self.User)\
             .filter(self.User.id == current_user.id).first().divisions_created
 
+    def fetch_divisions(self, current_user, key):
+        divisions_participating = self.database.get_session().query(self.user_division, self.Division, self.User).filter(self.user_division._columns.get("user_id") == current_user.id, \
+                                                                                                              self.Division.id == self.user_division._columns.get("division_id"),\
+                                                                                                            self.User.id == self.Division.creator_id).all()
+        divisions_created = self.database.get_session().query(self.User).filter(self.User.id ==current_user.id).first().divisions_created
+        ta_links, student_links  = [], []
+        for division in divisions_created:
+            ta_links.append(self.get_link(key, division.name, division.id, 1))
+            student_links.append(self.get_link(key, division.name, division.id, 0))
+        return divisions_participating, divisions_created, ta_links, student_links
 
     def get_all_divisions_where_leader_for_given_user(self,current_user):
 
@@ -40,8 +50,9 @@ class DbGetters:
             return divisions
 
     def get_all_divisions_where_member_or_leader_for_given_user(self,current_user):
-        return self.database.get_session().query(self.User).filter(self.User.id == current_user.id).first().divisions
-
+        return self.database.get_session().query(self.user_division, self.Division, self.User).filter(self.user_division._columns.get("user_id") == current_user.id, \
+                                                                                                              self.Division.id == self.user_division._columns.get("division_id"),\
+                                                                                                            self.User.id == self.Division.creator_id).all()
 
     def get_all_divisions_where_member_for_given_user(self,current_user):
         return self.database.get_session().query(self.Division)\
@@ -66,3 +77,18 @@ class DbGetters:
             print("ERROR_ No leaders signed up for division ",division_id)
             return None
         return leaders
+
+    def get_groups(self, division_id):
+        division = self.database.get_session().query(self.Division).filter(self.Division.id == division_id).first()
+        return division.groups if division is not None else []
+
+    def get_groupless_users(self, division_id):
+        subquery = self.database.get_session().query(self.User.id).filter(
+                                self.Group.id == self.user_group._columns.get("group_id"),
+                                self.Division.id == self.Group.division_id,
+                                self.user_group._columns.get("user_id") == self.User.id).all()
+        return self.database.get_session().query(self.User).filter(
+                                self.user_division._columns.get("division_id") == division_id,
+                                self.user_division._columns.get("user_id") == self.User.id,
+                                self.user_division._columns.get("role") == "Member",
+                                ~self.User.id.in_(subquery)).all()

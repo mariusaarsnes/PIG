@@ -7,77 +7,105 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 {% extends "template.html" %}
 {% block content %}
 
-<div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
-    <div class="mdl-card__title showdivisons mdl-color--primary mdl-color-text--white" id="showdivisions">
-        <h2 class="mdl-card__title-text">Your Divisions</h2>
-    </div>
-
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
-        <div>
-
-            <table id="show_divisions_created_table" class="mdl-data-table mdl-js-data-table">
-                <tr>
-                    <th>Name</th>
-                    <th>Teamleader Signup link</th>
-                    <th>Teammember Signup link</th>
-                </tr>
-                {%  for division in divisions_created %}
-                <tr>
-                    <td>{{ division.name }}</td>
-                    <td><button onclick="copyToClipboard('{{ leader_links[loop.index0] }}')">Kopier lenken</button></td>
-                    <td><button onclick="copyToClipboard('{{ member_links[loop.index0] }}')">Kopier lenken</button></td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-        <div>
-            The divisions you are signed up for:
-            <table id="show_divisions_participating_table" class="mdl-data-table mdl-js-data-table">
-                <tr>
-                    <th>Name</th>
-                </tr>
-                {%  for division in divisions_participating %}
-                <tr>
-                    <td>{{ division.name }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-
-        </div>
-    </div>
-</div>  
+<script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
-        <h2 class="mdl-card__title-text">Divisions you are signed up for</h2>
+        <h2 class="mdl-card__title-text">Your Divisions</h2>
     </div>
-
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
-
-        <div>
-
-            <table id="show_divisions_participating_table" class="mdl-data-table mdl-js-data-table">
+    <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align">
+        <div class="max-width">
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width fixed-table">
+                <thead>
                 <tr>
-                    <th>Name</th>
+                    <th class="mdl-data-table__cell--non-numeric thirty-three-width">Name</th>
+                    <th class="twenty-width">Leader link</th>
+                    <th class="twenty-width">Member link</th>
+                    <th class="twenty-seven-width" style="text-align: center;">Info</th>
                 </tr>
-                {%  for division in divisions_participating %}
-                <tr>
-                    <td>{{ division.name }}</td>
-                </tr>
-                {% endfor %}
+                </thead>
+                <tbody>
+                    {%  for division in divisions_created %}
+                    <tr>
+                        <td class="mdl-data-table__cell--non-numeric">{{ division.name }}</td>
+                        <td><button id="show_button_leader" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" type="button" onclick="copyToClipboard('{{ leader_links[loop.index0] }}')">Kopier</button></td>
+                        <td><button id="show_button_member" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" type="button" onclick="copyToClipboard('{{ member_links[loop.index0] }}')">Kopier</button></td>
+                        <td><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" onclick="location.href = location.origin + '/division_groups?divisionId={{ division.id }}'" type="button">Go to</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
-
         </div>
     </div>
-</div> 
+</div>
+
+<div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+    <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
+        <h2 class="mdl-card__title-text">Division you are a part of</h2>
+    </div>
+    <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align">
+        <div class="max-width">
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width fixed-table">
+                <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric fourty-width">Name</th>
+                        <th class="fourty-width">Division owner</th>
+                        <th class="twenty-width">Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%  for division in divisions_participating %}
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric">{{ division[3].name }}</td>
+                            <td>{{ division[4].firstname }} {{ division[4].lastname }}</td>
+                            <td>{{ division[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+                        <div id="demo-snackbar" class="mdl-js-snackbar mdl-snackbar">
+                            <div class="mdl-snackbar__text"></div>
+                            <button class="mdl-snackbar__action" type="button"></button>
+                        </div>
+<script type="text/javascript">
+        var snackbarContainer = document.getElementById("demo-snackbar");
+        var handler = function(event) {
+            showSnackbarButton.style.backgroundColor = '';
+        };
+        all = document.getElementsByTagName("*");
+        for (i = 0; i < all.length; i++) {
+            if (all[i].id.startsWith("show_button")) {
+                all[i].addEventListener('click', function() {
+                    var data = {
+                        message: ("Successfully copied the link."),
+                        timeout: 1000,
+                        actionHandler: handler,
+                        actionText: ' '
+                    };
+
+                    snackbarContainer.MaterialSnackbar.showSnackbar(data);
+                });
+            }
+        }
+        /*showSnackbarButton.addEventListener('click', function() {
+            'use strict';
+
+            var data = {
+                message: ("Successfully applied to group."),
+                timeout: 1000,
+                actionHandler: handler,
+                actionText: ' '
+            };
+            snackbarContainer.MaterialSnackbar.showSnackbar(data);
+        });*/
+</script>
 
 <!-- Hvis det ikke er her, men bare 'bottom' block, lastes det ikke for meg -->
 <script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 
-
 {% endblock %}
-<!--
 {% block bottom %}
-<script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 {% endblock %}
--->
