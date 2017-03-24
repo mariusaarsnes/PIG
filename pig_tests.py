@@ -174,6 +174,7 @@ class PigTestCase(unittest.TestCase):
 
         self.delete_user('valid@email.com')
 
+    """
     def test_create_division(self):
         response = self.login("a@a.com", "test");
         assert '200' in response.status
@@ -239,6 +240,7 @@ class PigTestCase(unittest.TestCase):
         self.database.get_session().delete(param2)
 
         self.database.get_session().commit()
+    """
 
     #A helper method that sends a post request to the register page containing all of the registration-info
     def register(self, email, password, password_confirm, first_name, last_name):

@@ -11,7 +11,6 @@ from pig.scripts.register_user import Task_RegisterUser
 from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
-from sqlalchemy.sql.expression import func
 
 app = Flask(__name__, template_folder='templates')
 
