@@ -363,7 +363,7 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
-
+"""
     def test_(self):
         leader = self.create_user("asd123@asd123.com", "pass", "first", "last")
         member = self.create_user("member@member123.com", "pass", "first", "last")
@@ -373,6 +373,7 @@ class PigTestCase(unittest.TestCase):
         rv = self.show_divisions()
         assert b'division.name' in rv
         group.users.append(member)
+"""
 
 if __name__ == '__main__':
     unittest.main()
