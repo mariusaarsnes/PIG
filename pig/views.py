@@ -81,12 +81,16 @@ def apply_group():
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
 def create_division():
-    print("Entered create_division")
     if request.method == 'POST':
-        division_creator.register_division(current_user, request.form)
-        print("Create division %s" % type(request.form))
-        print("Create division %s" % request.form)
-        return redirect(url_for("home"))
+        try:
+            msg = division_creator.register_division(current_user, request.form)
+        except:
+            msg = "An error happened internally, and the division was not created"
+
+        if msg is None:
+            msg = "Division created successfully"
+
+        return render_template("message.html", user=current_user, message=msg)
     return render_template("create_division.html", user=current_user)
 
 @app.route("/show_groups_leader")

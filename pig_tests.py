@@ -174,7 +174,6 @@ class PigTestCase(unittest.TestCase):
 
         self.delete_user('valid@email.com')
 
-    # TODO: Skriv ferdig denne!!
     def test_create_division(self):
         response = self.login("a@a.com", "test");
         assert '200' in response.status
@@ -198,7 +197,6 @@ class PigTestCase(unittest.TestCase):
                     Option2_2 = name_opt2,
                 )
             )
-        assert '302' in response.status # Assert redirection
 
         # 2. Verify contents of database and clean up
         div = self.database.get_session().query(Division) \
@@ -208,27 +206,39 @@ class PigTestCase(unittest.TestCase):
         param1 = self.database.get_session().query(Parameter) \
                 .filter(Parameter.description == name_param1).first()
         assert param1 is not None
+        assert param1 in div.parameters
 
         param2 = self.database.get_session().query(Parameter) \
                 .filter(Parameter.description == name_param2).first()
         assert param2 is not None
+        assert param2 in div.parameters
 
         opt1 = self.database.get_session().query(EnumVariant) \
                 .filter(EnumVariant.name == name_opt1).first()
         assert opt1 is not None
+        assert opt1 in param2.enum_variants
 
         opt2 = self.database.get_session().query(EnumVariant) \
                 .filter(EnumVariant.name == name_opt2).first()
         assert opt2 is not None
+        assert opt2 in param2.enum_variants
 
-        # TODO assert the links too
+        number_param = self.database.get_session().query(NumberParam) \
+                .filter(NumberParam.parameter == param1).first()
+        assert number_param is not None
+        assert number_param == param1.number_param
+
 
         self.database.get_session().delete(div)
+        # NOTE: The reason we have to delete the EnumVariants and NumberParam first, is just because
+        #       they got loaded from the database by reading them (in the assert lines above)
+        self.database.get_session().delete(opt1)
+        self.database.get_session().delete(opt2)
+        self.database.get_session().delete(number_param)
         self.database.get_session().delete(param1)
         self.database.get_session().delete(param2)
 
         self.database.get_session().commit()
-        pass
 
     #A helper method that sends a post request to the register page containing all of the registration-info
     def register(self, email, password, password_confirm, first_name, last_name):
