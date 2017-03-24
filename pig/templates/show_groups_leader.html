@@ -17,51 +17,34 @@ PURPOSE: Provide a page where users can view all the pages that they are current
                 <div class="mdl-card__title showgroupsleader mdl-color--primary mdl-color-text--white">
                     <h2 class="mdl-card__title-text">Division: {{ division.name }}</h2>
                 </div>
-            {% for group in division.groups %}
                 {% set count = [] %}
-                {% if (group.leader_id == current_user.id) %}
-                    <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
-                        <div class="full-width">
-                            <table style="table-layout: fixed;" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
-                                <thead>
-                                    <tr>
-                                        <th id="table-header" class="mdl-data-table__cell--non-numeric full-width" onclick="showHiddenElement('{{ group.id }}')">Group {{ group.id }} <i id="table-caret{{ group.id }}" class="fa fa-caret-down right-float font-size-twenty"></i></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="group{{ group.id }}" style="display: none;" class="dropdown">
-                                    {% for member in group.users.all() %}
+                {% for group in division.groups %}
+                    {% if (group.leader_id == current_user.id) %}
+                        {% set __ = count.append(1) %}
+                        <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
+                            <div class="full-width">
+                                <table style="table-layout: fixed;" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+                                    <thead>
                                         <tr>
-                                            <td class="mdl-data-table__cell--non-numeric full-width">{{ member.firstname }} {{ member.lastname }} <text style="float: right;"> {{ member.email }}</text></td>
+                                            <th id="table-header" class="mdl-data-table__cell--non-numeric full-width" onclick="showHiddenElement('{{ group.id }}')">Group {{ group.id }} <i id="table-caret{{ group.id }}" class="fa fa-caret-down right-float font-size-twenty"></i></th>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody id="group{{ group.id }}" style="display: none;" class="dropdown">
+                                        {% for member in group.users.all() %}
+                                            <tr>
+                                                <td class="mdl-data-table__cell--non-numeric full-width">{{ member.firstname }} {{ member.lastname }} <text style="float: right;"> {{ member.email }}</text></td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                    </div>
-                {% else %}
+                    {% endif %}
+                {% endfor %}
+                {% if count|length == 0 %}
                     <p style="margin: 10px">You are signed up as leader, but you have no groups!</p>
                 {% endif %}
-            {% endfor %}
-               <!-- <div class="mdl-color-text--grey-600 mdl-card__supporting-text">
-                    <div>
-                        {% for group in division.groups  %}
-                            {% if (group.leader_id == current_user.id) %}
-                                <table class="mdl-data-table mdl-js-data-table">
-                                    <tr>
-                                        <th>{{ group.id }}</th>
-                                    </tr>
-                                    {% for member in group.users.all() %}
-                                        <tr>
-                                            <td>{{ member.firstname + " " + member.lastname }}</td>
-                                            <td>{{ member.email }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </table>
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>-->
+            </div>
         {% endfor %}
         <!-- Hvis det ikke er her, men bare 'bottom' block, lastes det ikke for meg -->
         <script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>

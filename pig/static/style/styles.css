@@ -2,6 +2,10 @@ html {
     background-color:#444444;
 }
 
+.mdl-layout__header-row {
+    padding: 0 40px 0 40px !important;
+}
+
 .mdl-layout__header, .mdl-layout__drawer-button {
     background-color: rgba(94, 73, 121, 1) !important;
     color: white;
@@ -21,6 +25,7 @@ html {
 .mdl-card {
     background-color: #DDDDDD !important;
 }
+
 
 #table-header:hover > [id^="table-caret"] {
     color: #AAAAAA;
