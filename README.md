@@ -1,5 +1,6 @@
 # Partition Into Groups
 
+[![Build Status](https://travis-ci.org/mariiuus/PIG.svg?branch=master)](https://travis-ci.org/mariiuus/PIG)
 [![Coverage Status](https://coveralls.io/repos/github/mariiuus/PIG/badge.svg?branch=master)](https://coveralls.io/github/mariiuus/PIG?branch=master)
 
 TDT4140 - Software Engineering
