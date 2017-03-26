@@ -322,6 +322,13 @@ input[id=parameter] {
     margin: -2% 5%;
 }
 
+.table-line-break {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    margin: 0;
+}
+
 /* Dropdown Button */
 .dropdown-button {
     top: 60%;
