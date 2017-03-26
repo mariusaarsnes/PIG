@@ -24,29 +24,47 @@ function newVariantId() { return (++ variantId); }
 
 document.getElementById("add_button").addEventListener("click", function() {
     var parameterForm = document.createElement("div");
-    parameterForm.style.borderStyle = "solid";
+    parameterForm.style.setProperty("padding-bottom", "10px", "");
+    parameterForm.style.setProperty("display", "block");
+    var param = "Parameter" + newParamId();
+
+    var nameDiv = document.createElement("div");
+    nameDiv.className = "mdl-textfield mdl-js-textfield has-placeholder is-upgraded";
+    nameDiv.setAttribute("data-upgraded", ",MaterialTextfield");
+    nameDiv.style = "display: flex; padding: 0; margin-bottom: 10px;"
+
+    var nameLabel = document.createElement("label");
+    nameLabel.className = "mdl-textfield__label";
+    nameLabel.setAttribute("for", param);
+//    nameLabel.innerHTML = "Parameter:";
+
+    var nameField = document.createElement("input");
+    nameField.setAttribute("type", "password");
+    nameField.className = "mdl-textfield__input";
+    nameField.name = param;
+    nameField.placeholder = "Parameter name";
+    nameField.style = "width: 80%;"
+
+    nameDiv.appendChild(nameLabel);
+    nameDiv.appendChild(nameField);
     document.getElementById("division-form").insertBefore(parameterForm, document.getElementById("add_button"));
 
     // Display a form to add a parameter to a division.
     console.log(document.getElementById("division-form").childElementCount);
 
-    var label = document.createElement("label");
-    label.innerHTML = "Parameter:";
+    //var label = document.createElement("label");
+    //label.innerHTML = "Parameter:";
 
-    var nameField = document.createElement("input");
-    nameField.type = "text";
-    nameField.name = "Parameter" + newParamId();
-    nameField.id = "parameter";
-    nameField.placeholder = "Parameter name";
+    var deleteBtn = document.createElement("input");
+    deleteBtn.type = "image";
+    deleteBtn.src = "./static/img/cross.png";
+    deleteBtn.style = "width: 20%; max-width: 28px; max-height: 28px;"
+    //<input class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="button" value="Add parameter" id="add_button">
 
+    nameDiv.appendChild(deleteBtn);
 
-    var deleteBtn = document.createElement("button");
-    deleteBtn.type = "button";
-    deleteBtn.innerHTML = "-";
-
-    parameterForm.appendChild(label);
-    parameterForm.appendChild(nameField);
-    parameterForm.appendChild(deleteBtn);
+    parameterForm.appendChild(nameDiv);
+    //parameterForm.appendChild(label);
     parameterForm.appendChild(document.createElement("br"));
     parameterForm.appendChild(typeSelection());
     parameterForm.appendChild(numberForm());
@@ -63,7 +81,9 @@ function typeSelection() {
     var select = document.createElement("select");
     select.id = "type";
     select.name = "Type" + paramId;
-
+    select.style.setProperty("display", "block");
+    select.style.setProperty("width", "100%");
+    select.style.setProperty("margin-bottom", "10px");
     var numOption = document.createElement("option");
     numOption.text = "Numeric";
     numOption.value = "Number";
