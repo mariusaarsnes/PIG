@@ -11,12 +11,11 @@ PURPOSE: Show a message to the user.
 
 {% endblock %}
 {% block content %}
-
-<div class="mdl-card login-form mdl-cell mdl-cell--8-col mdl-shadow--6dp">
-
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-card--expand">
-        {{ message }}
+<div class="mdl-card mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+    <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
+        <h2 class="mdl-card__title-text">Notice!</h2>
     </div>
+    <p style="margin: 10px;">{{ message }}</p>
 </div>
 
 

@@ -24,29 +24,15 @@ function newVariantId() { return (++ variantId); }
 
 document.getElementById("add_button").addEventListener("click", function() {
     var parameterForm = document.createElement("div");
+    parameterForm.style.setProperty("width", "100%");
+    parameterForm.style.setProperty("border-top", "1px solid #555555");
     parameterForm.style.setProperty("padding-bottom", "10px", "");
     parameterForm.style.setProperty("display", "block");
+    parameterForm.style.setProperty("padding-left", "10px");
     var param = "Parameter" + newParamId();
-
-    /*var nameDiv = document.createElement("div");
-    nameDiv.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label is-upgraded";
-
-    var nameLabel = document.createElement("label");
-    nameLabel.className = "mdl-textfield__label";
-    nameLabel.setAttribute("for", param);
-    nameLabel.innerHTML = "Parameter name";
-
-    var nameField = document.createElement("input");
-    nameField.setAttribute("type", "text");
-    nameField.className = "mdl-mdl-textfield__input";
-    nameField.name = param;
-    nameField.placeholder = "Parameter name";
-    nameField.style = "width: 90%;"
-
-    nameDiv.appendChild(nameField);
-    nameDiv.appendChild(nameLabel);*/
     var cloneDiv = document.getElementById("division-name");
     var nameDiv = cloneDiv.cloneNode(true);
+    nameDiv.style.setProperty("width", "90%");
     for (var i = 0; i < nameDiv.childNodes.length; i++) {
         var element = nameDiv.childNodes[i];
         console.log(i + " " + element.id);
@@ -57,15 +43,7 @@ document.getElementById("add_button").addEventListener("click", function() {
             element.innerHTML = "Parameter name";
         }
     }
-    nameDiv.classList.add("is-upgraded");
-
-    nameDiv.addEventListener("focus", function() {
-            nameDiv.classList.add("is-focused");
-    }, true);
-    nameDiv.addEventListener("focusout", function() {
-            nameDiv.classList.remove("is-focused");
-    }, true);
-
+    enhanceField(nameDiv);
     document.getElementById("division-form").insertBefore(parameterForm, document.getElementById("add_button"));
 
     //var label = document.createElement("label");
@@ -74,12 +52,11 @@ document.getElementById("add_button").addEventListener("click", function() {
     var deleteBtn = document.createElement("input");
     deleteBtn.type = "image";
     deleteBtn.src = "./static/img/cross.png";
-    deleteBtn.style = "min-width: 10%; min-height: 10%; max-width: 10%; max-height: 10%;"
+    deleteBtn.style = "min-width: 20px; min-height: 20px; max-width: 20px; max-height: 20px;"
     //<input class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="button" value="Add parameter" id="add_button">
 
-    //nameDiv.appendChild(deleteBtn);
-
     parameterForm.appendChild(nameDiv);
+    parameterForm.appendChild(deleteBtn);
     parameterForm.appendChild(typeSelection());
     parameterForm.appendChild(numberForm());
     parameterForm.appendChild(enumForm());
@@ -90,23 +67,68 @@ document.getElementById("add_button").addEventListener("click", function() {
     componentHandler.upgradeElement(nameDiv);
 });
 
+function createTextField(fieldName, placeholderText) {
+    var div = document.createElement("div");
+    div.className = "mdl-textfield mdl-js-textfield mdl-textfield--floating-label";
+    var field = document.createElement("input");
+    field.className = "mdl-textfield__input";
+    field.setAttribute("type", "text");
+    field.setAttribute("name", fieldName);
+    var label = document.createElement("label");
+    label.className = "mdl-textfield__label";
+    label.setAttribute("type", "text");
+    label.innerHTML = placeholderText;
+    div.appendChild(label);
+    div.appendChild(field);
+    enhanceField(div);
+    return div;
+}
+
+function enhanceField(field) {
+    field.classList.add("is-upgraded");
+    var textField = field.childNodes[1];
+    field.addEventListener("focus", function() {
+            field.classList.add("is-focused");
+            if (textField.value == "")
+                field.classList.remove("is-dirty");
+            else
+                field.classList.add("is-dirty");
+    }, true);
+
+    field.addEventListener("focusout", function() {
+            field.classList.remove("is-focused");
+            if (textField.value == "")
+                field.classList.remove("is-dirty");
+            else
+                field.classList.add("is-dirty");
+    }, true);
+}
+
 function typeSelection() {
+    var selectDiv = document.createElement("div");
+    selectDiv.className = "mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label";
+    selectDiv.style.setProperty("padding", "0");
     var select = document.createElement("select");
     select.id = "type";
     select.name = "Type" + paramId;
+    select.className = "mdl-selectfield__select";
     select.style.setProperty("display", "block");
     select.style.setProperty("width", "100%");
-    select.style.setProperty("margin-bottom", "10px");
+
+    var label = document.createElement("label");
+    label.innerHTML = "Type";
+    label.className = "mdl-selectfield__label";
+
     var numOption = document.createElement("option");
     numOption.text = "Numeric";
     numOption.value = "Number";
     var enumOption = document.createElement("option");
     enumOption.text = "Enumeration";
     enumOption.value = "Enum";
-
+    selectDiv.appendChild(select);
+    selectDiv.appendChild(label);
     select.options.add(numOption);
     select.options.add(enumOption);
-
 
     select.addEventListener("change", function() {
         var enumContainer = document.getElementById("enum" + paramId);
@@ -119,25 +141,21 @@ function typeSelection() {
             numberContainer.style.removeProperty("display");
         }
     });
-    return select;
+    componentHandler.upgradeElement(selectDiv);
+    return selectDiv;
 }
 
 // If type of parameter is number - the form to be shown with number-specific configuration
 function numberForm() {
-    var min = document.createElement("input");
-    min.style.setProperty("width", "46.5%");
-    min.name = "Min" + paramId;
-    min.id = "min";
-    min.placeholder = "min";
-    var max = document.createElement("input");
-    max.style.setProperty("width", "46.5%");
-    max.name = "Max" + paramId;
-    max.id = "max";
-    max.placeholder = "max";
+    var minDiv = createTextField("Min" + paramId, "Min");
+    minDiv.style.setProperty("width", "46.5%");
+    var maxDiv = createTextField("Max" + paramId, "Max");
+    maxDiv.style.setProperty("width", "46.5%");
 
     var descText = document.createElement("label");
     descText.innerHTML = "Enter the number range for this parameter:";
     descText.style.setProperty("display", "block");
+    descText.style.setProperty("padding-top", "15px");
     descText.style.setProperty("padding-bottom", "5px");
 
     // Container so that we may change visibility of both fields
@@ -145,10 +163,9 @@ function numberForm() {
     container.appendChild(descText);
     container.id = "number" + paramId;
     container.style.setProperty("width", "100%");
-    container.appendChild(min);
-    container.innerHTML += " - ";
-    container.appendChild(max);
-
+    container.appendChild(minDiv);
+    container.appendChild(document.createTextNode("  -  "));
+    container.appendChild(maxDiv);
     return container;
 }
 
@@ -159,10 +176,16 @@ function enumForm() {
     addButton.type = "button";
     addButton.innerHTML = "+"
 
+    var descText = document.createElement("label");
+    descText.innerHTML = "Enter the number range for this parameter:";
+    descText.style.setProperty("display", "block");
+    descText.style.setProperty("padding-bottom", "5px");
+
     var container = document.createElement("span");
     container.id = "enum" + paramId;
     container.appendChild(addButton);
     container.style.setProperty("display", "none");
+
     addVariantFormTo(container, true);
     addButton.addEventListener("click", function() {
         // Add another variant form
@@ -175,10 +198,8 @@ function enumForm() {
 function addVariantFormTo(container, first) {
     var variantForm = document.createElement("div");
 
-    var textField = document.createElement("input");
-    textField.placeholder = "Option name";
-    textField.name = "Option" + paramId + "_" + newVariantId();
-
+    var textField = createTextField("Option" + paramId + "_" + newVariantId(), "Option");
+    textField.style.setProperty("width", "40%");
     var deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.innerHTML = "-";
