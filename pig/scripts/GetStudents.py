@@ -19,6 +19,7 @@ class GetStudents:
         
 
     def get_all_divisions_where_creator_for_given_user(self,current_user):
+        print("fuck ou")
         return self.database.get_session().query(self.User)\
             .filter(self.User.id == current_user.id).first().divisions_created
 

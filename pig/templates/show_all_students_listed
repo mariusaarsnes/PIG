@@ -25,7 +25,7 @@ PURPOSE: Shows all students for a given division
 
     <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align">
         <div class="max-width">
-            <table id="division_table" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width fixed-table">
+            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width fixed-table">
                 <thead>
                     <tr>
                         <th class="mdl-data-table__cell--non-numeric ">Name</th>
@@ -36,7 +36,7 @@ PURPOSE: Shows all students for a given division
                     {%  for division in divisions_created %}
                     <tr>
                         <td class="mdl-data-table__cell--non-numeric">{{ division.name }}</td>
-                        <td class="mdl-data-table__cell--non-numeric" id="division_id">{{ division.id }}</td>
+                        <td class="mdl-data-table__cell--non-numeric">{{ division.id }}</td>
 
                     </tr>
                     {% endfor %}
@@ -48,28 +48,9 @@ PURPOSE: Shows all students for a given division
 
 </div>  
 
-<script>
-    function addRowHandlers() {
-        var table = document.getElementById("division_table");
-        var rows = table.getElementsByTagName("tr");
-        for (i = 0; i < rows.length; i++) {
-            var currentRow = table.rows[i];
-            var createClickHandler = 
-                function(row) 
-            {
-                return function() { 
-                    var cell = row.getElementsByTagName("td")[1];
-                    var id = cell.innerHTML;
-                    window.location.href = "/show_all_students_listed?divisionId=" + id;
-                };
-            };
-
-            currentRow.onclick = createClickHandler(currentRow);
-        }
-    }
-    window.onload = addRowHandlers();
-</script>
-
 
 
 {% endblock %}
+
+
+

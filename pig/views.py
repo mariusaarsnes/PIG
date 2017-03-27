@@ -141,6 +141,8 @@ def home():
 def show_divisions():
     divisions_participating = db_getters.get_all_divisions_where_member_or_leader_for_given_user(current_user=current_user)
     divisions_created = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
+    print(    db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
+)
     leader_links, member_links = tasks.generate_links(pig_key,divisions_created)
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, leader_links=leader_links, member_links=member_links)
@@ -149,9 +151,19 @@ def show_divisions():
 @app.route("/show_all_students")
 @login_required
 def show_all_students():
-    print(get_students.get_all_students(current_user, 86))
-    print(get_students.get_all_divisions_where_creator_for_given_user(current_user))
-    return render_template("show_all_students.html", user=current_user, students=get_students.get_all_students(current_user, 86))
+    divisions_created = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
+
+    return render_template("show_all_students.html", divisions_created=divisions_created, user=current_user, students=get_students.get_all_students(current_user, 1))
+
+
+@app.route("/show_all_students_listed")
+@login_required
+def show_all_students_listed():
+    if request.args.get("divisionId") is not None:
+        print(db_getters.get_user_groups(int(request.args.get("divisionId"))))
+        return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=get_students.get_all_students(current_user, int(request.args.get("divisionId"))))
+
+    return redirect(url_for("home"))
 
 @app.route("/division_groups")
 @login_required
