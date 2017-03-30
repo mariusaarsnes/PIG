@@ -92,3 +92,7 @@ class DbGetters:
                                 self.user_division._columns.get("user_id") == self.User.id,
                                 self.user_division._columns.get("role") == "Member",
                                 ~self.User.id.in_(subquery)).all()
+
+    def get_parameters_and_answers_for_members(self, division_id):
+
+        return
