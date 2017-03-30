@@ -23,27 +23,31 @@ PURPOSE: Provide a way for users to apply for a group in an instance of a divisi
         {% endif %}
         {% if message is none %}
             {% if params is none %}
-                (this page is intentionally left blank)
-                <br>
-                ((no division specified))
+                There was something wrong with the link provided. Make sure you copied all of the link before pasting into the browser
             {% else %}
-                <form id="signup-form" method="post", action="/apply_group">
+                <form style="width: 100%;" id="signup-form" method="post", action="/apply_group">
+                    <input type="hidden" name = "DivisionId" value="{{ div_id }}">
+                    <input type="hidden" name = "DivisionName" value="{{ div_name }}">
                     <!-- FORM CONTENTS -->
                     {% for param in params %}
-                        {{param.description}}:
-
+                        <text style="width: 40%; display: -webkit-inline-box;">{{param.description}}:</text>
                         {% if param.number_param is none %}
-                            <select>
-                                {% for variant in param.enum_variants %}
-                                    <option value="{{variant.name}}">
-                                        {{variant.name}}
-                                    </option>
-                                {% endfor %}
-                            </select>
+                                    <!-- Simple Selectfield -->
+                                    <div style="width: 45%;" class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label">
+                                        <select name="ParameterSelect{{ param.id }}" class="mdl-selectfield__select">
+                                            {% for variant in param.enum_variants %}
+                                                <option value="{{variant.name}}">{{variant.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="ParameterSelect{{ param.id }}" class="mdl-selectfield__label">{{ param.description }}</label>
+                                        <span class="mdl-selectfield__error">Input is not a empty!</span>
+                                    </div>
                         {% else %}
-                            <input type="text" placeholder="{{param.number_param.min}}-{{param.number_param.max}}" />
+                            <div style="width: 45%;" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                <input id="division-name-field" class="mdl-textfield__input" type = "text" name = "Parameter{{ param.id }}">
+                                <label id="division-name-label" class="mdl-textfield__label" for="Parameter{{ param.id }}">{{param.number_param.min}}-{{param.number_param.max}}</label>
+                            </div>
                         {% endif %}
-
                         <br>
 
                     {% endfor %}

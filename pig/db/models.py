@@ -121,7 +121,7 @@ class Parameter(db.Model):
     enum_variants = db.relationship('EnumVariant', back_populates="parameter", passive_deletes=True) #One-to-Many
 
     def __repr__(self):
-        return "ID: {str(self.id)}, description: {str(self.description)}"
+        return "ID: {" + str(self.id) + "}, description: {" + str(self.description) + "}"
 
 class NumberParam(db.Model):
     __tablename__="number_param"
@@ -132,13 +132,12 @@ class NumberParam(db.Model):
     parameter = db.relationship('Parameter', back_populates="number_param")
 
     def __repr__(self):
-        return "min: {str(self.min)}, max: {str(self.max)}, parameter_id: {str(self.parameter_id)}"
+        return "min: {" + str(self.min) + "}, max: {" + str(self.max) + "}, parameter_id: {" + str(self.parameter_id) + "}"
 
 class EnumVariant(db.Model):
     __tablename__="enum_variant"
     name = db.Column(db.String(50), primary_key=True)
     parameter_id = db.Column(db.ForeignKey('parameter.id'), primary_key=True)
-
     parameter = db.relationship('Parameter', back_populates="enum_variants")
 
 
@@ -153,7 +152,7 @@ class Value(db.Model):
     # divisions = db.relationship('Division', secondary=user_division_parameter_value, backref=db.backref('value', lazy='dynamic'))
 
     def __repr__(self):
-        return "ID: {str(self.id)}, description: {str(self.description)}"
+        return "ID: {" + str(self.id) + "}, description: {" + str(self.description) + "}"
 
 """
 class Parameter_Value(db.Model):

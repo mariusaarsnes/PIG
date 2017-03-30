@@ -13,6 +13,8 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="{{ url_for('static', filename='style/material.min.css') }}"><!--href="https://code.getmdl.io/1.3.0/material.teal-blue.min.css" />-->
         <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <script src="{{ url_for('static', filename='js/mdl-selectfield.min.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/mdl-selectfield.min.css') }}">
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style/styles.css') }}">
         <link rel='stylesheet prefetch' href='https://rawgit.com/mebibou/mdl-selectfield/master/dist/mdl-selectfield.min.css'>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">

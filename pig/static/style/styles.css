@@ -288,8 +288,8 @@ body .demo-layout-transparent {
 }
 
 #division-form {
-    margin: auto;
-    width: 80%;
+    margin: 2.5% 2.5% 2.5% 2.5%;
+    width: 100%;
     border-radius: 5px;
 }
 #showgroupsleader_no_divisions h3 {

@@ -25,24 +25,14 @@ function newVariantId() { return (++ variantId); }
 document.getElementById("add_button").addEventListener("click", function() {
     var parameterForm = document.createElement("div");
     parameterForm.style.setProperty("width", "100%");
-    parameterForm.style.setProperty("border-top", "1px solid #555555");
+    parameterForm.style.setProperty("border", "1px solid rgba(160, 160, 160, 0.5)"); // #555555");
     parameterForm.style.setProperty("padding-bottom", "10px", "");
     parameterForm.style.setProperty("display", "block");
     parameterForm.style.setProperty("padding-left", "10px");
+    parameterForm.style.setProperty("margin-bottom", "10px");
     var param = "Parameter" + newParamId();
-    var cloneDiv = document.getElementById("division-name");
-    var nameDiv = cloneDiv.cloneNode(true);
+    var nameDiv = createTextField(param, "Parameter name");
     nameDiv.style.setProperty("width", "90%");
-    for (var i = 0; i < nameDiv.childNodes.length; i++) {
-        var element = nameDiv.childNodes[i];
-        console.log(i + " " + element.id);
-        if (element.id == "division-name-field") {
-            element.name = "" + param;
-        } else if (element.id == "division-name-label") {
-            element.setAttribute("for", param);
-            element.innerHTML = "Parameter name";
-        }
-    }
     enhanceField(nameDiv);
     document.getElementById("division-form").insertBefore(parameterForm, document.getElementById("add_button"));
 
@@ -76,6 +66,7 @@ function createTextField(fieldName, placeholderText) {
     field.setAttribute("name", fieldName);
     var label = document.createElement("label");
     label.className = "mdl-textfield__label";
+    label.style.setProperty("color", "rgba(0, 0, 0, 0.5)");
     label.setAttribute("type", "text");
     label.innerHTML = placeholderText;
     div.appendChild(label);
@@ -106,18 +97,20 @@ function enhanceField(field) {
 
 function typeSelection() {
     var selectDiv = document.createElement("div");
-    selectDiv.className = "mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label";
-    selectDiv.style.setProperty("padding", "0");
+    selectDiv.style.setProperty("width", "90%");
+    selectDiv.setAttribute("class", "mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label is-dirty");
     var select = document.createElement("select");
-    select.id = "type";
     select.name = "Type" + paramId;
     select.className = "mdl-selectfield__select";
-    select.style.setProperty("display", "block");
-    select.style.setProperty("width", "100%");
+    //select.style.setProperty("display", "block");
+    //select.style.setProperty("width", "100%");
 
     var label = document.createElement("label");
-    label.innerHTML = "Type";
+    label.innerHTML = "Parameter type";
     label.className = "mdl-selectfield__label";
+
+    var span = document.createElement("span");
+    span.className = "mdl-selectfield__error";
 
     var numOption = document.createElement("option");
     numOption.text = "Numeric";
@@ -125,14 +118,16 @@ function typeSelection() {
     var enumOption = document.createElement("option");
     enumOption.text = "Enumeration";
     enumOption.value = "Enum";
-    selectDiv.appendChild(select);
-    selectDiv.appendChild(label);
     select.options.add(numOption);
     select.options.add(enumOption);
+    selectDiv.appendChild(select);
+    selectDiv.appendChild(label);
+    selectDiv.appendChild(span);
+    var paramNumber = paramId;
 
     select.addEventListener("change", function() {
-        var enumContainer = document.getElementById("enum" + paramId);
-        var numberContainer = document.getElementById("number" + paramId);
+        var enumContainer = document.getElementById("enum" + paramNumber);
+        var numberContainer = document.getElementById("number" + paramNumber);
         if (select.value == "Enum") {
             enumContainer.style.removeProperty("display");
             numberContainer.style.setProperty("display", "none");
@@ -171,6 +166,7 @@ function numberForm() {
 
 // TODO names?
 function enumForm() {
+    var optionCounter = 1;
     var addButton = document.createElement("button");
     addButton.id = "add_variant_button";
     addButton.type = "button";
@@ -189,15 +185,15 @@ function enumForm() {
     addVariantFormTo(container, true);
     addButton.addEventListener("click", function() {
         // Add another variant form
-        addVariantFormTo(container, false);
+        addVariantFormTo(container, false, optionCounter % 2);
+        optionCounter += 1;
     });
 
     return container;
 }
 
-function addVariantFormTo(container, first) {
+function addVariantFormTo(container, first, newLine) {
     var variantForm = document.createElement("div");
-
     var textField = createTextField("Option" + paramId + "_" + newVariantId(), "Option");
     textField.style.setProperty("width", "40%");
     var deleteButton = document.createElement("button");

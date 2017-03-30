@@ -92,3 +92,8 @@ class DbGetters:
                                 self.user_division._columns.get("user_id") == self.User.id,
                                 self.user_division._columns.get("role") == "Member",
                                 ~self.User.id.in_(subquery)).all()
+
+    def is_registered_to_division(self, user_id, division_id):
+        user_div = self.database.get_session().query(self.user_division).filter(self.user_division._columns.get("user_id") == user_id,
+                                                                            self.user_division._columns.get("division_id") == division_id).first()
+        return user_div is not None
