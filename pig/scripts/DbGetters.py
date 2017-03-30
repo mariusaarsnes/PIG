@@ -67,6 +67,14 @@ class DbGetters:
             return None
         return division.groups
 
+    def get_user_groups(self, division_id):
+        return self.database.get_session().query(self.User, self.Group.number).filter(self.user_division._columns.get('user_id') == self.User.id, 
+                    self.user_division._columns.get('division_id') == division_id,
+                    self.user_group._columns.get('group_id') == self.Group.id,
+                    self.user_group._columns.get('user_id') == self.User.id,
+                    self.Group.division_id == division_id).all()
+            
+
 
     def get_all_leaders_in_division_for_given_creator_and_division_id(self,creator,division_id):
         leaders = self.database.get_session().query(self.User)\
@@ -92,3 +100,10 @@ class DbGetters:
                                 self.user_division._columns.get("user_id") == self.User.id,
                                 self.user_division._columns.get("role") == "Member",
                                 ~self.User.id.in_(subquery)).all()
+
+    def get_all_students(self, current_user, division_id):
+        students = self.database.get_session().query(self.User)\
+            .filter(self.user_division._columns.get('division_id')== division_id,
+                    self.user_division._columns.get('user_id') == self.User.id,
+                    self.user_division._columns.get('role')=='Member').all()
+        return students
