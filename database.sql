@@ -9,7 +9,7 @@ CREATE TABLE groups (
     id              serial primary key,
     division_id     integer references division on delete set null,
     leader_id       integer references users on delete set null,
-    number          integer,
+    number          integer
 );
 
 -- To fix circular deps:

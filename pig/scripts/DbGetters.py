@@ -100,3 +100,10 @@ class DbGetters:
                                 self.user_division._columns.get("user_id") == self.User.id,
                                 self.user_division._columns.get("role") == "Member",
                                 ~self.User.id.in_(subquery)).all()
+
+    def get_all_students(self, current_user, division_id):
+        students = self.database.get_session().query(self.User)\
+            .filter(self.user_division._columns.get('division_id')== division_id,
+                    self.user_division._columns.get('user_id') == self.User.id,
+                    self.user_division._columns.get('role')=='Member').all()
+        return students

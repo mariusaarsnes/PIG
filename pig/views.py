@@ -7,11 +7,11 @@ from pig.login.LoginHandler import LoginHandler
 from pig.login.RegistrationHandler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
-from pig.scripts.GetStudents import GetStudents
-from pig.scripts.register_user import Task_RegisterUser
+
 from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
+from pig.scripts.register_user import Task_RegisterUser
 
 
 app = Flask(__name__, template_folder='templates')
@@ -30,15 +30,17 @@ login_manager.init_app(app)
 login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
 division_registrator = Task_RegisterUser(database, User, Division, user_division)
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
-get_students = GetStudents(database, Division, user_division, User)
 LoginHandler, RegistrationHandler = LoginHandler(database, User), RegistrationHandler(database, User)
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
-division_registrator = Task_RegisterUser(database, User, Division, user_division)
 db_getters = DbGetters(
                 database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
                 user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
-tasks = Tasks()
+tasks = Tasks(
+    database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
+    user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
+
+division_registrator = Task_RegisterUser(database,User,Division,user_division)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -51,9 +53,12 @@ def user_loader(user_id):
 def hello():
     return redirect(url_for("home"))
 
+
+
 @app.route("/apply_group", methods=['GET', 'POST'])
 @login_required
 def apply_group():
+    """
     # TODO split into separate module
     message = None
     arg = request.args.get("values")
@@ -70,22 +75,22 @@ def apply_group():
             division_registrator.register_user(current_user, div_id, "Leader")
             message = "Successfully registered you as a leader in the division: " + div_name
         if request.method == 'POST':
+            tasks.register_user_for_division_for_given_division_id_and_role(current_user, div_id, div_role)
             return redirect(url_for("home"))
             # TODO Actually register the person
-            """
             if int(div_role) == 0:
                 return render_template("apply_group.html", user=current_user,\
                         message="Successfully registered you as a TEAM MEMBER for the division: " + div_name)
             elif int(div_role) == 1:
                 return render_template("apply_group.html", user=current_user,\
                         message="Successfully registered you as a LEADER for the division: " + div_name)
-            """
         else:
             # Make the form
             #params = division.parameters
             return render_template("apply_group.html", user=current_user, message=message, params=None, div_name=div_name)
 
     return render_template("apply_group.html", user=current_user, message=None, params=None)
+    """
 
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
@@ -153,7 +158,7 @@ def show_divisions():
 def show_all_students():
     divisions_created = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
 
-    return render_template("show_all_students.html", divisions_created=divisions_created, user=current_user, students=get_students.get_all_students(current_user, 1))
+    return render_template("show_all_students.html", divisions_created=divisions_created, user=current_user, students=db_getters.get_all_students(current_user, 1))
 
 
 @app.route("/show_all_students_listed")
@@ -161,7 +166,7 @@ def show_all_students():
 def show_all_students_listed():
     if request.args.get("divisionId") is not None:
         print(db_getters.get_user_groups(int(request.args.get("divisionId"))))
-        return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=get_students.get_all_students(current_user, int(request.args.get("divisionId"))))
+        return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=db_getters.get_all_students(current_user, int(request.args.get("divisionId"))))
 
     return redirect(url_for("home"))
 
