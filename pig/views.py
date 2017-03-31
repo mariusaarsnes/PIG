@@ -81,10 +81,6 @@ def apply_group():
             return render_template("message.html", user=current_user, header="Invalid link", message="The link you provided is not valid!")
     return render_template("apply_group.html", user=current_user, message=None, params=None)
 
-@app.route("/balls")
-def balls():
-    return render_template("balls.html")
-
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
 def create_division():
