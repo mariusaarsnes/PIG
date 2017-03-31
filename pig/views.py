@@ -7,10 +7,12 @@ from pig.login.LoginHandler import LoginHandler
 from pig.login.RegistrationHandler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 import pig.scripts.encryption as encryption
+
 from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
 from pig.scripts.register_user import Task_RegisterUser
+
 
 app = Flask(__name__, template_folder='templates')
 
@@ -25,6 +27,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
+division_registrator = Task_RegisterUser(database, User, Division, user_division)
+division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
+LoginHandler, RegistrationHandler = LoginHandler(database, User), RegistrationHandler(database, User)
 
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
 db_getters = DbGetters(
@@ -40,7 +45,7 @@ division_registrator = Task_RegisterUser(database,User,Division,user_division)
 #are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
-    return login_handler.get_user_with_id(user_id)
+    return LoginHandler.get_user_with_id(user_id)
 
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
 @app.route("/")
@@ -105,7 +110,7 @@ def show_groups_leader():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = login_handler.get_user(request.form["Username"], request.form["Password"])
+        user = LoginHandler.get_user(request.form["Username"], request.form["Password"])
         if user is not None:
             flash('You were logged in')
             login_user(user)
@@ -135,16 +140,36 @@ def home():
 def show_divisions():
     divisions_participating = db_getters.get_all_divisions_where_member_or_leader_for_given_user(current_user=current_user)
     divisions_created = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
+    print(    db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
+)
     leader_links, member_links = tasks.generate_links(pig_key,divisions_created)
     return render_template("show_divisions.html", user=current_user,
                            divisions_participating=divisions_participating, divisions_created=divisions_created, leader_links=leader_links, member_links=member_links)
+
+
+@app.route("/show_all_students")
+@login_required
+def show_all_students():
+    divisions_created = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
+
+    return render_template("show_all_students.html", divisions_created=divisions_created, user=current_user, students=db_getters.get_all_students(current_user, 1))
+
+
+@app.route("/show_all_students_listed")
+@login_required
+def show_all_students_listed():
+    if request.args.get("divisionId") is not None:
+        print(db_getters.get_user_groups(int(request.args.get("divisionId"))))
+        return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=db_getters.get_all_students(current_user, int(request.args.get("divisionId"))))
+
+    return redirect(url_for("home"))
 
 @app.route("/division_groups")
 @login_required
 def show_groupless_users():
     if request.args.get("divisionId") is not None:
         if division_registrator.is_division_creator(current_user, int(request.args.get("divisionId"))):
-            return render_template("division_groups.html", user=current_user, groups=db_getters.get_groups(int(request.args.get("divisionId"))), groupless_users=db_getters.get_groupless_users(int(request.args.get("divisionId"))))
+            return render_template("division_groups.html", user=current_user, groups=db_getters.get_all_students(current_user,divisionId))
     return redirect(url_for("home"))
 
 @app.route("/logout")

@@ -33,21 +33,25 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
                 <!-- Navigation -->
                 <nav class="mdl-navigation">
                     {% if user.is_authenticated %}
-                        <a class="mdl-navigation__link" href="{{ url_for('home') }}"><b>Home</b></a>
-                        <a class="mdl-navigation__link" href="{{ url_for('create_division') }}"><b>Create Division</b></a>
-                        <div class="dropdown-box">
-                            <button class="dropdown-button" disabled><b>My content</b></button>
-                            <div class="dropdown-content">
-                                <a class="dropdown-link" href="{{ url_for('show_divisions') }}"><b>My divisions</b></a>
-                                <a class="dropdown-link" href="{{ url_for('show_groups_leader') }}"><b>My groups</b></a>
-                            </div>
+
+                    <a class="mdl-navigation__link" href="{{ url_for('home') }}"><b>Home</b></a>
+                    <a class="mdl-navigation__link" href="{{ url_for('create_division') }}"><b>Create Division</b></a>
+                    <div class="dropdown-box">
+                        <button class="dropdown-button" disabled><b>My content</b></button>
+                        <div class="dropdown-content">
+                            <a class="dropdown-link" href="{{ url_for('show_divisions') }}"><b>My divisions</b></a>
+                            <a class="dropdown-link" href="{{ url_for('show_groups_leader') }}"><b>My groups</b></a>
+                            <a class="dropdown-link" href="{{ url_for('show_all_students') }}"><b>Show All Students</b></a>
+
                         </div>
-                        <a class="mdl-navigation__link" href="{{ url_for('logout') }}"><b>Logout</b></a>
-                        <a class="mdl-navigation__link" href=""> User: {{ user.full_name }}</a>
+                    </div>
+
+                    <a class="mdl-navigation__link" href="{{ url_for('logout') }}"><b>Logout</b></a>
+                    <a class="mdl-navigation__link" href=""> User: {{ user.full_name }}</a>
                     {% else %}
-                        <a class="mdl-navigation__link" href="{{ url_for('home') }}"><b>Home</b></a>
-                        <a class="mdl-navigation__link" href="{{ url_for('login') }}"><b>Login</b></a>
-                        <a class="mdl-navigation__link" href="{{ url_for('register') }}"><b>Register</b></a>
+                    <a class="mdl-navigation__link" href="{{ url_for('home') }}"><b>Home</b></a>
+                    <a class="mdl-navigation__link" href="{{ url_for('login') }}"><b>Login</b></a>
+                    <a class="mdl-navigation__link" href="{{ url_for('register') }}"><b>Register</b></a>
                     {% endif %}
                 </nav>
             </div>
@@ -58,7 +62,7 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
                 {% if user.is_authenticated %}
                 <a class="mdl-navigation__link" href="{{ url_for('home') }}"><b>Home</b></a>
                 <a class="mdl-navigation__link" href="{{ url_for('create_division') }}"><b>Create Division</b></a>
-                <a class="mdl-navigation__link"><b>My content</b></a>
+                <a class="mdl-navigation__link"><b>My content</b></a>f
                 <a class="mdl-navigation__link" href="{{ url_for('logout') }}"><b>Logout</b></a>
                 <a class="mdl-navigation__link" href=""> User: {{ user.full_name }}</a>          
                 {% else %}

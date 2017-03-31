@@ -194,6 +194,7 @@ body .demo-layout-transparent {
   -webkit-align-items: stretch;
       -ms-flex-align: stretch;
           align-items: stretch;
+
   min-height: 360px;
     margin-top: 25px;
 }
@@ -243,7 +244,22 @@ body .demo-layout-transparent {
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
   min-height: 64px;
+<<<<<<< HEAD
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#table {
+  width: 100%;
+  min-height: 64px;
+ padding: 0px;
+=======
   align: center;
+>>>>>>> 5f74e55912356b9071f3870a18797f67e75d43ab
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
