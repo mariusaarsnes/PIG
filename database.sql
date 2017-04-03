@@ -66,6 +66,6 @@ CREATE TABLE user_division_parameter_value (
     primary key (user_id, division_id, parameter_id, value_id)
 );
 CREATE TABLE user_group (
-    user_id         integer references users on delete cascade,
-    group_id        integer references groups on delete cascade
+    user_id         integer references users primary key on delete cascade,
+    group_id        integer references groups primary key on delete cascade
 );
