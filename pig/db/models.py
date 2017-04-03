@@ -63,7 +63,7 @@ class User(db.Model):
     values = db.relationship('Value', secondary=user_division_parameter_value, backref = db.backref('users', lazy='dynamic'), passive_deletes=True)
 
     def __repr__(self):
-        return "ID: {str(self.id)}, name: {str(self.firstname)}{str(self.lastname)}, Email: {str(self.email)}"
+        return "ID: {" + str(self.id) + "}, name: {" + str(self.firstname) + "} {" + str(self.lastname) + "}, Email: {" + str(self.email) + "}"
 
 class Division(db.Model):
     __tablename__="division"
@@ -152,7 +152,7 @@ class Value(db.Model):
     # divisions = db.relationship('Division', secondary=user_division_parameter_value, backref=db.backref('value', lazy='dynamic'))
 
     def __repr__(self):
-        return "ID: {" + str(self.id) + "}, description: {" + str(self.description) + "}"
+        return "ID: {" + str(self.id) + "}, value, {" + str(self.value) + "}, description: {" + str(self.description) + "}"
 
 """
 class Parameter_Value(db.Model):

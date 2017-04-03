@@ -49,6 +49,18 @@ class DbGetters:
         else:
             return divisions
 
+    def get_all_users_with_values(self, division_id):
+        list = self.database.get_session().query(self.User, self.Value).filter(self.Value.id == self.user_division_parameter_value._columns.get("value_id"),
+                                                 self.User.id == self.user_division_parameter_value._columns.get("user_id"),
+                                                 division_id == self.user_division_parameter_value._columns.get("division_id")).all()
+        user_list = {}
+        for val in list:
+            if val[0] not in user_list:
+                user_list.update({val[0]:[]})
+            for value in val[1:]:
+                user_list[val[0]].append(value)
+        return user_list
+
     def get_all_divisions_where_member_or_leader_for_given_user(self,current_user):
         return self.database.get_session().query(self.user_division, self.Division, self.User).filter(self.user_division._columns.get("user_id") == current_user.id, \
                                                                                                               self.Division.id == self.user_division._columns.get("division_id"),\

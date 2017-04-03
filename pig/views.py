@@ -27,7 +27,6 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 
 login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
-division_registrator = Task_RegisterUser(database, User, Division, user_division)
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
 LoginHandler, RegistrationHandler = LoginHandler(database, User), RegistrationHandler(database, User)
 
@@ -39,7 +38,7 @@ tasks = Tasks(
     database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
     user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
 
-division_registrator = Task_RegisterUser(database,User,Division,user_division)
+division_registrator = Task_RegisterUser(database,User,Division,user_division, Value, Parameter)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -56,6 +55,8 @@ def hello():
 @login_required
 def apply_group():
     if request.method == 'POST':
+        if db_getters.is_registered_to_division(current_user.id, int(request.form["DivisionId"])):
+            return render_template("message.html", user=current_user, header="Already registered", message="You are already registered for this division!")
         for (key, value) in request.form.items():
             if key.startswith("Parameter") and not key.startswith("ParameterSelect"):
                 if value == "":
@@ -64,6 +65,7 @@ def apply_group():
                     if not tasks.verify_number_parameter_input(int(key[9:]), value):
                         return render_template("message.html", user=current_user, header="Out of range", message="One or more of the numbers you selected was out of the input range!")
         division_registrator.register_user(current_user, int(request.form['DivisionId']), "Member")
+        division_registrator.register_parameters(current_user, request.form)
         return render_template("message.html", user=current_user, header="Success!", message="You successfully signed up to the division " + str(request.form['DivisionName']) + " as a group member!")
     else:
         message = None
@@ -92,12 +94,11 @@ def create_division():
     if request.method == 'POST':
         try:
             msg = division_creator.register_division(current_user, request.form)
-        except:
+        except Exception as e:
             msg = "An error happened internally, and the division was not created"
 
         if msg is None:
             msg = "Division created successfully"
-
         return render_template("message.html", user=current_user, header="Create division", message=msg)
     return render_template("create_division.html", user=current_user)
 

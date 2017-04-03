@@ -49,7 +49,7 @@ CREATE TABLE enum_variant (
 );
 CREATE TABLE parameter_value (
     parameter_id    integer references parameter on delete cascade,
-    value_id        integer references parameter on delete cascade,
+    value_id        integer references value on delete cascade,
     primary key ( parameter_id, value_id )
 );
 CREATE TABLE user_division (

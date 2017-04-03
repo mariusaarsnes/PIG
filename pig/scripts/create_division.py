@@ -14,7 +14,11 @@ class Task_CreateDivision:
         # Parameters under construction
         self.parameters = {} # int -> Parameter
         # Specialization of each Parameter
-        self.specs = {} # int -> NumberParam or [EnumVariant]
+        self.specs = {} # int -> NumberParam or [EnumVariant}
+        self.params = {}
+
+    def register_division(self, current_user, form):
+        pass
 
     # Returns a string with a message if there was an error. Else None.
     def register_division(self, current_user, form):
@@ -28,7 +32,7 @@ class Task_CreateDivision:
         # First pass: Find the type of each parameter
         for (key, value) in form.items():
             if key == "Division":
-                pass
+                continue
 
             elif key.startswith("Parameter"):
                 param_nr = int(key[9])
@@ -71,12 +75,12 @@ class Task_CreateDivision:
                 param_nr = int(key[6])
             else:
                 continue
-
-            if self.parameters[param_nr] is None:
+            if not self.parameters[param_nr] is None:
                 if isinstance(self.specs[param_nr], self.NumberParam):
                     if key.startswith("Min"):
                         try:
                             self.specs[param_nr].min = int(value)
+                            print(self.specs[param_nr])
                         except:
                             self.specs[param_nr].min = None
                     elif key.startswith("Max"):
@@ -95,6 +99,7 @@ class Task_CreateDivision:
             # `param is None` signifies that the parameter was already in the Database, and that we should not
             # make another specialization
             if not param is None:
+                print(self.specs[param_nr])
                 if isinstance(self.specs[param_nr], self.NumberParam):
                     spec = self.specs[param_nr]
                     self.database.get_session().add(spec)
