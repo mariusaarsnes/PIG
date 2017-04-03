@@ -73,8 +73,6 @@ class DbGetters:
                     self.user_group._columns.get('group_id') == self.Group.id,
                     self.user_group._columns.get('user_id') == self.User.id,
                     self.Group.division_id == division_id).all()
-            
-
 
     def get_all_leaders_in_division_for_given_creator_and_division_id(self,creator,division_id):
         leaders = self.database.get_session().query(self.User)\

@@ -65,7 +65,6 @@ class Task_CreateDivision:
 
         # Second pass: Find the configurations for each parameters
         for (key, value) in form.items():
-
             if key.startswith("Min") or key.startswith("Max"):
                 param_nr = int(key[3])
             elif key.startswith("Option"):
@@ -73,7 +72,7 @@ class Task_CreateDivision:
             else:
                 continue
 
-            if not self.parameters[param_nr] is None:
+            if self.parameters[param_nr] is None:
                 if isinstance(self.specs[param_nr], self.NumberParam):
                     if key.startswith("Min"):
                         try:

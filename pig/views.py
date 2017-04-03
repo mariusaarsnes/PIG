@@ -151,7 +151,6 @@ def show_divisions():
 @login_required
 def show_all_students():
     divisions_created = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
-
     return render_template("show_all_students.html", divisions_created=divisions_created, user=current_user, students=db_getters.get_all_students(current_user, 1))
 
 
@@ -161,7 +160,6 @@ def show_all_students_listed():
     if request.args.get("divisionId") is not None:
         print(db_getters.get_user_groups(int(request.args.get("divisionId"))))
         return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=db_getters.get_all_students(current_user, int(request.args.get("divisionId"))))
-
     return redirect(url_for("home"))
 
 @app.route("/division_groups")
@@ -169,7 +167,7 @@ def show_all_students_listed():
 def show_groupless_users():
     if request.args.get("divisionId") is not None:
         if division_registrator.is_division_creator(current_user, int(request.args.get("divisionId"))):
-            return render_template("division_groups.html", user=current_user, groups=db_getters.get_all_students(current_user,divisionId))
+            return render_template("division_groups.html", user=current_user, groups=db_getters.get_groups(int(request.args.get("divisionId"))), groupless_users=db_getters.get_groupless_users(int(request.args.get("divisionId"))))
     return redirect(url_for("home"))
 
 @app.route("/logout")
