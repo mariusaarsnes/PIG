@@ -10,6 +10,7 @@ from pig.scripts.register_user import Task_RegisterUser
 from pig.login.RegistrationHandler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 from pig.login.LoginHandler import LoginHandler
+from pig.scripts.encryption import *
 
 from sqlalchemy.sql.expression import func
 
@@ -429,6 +430,51 @@ class PigTestCase(unittest.TestCase):
         self.delete_user(user1.email)
     """
 
+    def test_encryption(self):
+        link = "This is a test"
+        encrypted_link = encode("Key", link)
+        assert link == decode("Key", encrypted_link)
+
+
+    def test_get_all_users_with_values(self):
+        user = self.create_user("Email@email.com", "Password", "First", "Last")
+        registration_user2 = self.create_user("Register2@user.com", "Password", "Firstname", "Lastname")
+        self.division_creator.register_division(user.id, dict(
+        Division="Division",
+        Type1="Number",
+        Min1="1",
+        Max1="10",
+        Parameter1="Param name",
+        Option1_1=""))
+        division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
+        param_id = self.database.get_session().query(Parameter).first().id
+        form_dict = {}
+        form_dict.update({ "DivisionName": "Division" })
+        form_dict.update({ "DivisionId": division.id })
+        form_dict.update({ "Parameter" + str(param_id): 5 })
+        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user2.id), division.id, "Leader")
+        self.division_registrator.register_parameters(self.login_handler.get_user_with_id(registration_user2.id), form_dict)
+        user_dict = self.db_getters.get_all_users_with_values(division.id)
+        for (key, value) in user_dict.items():
+            assert key.id == registration_user2.id
+            assert value[0].value == 5
+
+    def test_get_groupless_users(self):
+        user = self.create_user("Email@email.com", "Password", "First", "Last")
+        registration_user2 = self.create_user("Register2@user.com", "Password", "Firstname", "Lastname")
+        self.division_creator.register_division(user.id, dict(
+        Division="Division",
+        Type1="Number",
+        Min1="1",
+        Max1="10",
+        Parameter1="Param name",
+        Option1_1=""))
+        division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
+        self.database.get_session().execute("INSERT INTO user_division VALUES(" + str(registration_user2.id) + ", " + str(division.id) + ", 'Member')")
+        self.database.get_session().commit()
+        groupless_users = self.db_getters.get_groupless_users(division.id)
+        assert groupless_users[0].id == registration_user2.id
+
     def test_divide_groups_to_leaders_with_varying_range_of_leaders_and_groups(self):
         group_count = randint(15, 25)
         leader_count = randint(3, 7)
@@ -460,18 +506,6 @@ class PigTestCase(unittest.TestCase):
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
-
-"""
-    def test_(self):
-        leader = self.create_user("asd123@asd123.com", "pass", "first", "last")
-        member = self.create_user("member@member123.com", "pass", "first", "last")
-        division = self.create_division("test_div_test", leader.id)
-        group = self.create_group(division, leader)
-        self.login(leader.email, leader.password)
-        rv = self.show_divisions()
-        assert b'division.name' in rv
-        group.users.append(member)
-"""
 
 if __name__ == '__main__':
     unittest.main()
