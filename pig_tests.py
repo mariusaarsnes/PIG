@@ -6,7 +6,10 @@ from pig.scripts.DbGetters import *
 from flask import Flask
 from random import randint
 from pig.scripts.Tasks import Tasks
+from pig.scripts.register_user import Task_RegisterUser
 from pig.login.RegistrationHandler import RegistrationHandler
+from pig.scripts.create_division import Task_CreateDivision
+from pig.login.LoginHandler import LoginHandler
 
 from sqlalchemy.sql.expression import func
 
@@ -31,11 +34,14 @@ class PigTestCase(unittest.TestCase):
 
         self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database, Division, user_division, self.db_getters)
         self.registration_handler = RegistrationHandler(self.database, User)
+        self.division_creator = Task_CreateDivision(self.database, Division, Parameter, NumberParam, EnumVariant)
+        self.division_registrator = Task_RegisterUser(self.database,User,Division,user_division, Value, Parameter)
+        self.login_handler = LoginHandler(self.database, User)
 
     def tearDown(self):
-        tables = ["division", "division_parameter", "enum_variant",
-                  "groups", "number_param", "parameter", "parameter_value",
-                  "user_division","user_division_parameter_value", "user_group", "users", "value"]
+        tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "division", "users",
+                  "user_group",
+                  "groups" ]
         for table in tables:
             self.database.get_session().execute("DELETE FROM " + table)
         self.database.get_session().commit()
@@ -358,6 +364,50 @@ class PigTestCase(unittest.TestCase):
         user = self.get_user("asd@asd.com")
         assert user is None
 
+    def test_create_division_with_parameters(self):
+        user = self.create_user("Email@email.com", "Password", "First", "Last")
+        self.division_creator.register_division(user.id, dict(
+        Division="Division",
+        Type1="Number",
+        Min1="1",
+        Max1="10",
+        Parameter1="Param name",
+        Option1_1=""))
+        division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
+        assert division is not None
+        assert division.name == "Division"
+        parameter = self.database.get_session().query(Parameter).filter(Parameter.id == division_parameter._columns.get("parameter_id"),
+                                                                        Division.id == division_parameter._columns.get("division_id")).first()
+        assert parameter.description == "Param name"
+        number_param = self.database.get_session().query(NumberParam).filter(NumberParam.parameter_id == parameter.id).first()
+        assert number_param.min == 1
+        assert number_param.max == 10
+
+    def test_register_for_division(self):
+        user = self.create_user("Email@email.com", "Password", "First", "Last")
+        registration_user1 = self.create_user("Register1@user.com", "Password", "Firstname", "Lastname")
+        registration_user2 = self.create_user("Register2@user.com", "Password", "Firstname", "Lastname")
+        self.division_creator.register_division(user.id, dict(
+        Division="Division",
+        Type1="Number",
+        Min1="1",
+        Max1="10",
+        Parameter1="Param name",
+        Option1_1=""))
+        division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
+        param_id = self.database.get_session().query(Parameter).first().id
+        form_dict = {}
+        form_dict.update({ "DivisionName": "Division" })
+        form_dict.update({ "DivisionId": division.id })
+        form_dict.update({ "Parameter" + str(param_id): 5 })
+        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user1.id), division.id, "Member")
+        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user2.id), division.id, "Leader")
+        self.division_registrator.register_parameters(self.login_handler.get_user_with_id(registration_user2.id), form_dict)
+        assert self.database.get_session().query(user_division).filter(user_division._columns.get("role") == "Member").first().user_id == registration_user1.id
+        assert self.database.get_session().query(user_division).filter(user_division._columns.get("role") == "Leader").first().user_id == registration_user2.id
+        assert self.database.get_session().query(Value).filter(user_division_parameter_value._columns.get("user_id") == registration_user2.id,
+                                                               user_division_parameter_value._columns.get("division_id") == division.id,
+                                                               user_division_parameter_value._columns.get("parameter_id") == param_id).first().value == 5
     #Tests if it is able to register a certain user to a certain division through the site. It generates the link for the signup based on data from the page
     #Then follows the url and checks if it gets the desired output.
 
@@ -409,6 +459,7 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
+
 
 """
     def test_(self):

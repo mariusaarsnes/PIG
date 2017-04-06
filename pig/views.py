@@ -92,8 +92,9 @@ def apply_group():
 @login_required
 def create_division():
     if request.method == 'POST':
+        print(request.form)
         try:
-            msg = division_creator.register_division(current_user, request.form)
+            msg = division_creator.register_division(current_user.id, request.form)
         except Exception as e:
             msg = "An error happened internally, and the division was not created"
 

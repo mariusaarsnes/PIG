@@ -21,13 +21,13 @@ class Task_CreateDivision:
         pass
 
     # Returns a string with a message if there was an error. Else None.
-    def register_division(self, current_user, form):
+    def register_division(self, id, form):
         print('Registering division...', file=sys.stderr)
         print('Input: %s' % form, file=sys.stderr)
         if len(form) == 0 or form["Division"] is None or len(form["Division"]) == 0:
             return "Name for division needs to be specified"
 
-        division = self.Division(name = form["Division"], creator_id = current_user.id)
+        division = self.Division(name = form["Division"], creator_id = id)
 
         # First pass: Find the type of each parameter
         for (key, value) in form.items():
@@ -80,7 +80,6 @@ class Task_CreateDivision:
                     if key.startswith("Min"):
                         try:
                             self.specs[param_nr].min = int(value)
-                            print(self.specs[param_nr])
                         except:
                             self.specs[param_nr].min = None
                     elif key.startswith("Max"):
@@ -99,7 +98,6 @@ class Task_CreateDivision:
             # `param is None` signifies that the parameter was already in the Database, and that we should not
             # make another specialization
             if not param is None:
-                print(self.specs[param_nr])
                 if isinstance(self.specs[param_nr], self.NumberParam):
                     spec = self.specs[param_nr]
                     self.database.get_session().add(spec)

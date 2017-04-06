@@ -49,6 +49,7 @@ class DbGetters:
         else:
             return divisions
 
+    #This returns a dict with users as key, and all of their answered parameters (values as a list) as value
     def get_all_users_with_values(self, division_id):
         list = self.database.get_session().query(self.User, self.Value).filter(self.Value.id == self.user_division_parameter_value._columns.get("value_id"),
                                                  self.User.id == self.user_division_parameter_value._columns.get("user_id"),
