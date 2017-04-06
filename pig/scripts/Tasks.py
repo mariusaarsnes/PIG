@@ -35,13 +35,15 @@ class Tasks:
     def get_link(self, key, division_name, division_id, leader):
         return "apply_group?values=" + e.encode(key, division_name + "," + str(division_id) + "," + str(leader))
 
-
-
     def register_user_for_division_for_given_division_id_and_role(self, current_user, division_id, role):
         division = self.database.get_session() \
                 .query(self.Division) \
                 .filter(self.Division.id == division_id) \
                 .first()
-        division.users.append(current_user)
-
+        division.users.append(self.database.get_session().query(self.User).filter(self.User.email == current_user.username).first())
         self.database.get_session().commit()
+
+    def verify_number_parameter_input(self, parameter_id, value):
+        value = int(value)
+        number_param = self.database.get_session().query(self.NumberParam).filter(self.NumberParam.parameter_id == parameter_id).first()
+        return value >= number_param.min and value <= number_param.max

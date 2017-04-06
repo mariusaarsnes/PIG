@@ -12,7 +12,6 @@ class DivideGroupsToLeaders:
     def fetch_groups(self,current_user,division_id):
         groups = self.database.get_session().query(self.Division)\
             .filter(self.Division.creator_id == current_user.id, self.Division.id == division_id).first()
-        print(groups)
         if (groups is None):
             print("ERROR: No groups in division ", division_id)
             return

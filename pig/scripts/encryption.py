@@ -11,10 +11,13 @@ def encode(key, clear):
     return base64.urlsafe_b64encode("".join(enc).encode()).decode()
 
 def decode(key, enc):
-    dec = []
-    enc = base64.urlsafe_b64decode(enc).decode()
-    for i in range(len(enc)):
-        key_c = key[i % len(key)]
-        dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
-        dec.append(dec_c)
+    try:
+        dec = []
+        enc = base64.urlsafe_b64decode(enc).decode()
+        for i in range(len(enc)):
+            key_c = key[i % len(key)]
+            dec_c = chr((256 + ord(enc[i]) - ord(key_c)) % 256)
+            dec.append(dec_c)
+    except Exception:
+        return ""
     return "".join(dec)

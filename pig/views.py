@@ -21,14 +21,12 @@ database = Database(app)
 
 from pig.db.models import *
 
-
 pig_key = "supersecretpigkey"
 app.secret_key = pig_key
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 login_handler, registration_handler = LoginHandler(database, User), RegistrationHandler(database, User)
-division_registrator = Task_RegisterUser(database, User, Division, user_division)
 division_creator = Task_CreateDivision(database, Division, Parameter, NumberParam, EnumVariant)
 LoginHandler, RegistrationHandler = LoginHandler(database, User), RegistrationHandler(database, User)
 
@@ -40,7 +38,7 @@ tasks = Tasks(
     database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
     user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
 
-division_registrator = Task_RegisterUser(database,User,Division,user_division)
+division_registrator = Task_RegisterUser(database,User,Division,user_division, Value, Parameter)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -53,58 +51,56 @@ def user_loader(user_id):
 def hello():
     return redirect(url_for("home"))
 
-
-
 @app.route("/apply_group", methods=['GET', 'POST'])
 @login_required
 def apply_group():
-    """
-    # TODO split into separate module
-    message = None
-    arg = request.args.get("values")
-    if not arg is None:
-        [div_name, div_id, div_role] = encryption.decode(pig_key, arg).split(",")
-        division = database.get_session() \
-                .query(Division) \
-                .filter(Division.id == div_id) \
-                .first()
-        if division_registrator.is_division_creator(current_user, div_id):
-            message = "You cannot register for your own division!"
-
-        elif int(div_role) == 1:
-            division_registrator.register_user(current_user, div_id, "Leader")
-            message = "Successfully registered you as a leader in the division: " + div_name
-        if request.method == 'POST':
-            tasks.register_user_for_division_for_given_division_id_and_role(current_user, div_id, div_role)
-            return redirect(url_for("home"))
-            # TODO Actually register the person
-            if int(div_role) == 0:
-                return render_template("apply_group.html", user=current_user,\
-                        message="Successfully registered you as a TEAM MEMBER for the division: " + div_name)
-            elif int(div_role) == 1:
-                return render_template("apply_group.html", user=current_user,\
-                        message="Successfully registered you as a LEADER for the division: " + div_name)
-        else:
-            # Make the form
-            #params = division.parameters
-            return render_template("apply_group.html", user=current_user, message=message, params=None, div_name=div_name)
-
+    if request.method == 'POST':
+        if db_getters.is_registered_to_division(current_user.id, int(request.form["DivisionId"])):
+            return render_template("message.html", user=current_user, header="Already registered", message="You are already registered for this division!")
+        for (key, value) in request.form.items():
+            if key.startswith("Parameter") and not key.startswith("ParameterSelect"):
+                if value == "":
+                    return render_template("message.html", user=current_user, header="No value", message="One of the input fields in the form was left empty")
+                elif len(key[9:]) > 0:
+                    if not tasks.verify_number_parameter_input(int(key[9:]), value):
+                        return render_template("message.html", user=current_user, header="Out of range", message="One or more of the numbers you selected was out of the input range!")
+        division_registrator.register_user(current_user, int(request.form['DivisionId']), "Member")
+        division_registrator.register_parameters(current_user, request.form)
+        return render_template("message.html", user=current_user, header="Success!", message="You successfully signed up to the division " + str(request.form['DivisionName']) + " as a group member!")
+    else:
+        message = None
+        arg = request.args.get("values")
+        if not arg is None:
+            decoded = encryption.decode(pig_key, arg)
+            if decoded is not "":
+                [div_name, div_id, div_role] = decoded.split(",")
+                if db_getters.is_registered_to_division(current_user.id, div_id):
+                    return render_template("message.html", user=current_user, header="Already registered", message="You are already registered for this division!")
+                division = database.get_session() \
+                        .query(Division) \
+                        .filter(Division.id == div_id) \
+                        .first()
+                if division_registrator.is_division_creator(current_user, div_id):
+                    message = "You cannot register for your own division!"
+                    # Make the form
+                params = division.parameters
+                return render_template("apply_group.html", user=current_user, message=message, params=params, div_name=div_name, div_id=div_id)
+            return render_template("message.html", user=current_user, header="Invalid link", message="The link you provided is not valid!")
     return render_template("apply_group.html", user=current_user, message=None, params=None)
-    """
 
 @app.route("/create_division", methods=['GET', 'POST'])
 @login_required
 def create_division():
     if request.method == 'POST':
+        print(request.form)
         try:
-            msg = division_creator.register_division(current_user, request.form)
-        except:
+            msg = division_creator.register_division(current_user.id, request.form)
+        except Exception as e:
             msg = "An error happened internally, and the division was not created"
 
         if msg is None:
             msg = "Division created successfully"
-
-        return render_template("message.html", user=current_user, message=msg)
+        return render_template("message.html", user=current_user, header="Create division", message=msg)
     return render_template("create_division.html", user=current_user)
 
 @app.route("/show_groups_leader")
@@ -157,7 +153,6 @@ def show_divisions():
 @login_required
 def show_all_students():
     divisions_created = db_getters.get_all_divisions_where_creator_for_given_user(current_user=current_user)
-
     return render_template("show_all_students.html", divisions_created=divisions_created, user=current_user, students=db_getters.get_all_students(current_user, 1))
 
 
@@ -167,7 +162,6 @@ def show_all_students_listed():
     if request.args.get("divisionId") is not None:
         print(db_getters.get_user_groups(int(request.args.get("divisionId"))))
         return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=db_getters.get_all_students(current_user, int(request.args.get("divisionId"))))
-
     return redirect(url_for("home"))
 
 @app.route("/division_groups")
@@ -175,7 +169,7 @@ def show_all_students_listed():
 def show_groupless_users():
     if request.args.get("divisionId") is not None:
         if division_registrator.is_division_creator(current_user, int(request.args.get("divisionId"))):
-            return render_template("division_groups.html", user=current_user, groups=db_getters.get_all_students(current_user,divisionId))
+            return render_template("division_groups.html", user=current_user, groups=db_getters.get_groups(int(request.args.get("divisionId"))), groupless_users=db_getters.get_groupless_users(int(request.args.get("divisionId"))))
     return redirect(url_for("home"))
 
 @app.route("/logout")
