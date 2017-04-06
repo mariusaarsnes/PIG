@@ -14,21 +14,25 @@ class Task_CreateDivision:
         # Parameters under construction
         self.parameters = {} # int -> Parameter
         # Specialization of each Parameter
-        self.specs = {} # int -> NumberParam or [EnumVariant]
+        self.specs = {} # int -> NumberParam or [EnumVariant}
+        self.params = {}
+
+    def register_division(self, current_user, form):
+        pass
 
     # Returns a string with a message if there was an error. Else None.
-    def register_division(self, current_user, form):
+    def register_division(self, id, form):
         print('Registering division...', file=sys.stderr)
         print('Input: %s' % form, file=sys.stderr)
         if len(form) == 0 or form["Division"] is None or len(form["Division"]) == 0:
             return "Name for division needs to be specified"
 
-        division = self.Division(name = form["Division"], creator_id = current_user.id)
+        division = self.Division(name = form["Division"], creator_id = id)
 
         # First pass: Find the type of each parameter
         for (key, value) in form.items():
             if key == "Division":
-                pass
+                continue
 
             elif key.startswith("Parameter"):
                 param_nr = int(key[9])
@@ -65,14 +69,12 @@ class Task_CreateDivision:
 
         # Second pass: Find the configurations for each parameters
         for (key, value) in form.items():
-
             if key.startswith("Min") or key.startswith("Max"):
                 param_nr = int(key[3])
             elif key.startswith("Option"):
                 param_nr = int(key[6])
             else:
                 continue
-
             if not self.parameters[param_nr] is None:
                 if isinstance(self.specs[param_nr], self.NumberParam):
                     if key.startswith("Min"):
