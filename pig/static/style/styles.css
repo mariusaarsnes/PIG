@@ -338,6 +338,10 @@ input[id=parameter] {
     margin: -2% 5%;
 }
 
+.undecorated-link {
+    text-decoration: none;
+}
+
 .table-line-break {
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -347,6 +351,7 @@ input[id=parameter] {
 
 /* Dropdown Button */
 .dropdown-button {
+    font-weight: bold;
     text-transform: none;
     background-color: Transparent;
     color: #FFFFFF;
