@@ -88,7 +88,7 @@ html {
     font-size: 14px !important;
     text-align: none !important;
     text-transform: none;
-   line-height: 0 !important;
+    line-height: 0 !important;
     margin: 0 !important;
     padding-left: 2.5%;
     padding-right: 2.5%;
@@ -347,6 +347,7 @@ input[id=parameter] {
 
 /* Dropdown Button */
 .dropdown-button {
+    text-transform: none;
     background-color: Transparent;
     color: #FFFFFF;
     font-family: "Trebuchet MS", 'Helvetica', sans-serif;

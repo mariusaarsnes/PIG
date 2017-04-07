@@ -36,14 +36,25 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
 
                         <a class="mdl-navigation__link" href="{{ url_for('home') }}"><b>Home</b></a>
                         <a class="mdl-navigation__link" href="{{ url_for('create_division') }}"><b>Create Division</b></a>
-                        <div class="dropdown-box">
+                                              <!-- MDL lower Left Aligned Menu Button-->
+                        <button id="my-menu-lower-left"
+                                class="mdl-button mdl-js-button dropdown-button">
+                            My content
+                        </button>
+                        <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
+                            for="my-menu-lower-left">
+                          <li href="{{ url_for('show_divisions') }}" class="mdl-menu__item">My divisions</li>
+                          <li href="{{ url_for('show_groups_leader') }}" class="mdl-menu__item">My groups</li>
+                          <li disabled class="mdl-menu__item">Show all students</li>
+                        </ul>
+                        <!--<div class="dropdown-box">
                             <button class="dropdown-button" disabled><b>My content</b></button>
                             <div class="dropdown-content">
                                 <a class="dropdown-link" href="{{ url_for('show_divisions') }}"><b>My divisions</b></a>
                                 <a class="dropdown-link" href="{{ url_for('show_groups_leader') }}"><b>My groups</b></a>
                                 <a class="dropdown-link" href="{{ url_for('show_all_students') }}"><b>Show All Students</b></a>
                             </div>
-                        </div>
+                        </div>-->
                         <a class="mdl-navigation__link" href="{{ url_for('logout') }}"><b>Logout</b></a>
                         <a class="mdl-navigation__link" href=""> User: {{ user.full_name }}</a>
                     {% else %}

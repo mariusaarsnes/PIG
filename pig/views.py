@@ -114,8 +114,9 @@ def login():
     if request.method == 'POST':
         user = LoginHandler.get_user(request.form["Username"], request.form["Password"])
         if user is not None:
-            flash('You were logged in')
             login_user(user)
+            if request.args.get("values") is not None:
+                return redirect(url_for("apply_group", values=request.args.get("values")))
             return redirect(url_for("home"))
         else:
             return render_template("login.html", user=current_user, error=True)
@@ -184,4 +185,6 @@ def not_found():
 
 @login_manager.unauthorized_handler
 def unauthorized():
+    if request.args.get("values") is not None:
+        return redirect(url_for("login", values=request.args.get("values")))
     return redirect(url_for("login"))
