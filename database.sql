@@ -18,7 +18,8 @@ CREATE TABLE groups (
 CREATE TABLE division (
     id              serial primary key,
     name            varchar(50),
-    creator_id      integer references users
+    creator_id      integer references users,
+    group_size      integer
 );
 
 
