@@ -2,17 +2,16 @@ import pig, unittest
 from pig.db.models import *
 from pig.db.database import *
 from pig.scripts.DivideGroupsToLeaders import DivideGroupsToLeaders
-from pig.scripts.DividingAlgorithm import DividingAlgorithm
+from pig.scripts.PartitionAlg import PartitionAlg, DataPoint, Cluster
 from pig.scripts.DbGetters import *
 from flask import Flask
-from random import randint
+from random import randint, random
 from pig.scripts.Tasks import Tasks
 from pig.scripts.register_user import Task_RegisterUser
 from pig.login.RegistrationHandler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 from pig.login.LoginHandler import LoginHandler
 from pig.scripts.encryption import *
-import random
 
 from sqlalchemy.sql.expression import func
 
@@ -40,7 +39,7 @@ class PigTestCase(unittest.TestCase):
         self.division_creator = Task_CreateDivision(self.database, Division, Parameter, NumberParam, EnumVariant)
         self.division_registrator = Task_RegisterUser(self.database,User,Division,user_division, Value, Parameter)
         self.login_handler = LoginHandler(self.database, User)
-        self.alg = DividingAlgorithm(self.database, self.db_getters)
+        self.alg = PartitionAlg(self.database, self.db_getters)
 
     def tearDown(self):
         tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "division", "users",
@@ -463,7 +462,7 @@ class PigTestCase(unittest.TestCase):
 
             # Sign up users for division, with random values
             for user in users:
-                value = Value(value=random.randint(0,10), description="")
+                value = Value(value=randint(0,10), description="")
                 self.database.get_session().add(value)
                 self.database.get_session().commit()
                 self.database.get_session().execute(f"INSERT INTO user_division_parameter_value VALUES({user.id}, {division.id}, {parameter.id}, {value.id})")
@@ -472,6 +471,35 @@ class PigTestCase(unittest.TestCase):
 
         self.database.get_session().commit()
         self.alg.create_groups(creator, division.id)
+
+    def print_clusters(self, clusters):
+        for cluster in clusters:
+            print("Cluster:")
+            for point in cluster.points:
+                print("{}, ".format(point.id), end='')
+            print()
+
+    def test_alg_normalize(self):
+        n = 5 # number of components of points
+        n_points = 36
+        n_groups = 6
+        cluster_size = n_points / n_groups
+
+        # Create data points
+        points = []
+        for id in range(n_points):
+            point = [random() for i in range(n)]
+            points.append(DataPoint(id, point))
+
+        # Partition
+        clusters = PartitionAlg.k_means(points, cluster_size)
+
+        # Normalize
+        PartitionAlg.normalize(clusters, cluster_size)
+
+        # Check that we successfully normalized - so that all groups have the same size
+        for cluster in clusters:
+            assert len(cluster.points) == cluster_size
 
 
 if __name__ == '__main__':

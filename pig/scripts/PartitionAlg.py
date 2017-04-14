@@ -1,7 +1,7 @@
 import sys
 import random
 
-class DividingAlgorithm:
+class PartitionAlg:
     def __init__(self, database, DbGetters):
         self.database = database
         self.db_getters = DbGetters
@@ -15,7 +15,7 @@ class DividingAlgorithm:
                     .filter(self.Division.id == division_id).first();
 
         data = self.prepare(division)
-        clusters = DividingAlgorithm.k_means(data, division.group_size)
+        clusters = PartitionAlg.k_means(data, division.group_size)
         for cluster in clusters:
             print("Cluster: {}".format(cluster))
 
@@ -60,8 +60,7 @@ class DividingAlgorithm:
                         for i in range(n_clusters)]
         prev_clusters = clusters
 
-        while True:
-            print("Iteration")
+        while True: # Will converge
             # Reset clusters
             for cluster in clusters:
                 cluster.points = []
@@ -84,12 +83,37 @@ class DividingAlgorithm:
         # Convert from points index, to user id
         return clusters
 
-"""
     # Make groups be of a target size
     def normalize(clusters, target_size):
+        neighbors = [[] for i in range(len(clusters))]
+        for i, cluster in enumerate(clusters):
+            # Make a list of the other clusters sorted by distance (sum squared)
+            # Beware that the first element will be the current cluster.
+            neighbors[i] = sorted(clusters, key = lambda other: sum_squares(cluster.mean, other.mean))
+
+        MAX_ITERATIONS = 10 # I don't know if it always converges
+        iterations = 0
+        # Algorithm to normalize clusters:
+        # Repeat, for as long as there is no change:
+        #   For each cluster:
+        #       find the nearest neighbor that has a different number of points (should differ at least by 2)
+        #       exchange a point with this one - whichever direction is needed
+
         while True:
-            for cluster in clusters
-"""
+            change = False
+            for i, cluster in enumerate(clusters):
+                for neighbor in neighbors[i][1:]:
+                    if len(cluster.points) - len(neighbor.points) > 1:
+                        neighbor.steal(cluster)
+                        change = True
+                        break
+                    elif len(cluster.points) - len(neighbor.points) < -1:
+                        cluster.steal(neighbor)
+                        change = True
+                        break
+            if not change or iterations > MAX_ITERATIONS:
+                break
+            iterations += 1
 
 class DataPoint:
     def __init__(self, id, point):
@@ -113,6 +137,15 @@ class Cluster:
         for i, component in enumerate(sum):
             sum[i] = component / len(self.points)
         return sum
+
+    # 'Steal' the point of `other` which is closest to `self.mean`
+    def steal(self, other):
+        # Find the index of the point closest to self.mean
+        closest_point_i = min_index(other.points, lambda point: sum_squares(point.point, self.mean))
+        self.points.append(other.points[closest_point_i])
+        del other.points[closest_point_i]
+
+
 
 
 def sum_squares(vec1, vec2):
