@@ -2,6 +2,7 @@ import pig, unittest
 from pig.db.models import *
 from pig.db.database import *
 from pig.scripts.DivideGroupsToLeaders import DivideGroupsToLeaders
+from pig.scripts.DividingAlgorithm import DividingAlgorithm
 from pig.scripts.DbGetters import *
 from flask import Flask
 from random import randint
@@ -11,6 +12,7 @@ from pig.login.RegistrationHandler import RegistrationHandler
 from pig.scripts.create_division import Task_CreateDivision
 from pig.login.LoginHandler import LoginHandler
 from pig.scripts.encryption import *
+import random
 
 from sqlalchemy.sql.expression import func
 
@@ -38,6 +40,7 @@ class PigTestCase(unittest.TestCase):
         self.division_creator = Task_CreateDivision(self.database, Division, Parameter, NumberParam, EnumVariant)
         self.division_registrator = Task_RegisterUser(self.database,User,Division,user_division, Value, Parameter)
         self.login_handler = LoginHandler(self.database, User)
+        self.alg = DividingAlgorithm(self.database, self.db_getters)
 
     def tearDown(self):
         tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "division", "users",
@@ -209,82 +212,6 @@ class PigTestCase(unittest.TestCase):
         assert '200' in response.status
         response = self.logout()
         assert '200' in response.status
-
-    """
-<<<<<<< HEAD
-    # TODO: Skriv ferdig denne!!
-=======
->>>>>>> 5f74e55912356b9071f3870a18797f67e75d43ab
-    def test_create_division(self):
-        response = self.login("a@a.com", "test")
-        assert '200' in response.status
-
-        name_div = "obscure_test_div"
-        name_param1 = "obscure_test_div_param1"
-        name_param2 = "obscure_test_div_param2"
-        name_opt1 = "obscure_test_div_option1"
-        name_opt2 = "obscure_test_div_option2"
-        # 1. send form data as POST
-        response = self.app.post("/create_division",
-                data = dict(
-                    Division = name_div,
-                    Parameter1 = name_param1,
-                    Type1 = "Number",
-                    Min1 = "5",
-                    Max1 = "15",
-                    Parameter2 = name_param2,
-                    Type2 = "Enum",
-                    Option2_1 = name_opt1,
-                    Option2_2 = name_opt2,
-                )
-            )
-
-        # 2. Verify contents of database and clean up
-        div = self.database.get_session().query(Division) \
-            .filter(Division.name == name_div).first()
-        assert div is not None
-
-        param1 = self.database.get_session().query(Parameter) \
-            .filter(Parameter.description == name_param1).first()
-        assert param1 is not None
-        assert param1 in div.parameters
-
-        param2 = self.database.get_session().query(Parameter) \
-            .filter(Parameter.description == name_param2).first()
-        assert param2 is not None
-        assert param2 in div.parameters
-
-        opt1 = self.database.get_session().query(EnumVariant) \
-                .filter(EnumVariant.name == name_opt1).first()
-        assert opt1 is not None
-        assert opt1 in param2.enum_variants
-
-        opt2 = self.database.get_session().query(EnumVariant) \
-                .filter(EnumVariant.name == name_opt2).first()
-        assert opt2 is not None
-        assert opt2 in param2.enum_variants
-
-        number_param = self.database.get_session().query(NumberParam) \
-                .filter(NumberParam.parameter == param1).first()
-        assert number_param is not None
-        assert number_param == param1.number_param
-
-
-        self.database.get_session().delete(div)
-        # NOTE: The reason we have to delete the EnumVariants and NumberParam first, is just because
-        #       they got loaded from the database by reading them (in the assert lines above)
-        self.database.get_session().delete(opt1)
-        self.database.get_session().delete(opt2)
-        self.database.get_session().delete(number_param)
-        self.database.get_session().delete(param1)
-        self.database.get_session().delete(param2)
-
-        self.database.get_session().commit()
-<<<<<<< HEAD
-        pass
-=======
->>>>>>> 5f74e55912356b9071f3870a18797f67e75d43ab
-    """
 
 
     #The methods below are pretty self explainatory; they all query the database and they are used by the testing methods
@@ -469,7 +396,6 @@ class PigTestCase(unittest.TestCase):
         Max1="10",
         Parameter1="Param name",
         Option1_1=""))
-        division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
         self.database.get_session().execute("INSERT INTO user_division VALUES(" + str(registration_user2.id) + ", " + str(division.id) + ", 'Member')")
         self.database.get_session().commit()
         groupless_users = self.db_getters.get_groupless_users(division.id)
@@ -505,6 +431,47 @@ class PigTestCase(unittest.TestCase):
         self.delete_division(division.id)
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
+
+    def test_alg(self):
+        self.tearDown()
+        U = 25 # number of users
+        P = 5 # number of parameters
+        group_size = 5
+
+        creator = self.create_user("creator@email.com", "Password", "mr", "creator");
+
+        # Create users
+        users = [self.create_user(f"user{u}@email.com", "Password", f"first{u}", f"last{u}")\
+                    for u in range(U)]
+
+        # Create division
+        self.create_division("division for test_alg", creator.id)
+        division = self.get_division("division for test_alg", creator.id)
+        division.group_size = group_size
+
+        parameters = [ Parameter(description=f"param{p}") for p in range(P) ]
+
+        for parameter in parameters:
+            spec = NumberParam(min=0, max=10)
+
+            division.parameters.append(parameter)
+            spec.parameter = parameter
+
+            self.database.get_session().add(parameter)
+            self.database.get_session().add(spec)
+            self.database.get_session().commit()
+
+            # Sign up users for division, with random values
+            for user in users:
+                value = Value(value=random.randint(0,10), description="")
+                self.database.get_session().add(value)
+                self.database.get_session().commit()
+                self.database.get_session().execute(f"INSERT INTO user_division_parameter_value VALUES({user.id}, {division.id}, {parameter.id}, {value.id})")
+                self.database.get_session().execute(f"INSERT INTO user_division VALUES({user.id}, {division.id}, 'Member')")
+
+
+        self.database.get_session().commit()
+        self.alg.create_groups(creator, division.id)
 
 
 if __name__ == '__main__':

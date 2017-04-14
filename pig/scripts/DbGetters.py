@@ -62,9 +62,12 @@ class DbGetters:
 
     #This returns a dict with users as key, and all of their answered parameters (values as a list) as value
     def get_all_users_with_values(self, division_id):
-        list = self.database.get_session().query(self.User, self.Value).filter(self.Value.id == self.user_division_parameter_value._columns.get("value_id"),
-                                                 self.User.id == self.user_division_parameter_value._columns.get("user_id"),
-                                                 division_id == self.user_division_parameter_value._columns.get("division_id")).all()
+        list = self.database.get_session()\
+                .query(self.User, self.Value)\
+                .filter(self.Value.id == self.user_division_parameter_value._columns.get("value_id"),\
+                         self.User.id == self.user_division_parameter_value._columns.get("user_id"),\
+                         division_id == self.user_division_parameter_value._columns.get("division_id"))\
+                 .all()
         user_list = {}
         for val in list:
             if val[0] not in user_list:
@@ -104,7 +107,7 @@ class DbGetters:
             .filter(self.user_division._columns.get('division_id')==division_id)\
             .filter(self.user_division._columns.get('role')=='Leader').all()
         if (len(leaders) <1):
-            print("ERROR_ No leaders signed up for division ",division_id)
+            print("ERROR: No leaders signed up for division ",division_id)
             return None
         return leaders
 
@@ -113,10 +116,12 @@ class DbGetters:
         return division.groups if division is not None else []
 
     def get_groupless_users(self, division_id):
+        # Get users that are in some group in some division
         subquery = self.database.get_session().query(self.User.id).filter(
                                 self.Group.id == self.user_group._columns.get("group_id"),
-                                self.Division.id == self.Group.division_id,
+                                division_id == self.Group.division_id,
                                 self.user_group._columns.get("user_id") == self.User.id).all()
+        # Get users signed up as member for that division (by user_division), that are not in a group
         return self.database.get_session().query(self.User).filter(
                                 self.user_division._columns.get("division_id") == division_id,
                                 self.user_division._columns.get("user_id") == self.User.id,
@@ -124,8 +129,10 @@ class DbGetters:
                                 ~self.User.id.in_(subquery)).all()
 
     def is_registered_to_division(self, user_id, division_id):
-        user_div = self.database.get_session().query(self.user_division).filter(self.user_division._columns.get("user_id") == user_id,
-                                                                            self.user_division._columns.get("division_id") == division_id).first()
+        user_div = self.database.get_session().query(self.user_division)\
+                .filter(self.user_division._columns.get("user_id") == user_id,\
+                    self.user_division._columns.get("division_id") == division_id)\
+                .first()
         return user_div is not None
 
     def get_all_students(self, current_user, division_id):
