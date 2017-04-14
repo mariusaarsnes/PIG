@@ -2,14 +2,12 @@ import sys
 import random
 
 class DividingAlgorithm:
-
     def __init__(self, database, DbGetters):
         self.database = database
         self.db_getters = DbGetters
         self.Division = DbGetters.Division
         self.Value = DbGetters.Value
         self.user_division_parameter_value = DbGetters.user_division_parameter_value
-        return
 
     def create_groups(self, current_user, division_id):
         members = self.db_getters.get_groupless_users(division_id)
@@ -17,7 +15,7 @@ class DividingAlgorithm:
                     .filter(self.Division.id == division_id).first();
 
         data = self.prepare(division)
-        clusters = self.k_means(data, division.group_size)
+        clusters = DividingAlgorithm.k_means(data, division.group_size)
         for cluster in clusters:
             print("Cluster: {}".format(cluster))
 
@@ -51,40 +49,70 @@ class DividingAlgorithm:
 
 
 
-    def k_means(self, points, cluster_size):
+    # Returns list of lists of DataPoints
+    def k_means(points, cluster_size):
         n = len(points[0].point) # number of elements in a point
 
         n_clusters = int(len(points) / cluster_size)
 
-        # Make `n_clusters` random point
-        means = [[random.random() for i in range(n)] for i in range(n_clusters)]
-        prev_means = means
+        # Initialize the clusters with random `mean`s, and no points
+        clusters = [Cluster([random.random() for i in range(n)], [])\
+                        for i in range(n_clusters)]
+        prev_clusters = clusters
 
         while True:
             print("Iteration")
-            # Clusters, indexed in the same ways as means. Each cluster is a list of indices into the `points` list
-            clusters = [[] for i in range(n_clusters)]
+            # Reset clusters
+            for cluster in clusters:
+                cluster.points = []
 
-            # Recalculate clusters
-            for i, point in enumerate(points):
-                cluster = min_index(means, lambda mean: sum_squares(mean, point.point))
-                clusters[cluster].append(i)
+            # Reupdate clusters based on their means
+            for point in points:
+                cluster_i = min_index(clusters, lambda cluster: sum_squares(cluster.mean, point.point))
+                clusters[cluster_i].points.append(point)
 
-            # Recalculate means
-            means = [calculate_mean(cluster, points, means[i]) for i, cluster in enumerate(clusters)]
+            # Reupdate means
+            for cluster in clusters:
+                cluster.mean = cluster.update_mean()
+
 
             # Check whether to terminate
-            if means == prev_means:
+            if clusters == prev_clusters:
                 break
-            prev_means = means
+            prev_clusters = clusters
 
         # Convert from points index, to user id
-        return [[points[index].id for index in cluster] for cluster in clusters]
+        return clusters
+
+"""
+    # Make groups be of a target size
+    def normalize(clusters, target_size):
+        while True:
+            for cluster in clusters
+"""
 
 class DataPoint:
     def __init__(self, id, point):
         self.id = id
         self.point = point
+
+class Cluster:
+    def __init__(self, mean, points):
+        self.mean = mean
+        self.points = points # list(DataPoint)
+
+    def update_mean(self):
+        if len(self.points) == 0:
+            return self.mean
+
+        n = len(self.points[0].point)
+        sum = [0] * n
+        for point in self.points:
+            for j, component in enumerate(point.point):
+                sum[j] += component
+        for i, component in enumerate(sum):
+            sum[i] = component / len(self.points)
+        return sum
 
 
 def sum_squares(vec1, vec2):
@@ -105,15 +133,3 @@ def min_index(array, transform):
     assert min_index != -1
     return min_index
 
-def calculate_mean(cluster, points, old_mean):
-    if len(cluster) == 0:
-        return old_mean
-
-    n = len(points[0].point)
-    sum = [0] * n
-    for index in cluster:
-        for j, component in enumerate(points[index].point):
-            sum[j] += component
-    for i, component in enumerate(sum):
-        sum[i] = component / len(cluster)
-    return sum
