@@ -395,6 +395,7 @@ class PigTestCase(unittest.TestCase):
         Max1="10",
         Parameter1="Param name",
         Option1_1=""))
+        division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
         self.database.get_session().execute("INSERT INTO user_division VALUES(" + str(registration_user2.id) + ", " + str(division.id) + ", 'Member')")
         self.database.get_session().commit()
         groupless_users = self.db_getters.get_groupless_users(division.id)
