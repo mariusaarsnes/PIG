@@ -51,7 +51,7 @@ class Task_CreateDivision:
                     self.parameters[param_nr] = parameter
                 else:
                     # Parameter already exists - Don't create it, just add it to the Division
-                    # Setting it to None here signifies for later that we should not add a specialization for it
+                    # Setting it to None here signifies for later that we should not add any specialization for it
                     self.parameters[param_nr] = None
                     pass
                 division.parameters.append(parameter)

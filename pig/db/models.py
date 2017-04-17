@@ -69,7 +69,8 @@ class Division(db.Model):
     __tablename__="division"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
-    creator_id = db.Column( db.ForeignKey('users.id'))
+    creator_id = db.Column(db.ForeignKey('users.id'))
+    group_size = db.Column(db.Integer)
     groups = db.relationship('Group',backref='division')
     users = db.relationship('User', secondary=user_division, back_populates='divisions')
     parameters = db.relationship('Parameter', secondary=division_parameter,  backref=db.backref('division', lazy='dynamic'), passive_deletes=True)
