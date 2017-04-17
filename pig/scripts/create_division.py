@@ -26,6 +26,8 @@ class Task_CreateDivision:
         print('Input: %s' % form, file=sys.stderr)
         if len(form) == 0 or form["Division"] is None or len(form["Division"]) == 0:
             return "Name for division needs to be specified"
+        elif not form["Size"].isdigit():
+            return "Group size needs to be specified!"
 
         division = self.Division(name = form["Division"], creator_id = id)
 
