@@ -137,6 +137,7 @@ function typeSelection() {
         }
     });
     componentHandler.upgradeElement(selectDiv);
+    selectDiv.style.setProperty("display", "none");
     return selectDiv;
 }
 

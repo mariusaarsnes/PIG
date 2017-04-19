@@ -28,9 +28,9 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
                     {%  for division in divisions_created %}
                     <tr>
                         <td class="mdl-data-table__cell--non-numeric table-line-break"><text class="table-line-break">{{ division.name }}</text></td>
-                        <td><button id="show_button_leader" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" type="button" onclick="copyToClipboard('{{ leader_links[loop.index0] }}')">Copy</button></td>
-                        <td><button id="show_button_member" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" type="button" onclick="copyToClipboard('{{ member_links[loop.index0] }}')">Copy</button></td>
-                        <td><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style" onclick="location.href = location.origin + '/division_groups?divisionId={{ division.id }}'" type="button">Go to</button></td>
+                        <td class="no-padding-sides"><button id="show_button_leader" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" type="button" onclick="copyToClipboard('{{ leader_links[loop.index0] }}')">Copy link</button></td>
+                        <td class="no-padding-sides"><button id="show_button_member" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" type="button" onclick="copyToClipboard('{{ member_links[loop.index0] }}')">Copy link</button></td>
+                        <td class="no-padding-sides"><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" onclick="location.href = location.origin + '/division_groups?divisionId={{ division.id }}'" type="button">Division info</button></td>
                     </tr>
                     {% endfor %}
                 </tbody>

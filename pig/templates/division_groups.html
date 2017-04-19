@@ -9,7 +9,7 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 <script src="{{ url_for('static', filename='js/show_hidden_elements.js') }}"></script>
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
-        <h2 class="mdl-card__title-text">Groups</h2>
+        <h2 class="mdl-card__title-text">Groups (Size: {{ group_size }})</h2>
     </div>
     {% set count = [] %}
     {% if groups|length <= 0 %}
@@ -48,13 +48,14 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 </div>
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
-        <h2 class="mdl-card__title-text">Users without a group</h2>
+        <h2 class="mdl-card__title-text">Students without a group</h2>
     </div>
     {% if groupless_users|length <= 0 %}
         <p style="padding-left: 5px;"> {% if count|length == 0 %} No users has signed up for this division! {% else %} All users who was signed up for this division has a group! {% endif %}</p>
     {% else %}
         <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
             <div class="full-width">
+                <button id="run-algorithm-button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary full-width" type="button" onclick="">Divide users into groups!</button>
                 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
                     <thead>
                         <tr>

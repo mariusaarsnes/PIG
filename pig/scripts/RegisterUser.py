@@ -1,6 +1,6 @@
 __author__ = 'owner_000'
 
-class Task_RegisterUser():
+class RegisterUser():
 
     def __init__(self, database, User, Division, user_division, Value, Parameter):
         self.database = database

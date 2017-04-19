@@ -1,4 +1,4 @@
-import pig.scripts.encryption as e
+import pig.scripts.Encryption as e
 
 class DbGetters:
     def __init__(self,database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
@@ -26,6 +26,9 @@ class DbGetters:
         return self.database.get_session().query(self.User)\
             .filter(self.User.id == current_user.id).first().divisions_created
 
+    def get_division(self, division_id):
+        return self.database.get_session().query(self.Division).filter(self.Division.id == division_id).first()
+
     def fetch_divisions(self, current_user, key):
         divisions_participating = self.database.get_session()\
             .query(self.user_division, self.Division, self.User)\
@@ -51,7 +54,7 @@ class DbGetters:
         divisions = self.database.get_session().query(self.Division)\
             .filter(self.user_division._columns.get('division_id') == self.Division.id)\
             .filter(self.user_division._columns.get('user_id') == current_user.id)\
-            .filter(self.user_division._columns.get('role') == 'Leader')\
+            .filter(self.user_division._columns.get('role') == 'TA')\
             .order_by(self.Division.id).all()
 
         if (len(divisions) <1):
@@ -125,7 +128,7 @@ class DbGetters:
         return self.database.get_session().query(self.User).filter(
                                 self.user_division._columns.get("division_id") == division_id,
                                 self.user_division._columns.get("user_id") == self.User.id,
-                                self.user_division._columns.get("role") == "Member",
+                                self.user_division._columns.get("role") == "Student",
                                 ~self.User.id.in_(subquery)).all()
 
     def is_registered_to_division(self, user_id, division_id):

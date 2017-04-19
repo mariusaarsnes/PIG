@@ -2,8 +2,21 @@ html {
     background-color:#444444;
 }
 
+#description {
+    font-size: 14px;
+}
+
+#division-name {
+    width: 70%;
+    padding-right: 20px;
+}
+
+#division-size {
+    width: 25%;
+}
+
 .mdl-layout__header-row {
-    padding: 0 40px 0 40px !important;
+    padding: 0 40px 0 20px !important;
 }
 
 .mdl-layout__header, .mdl-layout__drawer-button {
@@ -88,7 +101,7 @@ html {
     font-size: 14px !important;
     text-align: none !important;
     text-transform: none;
-   line-height: 0 !important;
+    line-height: 0 !important;
     margin: 0 !important;
     padding-left: 2.5%;
     padding-right: 2.5%;
@@ -338,6 +351,10 @@ input[id=parameter] {
     margin: -2% 5%;
 }
 
+.undecorated-link {
+    text-decoration: none;
+}
+
 .table-line-break {
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -347,6 +364,9 @@ input[id=parameter] {
 
 /* Dropdown Button */
 .dropdown-button {
+    height: 100%;
+    font-weight: bold;
+    text-transform: none;
     background-color: Transparent;
     color: #FFFFFF;
     font-family: "Trebuchet MS", 'Helvetica', sans-serif;
@@ -401,4 +421,14 @@ input[id=parameter] {
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown-box:hover dropdown-button {
     background-color: #3e8e41;
+}
+
+#run-algorithm-button {
+    text-transform: none;
+    margin-bottom: 10px;
+}
+
+.no-padding-sides {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 }
