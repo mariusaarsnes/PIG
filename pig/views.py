@@ -79,11 +79,14 @@ def apply_group():
                         .query(Division) \
                         .filter(Division.id == div_id) \
                         .first()
-                if division_registrator.is_division_creator(current_user, div_id):
-                    message = "You cannot register for your own division!"
-                    # Make the form
-                params = division.parameters
-                return render_template("apply_group.html", user=current_user, message=message, params=params, div_name=div_name, div_id=div_id)
+                if division_registrator.is_division_creator(current_user, int(div_id)):
+                    return render_template("message.html", user=current_user, header="Error!", message="You cannot register for your own division!")
+                if int(div_role) == 0:
+                    params = division.parameters
+                    return render_template("apply_group.html", user=current_user, message=message, params=params, div_name=div_name, div_id=div_id)
+                else:
+                    division_registrator.register_user(current_user, division.id, "Leader")
+                    return render_template("message.html", user=current_user, header="Success!", message="You successfully signed up to the division " + str(division.name) + " as a group leader!")
             return render_template("message.html", user=current_user, header="Invalid link", message="The link you provided is not valid!")
     return render_template("apply_group.html", user=current_user, message=None, params=None)
 
