@@ -3,6 +3,8 @@
 [![Build Status](https://travis-ci.org/mariiuus/PIG.svg?branch=master)](https://travis-ci.org/mariiuus/PIG)
 [![Coverage Status](https://coveralls.io/repos/github/mariiuus/PIG/badge.svg?branch=master)](https://coveralls.io/github/mariiuus/PIG?branch=master)
 
+Read `CONTRIBUTING.md` for information about the project structure to get started contributing.
+
 TDT4140 - Software Engineering
 
 PIG, Partition Into Groups, is an application with the objective to intelligently partition a set of people into groups based on parameters that the users answer before being divided into groups.
