@@ -400,7 +400,7 @@ class PigTestCase(unittest.TestCase):
         Parameter1="Param name",
         Option1_1=""))
         division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
-        self.database.get_session().execute("INSERT INTO user_division VALUES(" + str(registration_user2.id) + ", " + str(division.id) + ", 'Member')")
+        self.database.get_session().execute("INSERT INTO user_division VALUES(" + str(registration_user2.id) + ", " + str(division.id) + ", 'Student')")
         self.database.get_session().commit()
         groupless_users = self.db_getters.get_groupless_users(division.id)
         assert groupless_users[0].id == registration_user2.id
@@ -436,6 +436,7 @@ class PigTestCase(unittest.TestCase):
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
+    """
     def test_alg(self):
         self.tearDown()
         U = 25 # number of users
@@ -476,7 +477,7 @@ class PigTestCase(unittest.TestCase):
 
         self.database.get_session().commit()
         self.alg.create_groups(creator, division.id)
-
+    """
     def print_clusters(self, clusters):
         for cluster in clusters:
             print("Cluster:")
