@@ -54,7 +54,7 @@ class DbGetters:
         divisions = self.database.get_session().query(self.Division)\
             .filter(self.user_division._columns.get('division_id') == self.Division.id)\
             .filter(self.user_division._columns.get('user_id') == current_user.id)\
-            .filter(self.user_division._columns.get('role') == 'Leader')\
+            .filter(self.user_division._columns.get('role') == 'TA')\
             .order_by(self.Division.id).all()
 
         if (len(divisions) <1):
@@ -128,7 +128,7 @@ class DbGetters:
         return self.database.get_session().query(self.User).filter(
                                 self.user_division._columns.get("division_id") == division_id,
                                 self.user_division._columns.get("user_id") == self.User.id,
-                                self.user_division._columns.get("role") == "Member",
+                                self.user_division._columns.get("role") == "Student",
                                 ~self.User.id.in_(subquery)).all()
 
     def is_registered_to_division(self, user_id, division_id):

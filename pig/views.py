@@ -63,9 +63,9 @@ def apply_group():
                 elif len(key[9:]) > 0:
                     if not tasks.verify_number_parameter_input(int(key[9:]), value):
                         return render_template("message.html", user=current_user, header="Out of range", message="One or more of the numbers you selected was out of the input range!")
-        division_registrator.register_user(current_user, int(request.form['DivisionId']), "Member")
+        division_registrator.register_user(current_user, int(request.form['DivisionId']), "Student")
         division_registrator.register_parameters(current_user, request.form)
-        return render_template("message.html", user=current_user, header="Success!", message="You successfully signed up to the division " + str(request.form['DivisionName']) + " as a group member!")
+        return render_template("message.html", user=current_user, header="Success!", message="You successfully signed up to the division " + str(request.form['DivisionName']) + " as a student!")
     else:
         message = None
         arg = request.args.get("values")
@@ -85,8 +85,8 @@ def apply_group():
                     params = division.parameters
                     return render_template("apply_group.html", user=current_user, message=message, params=params, div_name=div_name, div_id=div_id)
                 else:
-                    division_registrator.register_user(current_user, division.id, "Leader")
-                    return render_template("message.html", user=current_user, header="Success!", message="You successfully signed up to the division " + str(division.name) + " as a group leader!")
+                    division_registrator.register_user(current_user, division.id, "TA")
+                    return render_template("message.html", user=current_user, header="Success!", message="You successfully signed up to the division " + str(division.name) + " as a TA!")
             return render_template("message.html", user=current_user, header="Invalid link", message="The link you provided is not valid!")
     return render_template("apply_group.html", user=current_user, message=None, params=None)
 
