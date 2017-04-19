@@ -3,7 +3,7 @@ import sys
 
 # Idea for the future: Make classes to put in 'specializations' rather than checking if it's a list etc.
 
-class Task_CreateDivision:
+class CreateDivision:
 
     def __init__(self, database, Division, Parameter, NumberParam, EnumVariant):
         self.database = database
@@ -29,7 +29,7 @@ class Task_CreateDivision:
         elif not form["Size"].isdigit():
             return "Group size needs to be specified!"
 
-        division = self.Division(name = form["Division"], creator_id = id)
+        division = self.Division(name = form["Division"], creator_id = id, group_size = int(form["Size"]))
 
         # First pass: Find the type of each parameter
         for (key, value) in form.items():

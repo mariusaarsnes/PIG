@@ -7,11 +7,11 @@ from pig.scripts.DbGetters import *
 from flask import Flask
 from random import randint, random
 from pig.scripts.Tasks import Tasks
-from pig.scripts.register_user import Task_RegisterUser
+from pig.scripts.RegisterUser import RegisterUser
 from pig.login.RegistrationHandler import RegistrationHandler
-from pig.scripts.create_division import Task_CreateDivision
+from pig.scripts.CreateDivision import CreateDivision
 from pig.login.LoginHandler import LoginHandler
-from pig.scripts.encryption import *
+from pig.scripts.Encryption import *
 
 from sqlalchemy.sql.expression import func
 
@@ -36,8 +36,8 @@ class PigTestCase(unittest.TestCase):
 
         self.divide_groups_to_leaders = DivideGroupsToLeaders(self.database, Division, user_division, self.db_getters)
         self.registration_handler = RegistrationHandler(self.database, User)
-        self.division_creator = Task_CreateDivision(self.database, Division, Parameter, NumberParam, EnumVariant)
-        self.division_registrator = Task_RegisterUser(self.database,User,Division,user_division, Value, Parameter)
+        self.division_creator = CreateDivision(self.database, Division, Parameter, NumberParam, EnumVariant)
+        self.division_registrator = RegisterUser(self.database,User,Division,user_division, Value, Parameter)
         self.login_handler = LoginHandler(self.database, User)
         self.alg = PartitionAlg(self.database, self.db_getters)
 
@@ -298,6 +298,7 @@ class PigTestCase(unittest.TestCase):
         Type1="Number",
         Min1="1",
         Max1="10",
+        Size="5",
         Parameter1="Param name",
         Option1_1=""))
         division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
@@ -319,6 +320,7 @@ class PigTestCase(unittest.TestCase):
         Type1="Number",
         Min1="1",
         Max1="10",
+        Size="5",
         Parameter1="Param name",
         Option1_1=""))
         division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
@@ -370,6 +372,7 @@ class PigTestCase(unittest.TestCase):
         Type1="Number",
         Min1="1",
         Max1="10",
+        Size="5",
         Parameter1="Param name",
         Option1_1=""))
         division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
@@ -393,6 +396,7 @@ class PigTestCase(unittest.TestCase):
         Type1="Number",
         Min1="1",
         Max1="10",
+        Size="5",
         Parameter1="Param name",
         Option1_1=""))
         division = self.database.get_session().query(Division).filter(Division.creator_id == user.id).first()
@@ -441,7 +445,7 @@ class PigTestCase(unittest.TestCase):
         creator = self.create_user("creator@email.com", "Password", "mr", "creator");
 
         # Create users
-        users = [self.create_user(f"user{u}@email.com", "Password", f"first{u}", f"last{u}")\
+        users = [self.create_user("user{u}@email.com", "Password", "first{u}", "last{u}")\
                     for u in range(U)]
 
         # Create division
@@ -449,7 +453,7 @@ class PigTestCase(unittest.TestCase):
         division = self.get_division("division for test_alg", creator.id)
         division.group_size = group_size
 
-        parameters = [ Parameter(description=f"param{p}") for p in range(P) ]
+        parameters = [ Parameter(description="param{p}") for p in range(P) ]
 
         for parameter in parameters:
             spec = NumberParam(min=0, max=10)
@@ -466,8 +470,8 @@ class PigTestCase(unittest.TestCase):
                 value = Value(value=randint(0,10), description="")
                 self.database.get_session().add(value)
                 self.database.get_session().commit()
-                self.database.get_session().execute(f"INSERT INTO user_division_parameter_value VALUES({user.id}, {division.id}, {parameter.id}, {value.id})")
-                self.database.get_session().execute(f"INSERT INTO user_division VALUES({user.id}, {division.id}, 'Member')")
+                self.database.get_session().execute("INSERT INTO user_division_parameter_value VALUES({user.id}, {division.id}, {parameter.id}, {value.id})")
+                self.database.get_session().execute("INSERT INTO user_division VALUES({user.id}, {division.id}, 'Member')")
 
 
         self.database.get_session().commit()

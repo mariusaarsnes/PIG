@@ -1,4 +1,4 @@
-import pig.scripts.encryption as e
+import pig.scripts.Encryption as e
 from re import match
 
 

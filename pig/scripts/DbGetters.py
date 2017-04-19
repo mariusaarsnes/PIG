@@ -1,4 +1,4 @@
-import pig.scripts.encryption as e
+import pig.scripts.Encryption as e
 
 class DbGetters:
     def __init__(self,database, User, Division, Group, Parameter, Value, NumberParam, EnumVariant,
@@ -25,6 +25,9 @@ class DbGetters:
     def get_all_divisions_where_creator_for_given_user(self,current_user):
         return self.database.get_session().query(self.User)\
             .filter(self.User.id == current_user.id).first().divisions_created
+
+    def get_division(self, division_id):
+        return self.database.get_session().query(self.Division).filter(self.Division.id == division_id).first()
 
     def fetch_divisions(self, current_user, key):
         divisions_participating = self.database.get_session()\
