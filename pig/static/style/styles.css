@@ -257,7 +257,6 @@ body .demo-layout-transparent {
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
   min-height: 64px;
-<<<<<<< HEAD
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -269,10 +268,8 @@ body .demo-layout-transparent {
 #table {
   width: 100%;
   min-height: 64px;
- padding: 0px;
-=======
+  padding: 0px;
   align: center;
->>>>>>> 5f74e55912356b9071f3870a18797f67e75d43ab
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
