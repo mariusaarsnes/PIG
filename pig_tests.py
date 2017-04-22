@@ -436,7 +436,6 @@ class PigTestCase(unittest.TestCase):
         self.delete_user('creator@email.com')
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
-    """
     def test_alg(self):
         self.tearDown()
         U = 25 # number of users
@@ -446,7 +445,7 @@ class PigTestCase(unittest.TestCase):
         creator = self.create_user("creator@email.com", "Password", "mr", "creator");
 
         # Create users
-        users = [self.create_user("user{u}@email.com", "Password", "first{u}", "last{u}")\
+        users = [self.create_user(f"user{u}@email.com", "Password", f"first{u}", f"last{u}")\
                     for u in range(U)]
 
         # Create division
@@ -454,7 +453,7 @@ class PigTestCase(unittest.TestCase):
         division = self.get_division("division for test_alg", creator.id)
         division.group_size = group_size
 
-        parameters = [ Parameter(description="param{p}") for p in range(P) ]
+        parameters = [ Parameter(description=f"param{p}") for p in range(P) ]
 
         for parameter in parameters:
             spec = NumberParam(min=0, max=10)
@@ -471,13 +470,13 @@ class PigTestCase(unittest.TestCase):
                 value = Value(value=randint(0,10), description="")
                 self.database.get_session().add(value)
                 self.database.get_session().commit()
-                self.database.get_session().execute("INSERT INTO user_division_parameter_value VALUES({user.id}, {division.id}, {parameter.id}, {value.id})")
-                self.database.get_session().execute("INSERT INTO user_division VALUES({user.id}, {division.id}, 'Member')")
+                self.database.get_session().execute(f"INSERT INTO user_division_parameter_value VALUES({user.id}, {division.id}, {parameter.id}, {value.id})")
+                self.database.get_session().execute(f"INSERT INTO user_division VALUES({user.id}, {division.id}, 'Member')")
 
 
         self.database.get_session().commit()
         self.alg.create_groups(creator, division.id)
-    """
+
     def print_clusters(self, clusters):
         for cluster in clusters:
             print("Cluster:")

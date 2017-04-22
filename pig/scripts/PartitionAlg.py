@@ -1,5 +1,6 @@
 import sys
 import random
+import math
 
 class PartitionAlg:
     def __init__(self, database, DbGetters):
@@ -17,7 +18,7 @@ class PartitionAlg:
         data = self.prepare(division)
         clusters = PartitionAlg.k_means(data, division.group_size)
         for cluster in clusters:
-            print("Cluster: {}".format(cluster))
+            print("Cluster: {}".format(cluster), file=sys.stderr)
 
 
     # Create a structure that can be used as input to k_means
@@ -53,12 +54,15 @@ class PartitionAlg:
     def k_means(points, cluster_size):
         n = len(points[0].point) # number of elements in a point
 
-        n_clusters = int(len(points) / cluster_size)
+        n_clusters = math.ceil(len(points) / cluster_size)
+        print("k_means.. n={}, n_clusters={}".format(n, n_clusters), file=sys.stderr)
 
         # Initialize the clusters with random `mean`s, and no points
         clusters = [Cluster([random.random() for i in range(n)], [])\
                         for i in range(n_clusters)]
         prev_clusters = clusters
+
+        assert len(clusters) != 0
 
         while True: # Will converge
             # Reset clusters
