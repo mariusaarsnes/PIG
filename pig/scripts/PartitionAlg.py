@@ -156,6 +156,7 @@ def sum_squares(vec1, vec2):
 
 # Applies transform to each element in the array, and picks the index of the minimum result
 def min_index(array, transform):
+    assert len(array) != 0
     min_index = -1
     min_value = float("inf")
     for i, element in enumerate(array):
@@ -163,6 +164,5 @@ def min_index(array, transform):
         if new_value < min_value:
             min_value = new_value
             min_index = i
-    assert min_index != -1
     return min_index
 

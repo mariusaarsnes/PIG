@@ -55,7 +55,7 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
     {% else %}
         <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
             <div class="full-width">
-                <button id="run-algorithm-button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary full-width" type="button" onclick="">Divide users into groups!</button>
+                <button id="run-algorithm-button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary full-width" type="button" onclick="location.href = location.origin + '/division_groups?divisionId={{ division_id }}&divide=1'">Divide users into groups!</button>
                 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
                     <thead>
                         <tr>

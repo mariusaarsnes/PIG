@@ -1,5 +1,6 @@
 # encoding=UTF-8
 
+import sys
 from flask import Flask, redirect, url_for, request, render_template, flash
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
@@ -12,6 +13,7 @@ from pig.db.database import Database
 from pig.scripts.DbGetters import DbGetters
 from pig.scripts.Tasks import Tasks
 from pig.scripts.RegisterUser import RegisterUser
+from pig.scripts.PartitionAlg import PartitionAlg
 
 
 app = Flask(__name__, template_folder='templates')
@@ -38,6 +40,8 @@ tasks = Tasks(
     user_division, user_group, division_parameter, parameter_value, user_division_parameter_value)
 
 division_registrator = RegisterUser(database,User,Division,user_division, Value, Parameter)
+
+partition_alg = PartitionAlg(database, db_getters)
 
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
@@ -167,8 +171,21 @@ def show_all_students_listed():
 @login_required
 def show_groupless_users():
     if request.args.get("divisionId") is not None:
-        if division_registrator.is_division_creator(current_user, int(request.args.get("divisionId"))):
-            return render_template("division_groups.html", user=current_user, group_size = db_getters.get_division(int(request.args.get("divisionId"))).group_size, groups=db_getters.get_groups(int(request.args.get("divisionId"))), groupless_users=db_getters.get_groupless_users(int(request.args.get("divisionId"))))
+        division_id = int(request.args.get("divisionId"))
+        if division_registrator.is_division_creator(current_user, division_id):
+            # Run algorithm
+            if request.args.get("divide") is not None:
+                print("Running alg!", file=sys.stderr)
+                partition_alg.create_groups(current_user, division_id)
+            # View page
+            return render_template("division_groups.html",\
+                    user=current_user,\
+                    division_id = division_id,\
+                    group_size = db_getters.get_division(division_id).group_size,\
+                    groups=db_getters.get_groups(division_id),\
+                    groupless_users=db_getters.get_groupless_users(division_id))
+        else:
+            pass # TODO: permission denied?
     return redirect(url_for("home"))
 
 @app.route("/logout")
