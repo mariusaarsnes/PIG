@@ -44,14 +44,6 @@ class PigTestCase(unittest.TestCase):
         self.alg = PartitionAlg(self.database, self.db_getters)
 
     def tearDown(self):
-        """
-        for tbl in reversed(meta.sorted_tables):
-            print("A")
-            engine.execute(tbl.delete())
-        return
-    """
-
-        return
         tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "user_group", "groups", "division", "users" ]
         for table in tables:
             self.database.get_session().execute("DELETE FROM " + table)
@@ -445,12 +437,6 @@ class PigTestCase(unittest.TestCase):
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
     def test_alg(self):
-        tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "user_group", "groups", "division", "users" ]
-        for table in tables:
-            self.database.get_session().execute("DELETE FROM " + table)
-        self.database.get_session().commit()
-        # ^ remove
-
         U = 25 # number of users
         P = 5 # number of parameters
         group_size = 5
