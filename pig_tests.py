@@ -15,6 +15,8 @@ from pig.scripts.Encryption import *
 
 from sqlalchemy.sql.expression import func
 
+from sqlalchemy import MetaData
+meta = MetaData()
 
 class PigTestCase(unittest.TestCase):
 
@@ -42,9 +44,15 @@ class PigTestCase(unittest.TestCase):
         self.alg = PartitionAlg(self.database, self.db_getters)
 
     def tearDown(self):
-        tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "division", "users",
-                  "user_group",
-                  "groups" ]
+        """
+        for tbl in reversed(meta.sorted_tables):
+            print("A")
+            engine.execute(tbl.delete())
+        return
+    """
+
+        return
+        tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "user_group", "groups", "division", "users" ]
         for table in tables:
             self.database.get_session().execute("DELETE FROM " + table)
         self.database.get_session().commit()
@@ -437,7 +445,12 @@ class PigTestCase(unittest.TestCase):
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
     def test_alg(self):
-        self.tearDown()
+        tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "user_group", "groups", "division", "users" ]
+        for table in tables:
+            self.database.get_session().execute("DELETE FROM " + table)
+        self.database.get_session().commit()
+        # ^ remove
+
         U = 25 # number of users
         P = 5 # number of parameters
         group_size = 5
@@ -473,9 +486,23 @@ class PigTestCase(unittest.TestCase):
                 self.database.get_session().execute(f"INSERT INTO user_division_parameter_value VALUES({user.id}, {division.id}, {parameter.id}, {value.id})")
                 self.database.get_session().execute(f"INSERT INTO user_division VALUES({user.id}, {division.id}, 'Member')")
 
-
         self.database.get_session().commit()
+
+        # Run alg
         self.alg.create_groups(creator, division.id)
+
+        # Check that all users are assigned a group
+        for user in users:
+            participation = self.database.get_session().query(user_group)\
+                    .filter(user_division._columns.get("user_id") == user.id)\
+                    .first()
+            assert participation is not None
+            group = self.database.get_session().query(Group)\
+                    .filter(Group.id == participation.group_id)\
+                    .first()
+            assert group is not None
+            print(f"Checking user {user.id} .. participation = {participation} .. group = {group}")
+
 
     def print_clusters(self, clusters):
         for cluster in clusters:

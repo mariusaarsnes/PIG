@@ -8,6 +8,7 @@ class PartitionAlg:
         self.db_getters = DbGetters
         self.Division = DbGetters.Division
         self.Value = DbGetters.Value
+        self.Group = DbGetters.Group
         self.user_division_parameter_value = DbGetters.user_division_parameter_value
 
     def create_groups(self, current_user, division_id):
@@ -17,8 +18,20 @@ class PartitionAlg:
 
         data = self.prepare(division)
         clusters = PartitionAlg.k_means(data, division.group_size)
+        PartitionAlg.normalize(clusters, division.group_size)
+
+        i = 0
         for cluster in clusters:
-            print("Cluster: {}".format(cluster), file=sys.stderr)
+            print("Cluster({})".format(len(cluster.points)), file=sys.stderr)
+            # Insert group into database
+            group = self.Group(division_id = division.id, number = i)
+            self.database.get_session().add(group)
+            self.database.get_session().commit()
+            i += 1
+
+            # Insert members into group
+            for point in cluster.points:
+                self.database.get_session().execute(f"INSERT INTO user_group VALUES({point.id}, {group.id})")
 
 
     # Create a structure that can be used as input to k_means
@@ -55,7 +68,6 @@ class PartitionAlg:
         n = len(points[0].point) # number of elements in a point
 
         n_clusters = math.ceil(len(points) / cluster_size)
-        print("k_means.. n={}, n_clusters={}".format(n, n_clusters), file=sys.stderr)
 
         # Initialize the clusters with random `mean`s, and no points
         clusters = [Cluster([random.random() for i in range(n)], [])\
@@ -95,7 +107,7 @@ class PartitionAlg:
             # Beware that the first element will be the current cluster.
             neighbors[i] = sorted(clusters, key = lambda other: sum_squares(cluster.mean, other.mean))
 
-        MAX_ITERATIONS = 10 # I don't know if it always converges
+        MAX_ITERATIONS = 50 # I don't know if it always converges
         iterations = 0
         # Algorithm to normalize clusters:
         # Repeat, for as long as there is no change:
