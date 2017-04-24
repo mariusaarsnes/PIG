@@ -25,7 +25,7 @@ n = 10
 n_points = 25
 cluster_size = 10
 
-def test():
+def test_performance():
     global n
     global n_points
     global cluster_size
@@ -47,7 +47,7 @@ def test():
 
         n_points += 100
 
-def test2():
+def test_accuracy():
     global n
     global n_points
     global cluster_size
@@ -70,6 +70,3 @@ def test2():
 
     for cluster in clusters:
         assert len(cluster.points) == cluster_size
-
-
-test()

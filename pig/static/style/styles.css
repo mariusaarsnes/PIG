@@ -25,18 +25,22 @@ html {
 }
 .demo-layout-transparent,
 .demo-layout-transparent .mdl-layout__drawer-button {
-  background-color: #CCCCCC;
+  background-color: #f2f2f2;
   /* This background is dark, so we set text to white. Use 87% black instead if
      your background is light. */show_divisions_created_table
   color: white;
 }
 
+.mdl-navigation button {
+    opacity: .87;
+}
+
 .mdl-data-table {
-    background-color: #E5E5E5;
+    background-color: white;
 }
 
 .mdl-card {
-    background-color: #DDDDDD !important;
+    background-color: white !important;
 }
 
 
@@ -173,7 +177,6 @@ body .demo-layout-transparent {
   max-width: 900px;
     align-content: center;
     align-self: center;
-    align-items: center;
   padding: 0;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -192,13 +195,12 @@ body .demo-layout-transparent {
   -webkit-overflow-scrolling: touch;
 }
 .demo-layout-transparent .mdl-card {
-    background-color: #CCCCCC;
+    background-color: #f2f2f2;
   display: -webkit-flex;
     align-content: center;
     align-items: center;
-    align-self: center;
     min-width: 200px;
-    margin: auto;
+    margin: 0 auto;
   display: -ms-flexbox;
   display: flex;
   -webkit-flex-direction: column;
@@ -208,7 +210,6 @@ body .demo-layout-transparent {
       -ms-flex-align: stretch;
           align-items: stretch;
 
-  min-height: 360px;
     margin-top: 25px;
 }
 .demo-layout-transparent .mdl-card__title {
@@ -254,6 +255,12 @@ body .demo-layout-transparent {
 .demo-layout-transparent .mdl-card__title a {
   color: inherit;
 }
+
+.mdl-textfield {
+    width: 100%;
+}
+
+
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
   min-height: 64px;
@@ -276,6 +283,10 @@ body .demo-layout-transparent {
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
+}
+
+#login-form {
+    width: 100%;
 }
 
 
