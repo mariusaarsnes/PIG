@@ -20,6 +20,7 @@ app = Flask(__name__, template_folder='templates')
 database = Database(app)
 
 from pig.db.models import *
+from passlib.hash import bcrypt
 
 pig_key = "supersecretpigkey"
 app.secret_key = pig_key
@@ -43,7 +44,7 @@ division_registrator = RegisterUser(database,User,Division,user_division, Value,
 #are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
-    return LoginHandler.get_user_with_id(user_id)
+    return login_handler.get_user_with_id(user_id)
 
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
 @app.route("/")

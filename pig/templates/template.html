@@ -46,7 +46,7 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
                             for="menu-button">
                           <a class="undecorated-link" href="{{ url_for('show_divisions') }}"><li class="mdl-menu__item">My divisions</li></a>
                           <a class="undecorated-link" href="{{ url_for('show_groups_leader') }}"><li class="mdl-menu__item">My groups</li></a>
-                          <li disabled class="mdl-menu__item">Show all students</li>
+                          <li class="mdl-menu__item">Show all students</li>
                         </ul>
                         <a class="mdl-navigation__link" href="{{ url_for('logout') }}"><b>Logout</b></a>
                         <a class="mdl-navigation__link" href=""> User: {{ user.full_name }}</a>

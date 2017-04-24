@@ -1,4 +1,5 @@
 from re import match
+from passlib.hash import bcrypt
 
 class RegistrationHandler:
 
@@ -9,7 +10,8 @@ class RegistrationHandler:
         self.User = User
 
     def create_user(self, firstname, lastname, email, password):
-        user = self.User(firstname=firstname, lastname=lastname, email=email, password=password)
+        hashed_pass = bcrypt.hash(password)
+        user = self.User(firstname=firstname, lastname=lastname, email=email, password=hashed_pass)
         self.database.get_session().add(user)
         self.database.get_session().commit()
 
