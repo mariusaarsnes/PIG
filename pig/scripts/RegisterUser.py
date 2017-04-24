@@ -39,7 +39,6 @@ class RegisterUser():
                 parameter = self.database.get_session().query(self.Parameter).filter(self.Parameter.id == id).first()
                 self.database.get_session().execute("INSERT INTO user_division_parameter_value VALUES(:user_id, :division_id, :parameter_id, :value_id)",
                             {"user_id": current_user.id, "division_id": divisionId, "parameter_id": parameter.id, "value_id": value_parameter.id})
-                self.database.get_session().execute("INSERT INTO parameter_value VALUES(:parameter_id, :value_id)", {"parameter_id": parameter.id, "value_id": value_parameter.id})
         self.database.get_session().commit()
 
     def is_division_creator(self, current_user, division_id):
