@@ -22,7 +22,6 @@ app = Flask(__name__, template_folder='templates')
 database = Database(app)
 
 from pig.db.models import *
-from passlib.hash import bcrypt
 
 pig_key = "supersecretpigkey"
 app.secret_key = pig_key
@@ -168,16 +167,22 @@ def show_all_students_listed():
         return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=db_getters.get_all_students(current_user, int(request.args.get("divisionId"))))
     return redirect(url_for("home"))
 
-@app.route("/division_groups")
+@app.route("/division_groups", methods=['GET', 'POST'])
 @login_required
 def show_groupless_users():
-    if request.args.get("divisionId") is not None:
+    print(request.args.get("divisionId"))
+    if request.method == "POST":
+        if request.args.get("divisionId") is not None:
+            division_id = int(request.args.get("divisionId"))
+            print("Running alg!", file=sys.stderr)
+            try:
+                partition_alg.create_groups(current_user, division_id)
+            except:
+                pass
+            return redirect(url_for("show_groupless_users", values=request.args.get("divisionId")))
+    elif request.args.get("divisionId") is not None:
         division_id = int(request.args.get("divisionId"))
         if division_registrator.is_division_creator(current_user, division_id):
-            # Run algorithm
-            if request.args.get("divide") is not None:
-                print("Running alg!", file=sys.stderr)
-                partition_alg.create_groups(current_user, division_id)
             # View page
             return render_template("division_groups.html",\
                     user=current_user,\

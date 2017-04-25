@@ -50,12 +50,15 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Students without a group</h2>
     </div>
-    {% if groupless_users|length <= 0 %}
+    {% if groupless_users|length <= -1 %}
         <p style="padding-left: 5px;"> {% if count|length == 0 %} No users has signed up for this division! {% else %} All users who was signed up for this division has a group! {% endif %}</p>
     {% else %}
         <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
             <div class="full-width">
-                <button id="run-algorithm-button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary full-width" type="button" onclick="location.href = location.origin + '/division_groups?divisionId={{ division_id }}&divide=1'">Divide users into groups!</button>
+                <form id="post-form" method="POST" class="full-width">
+                    <input name="DivisionId" type="hidden" value="{{ division_id }}">
+                </form>
+                <button form="post-form" type="submit" id="run-algorithm-button" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary full-width" type="button">Divide users into groups!</button>
                 <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
                     <thead>
                         <tr>
