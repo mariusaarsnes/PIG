@@ -25,16 +25,26 @@ PURPOSE: Provide a page where users can view all the pages that they are current
                             </tr>
                         </thead>
                         <tbody class="dropdown">
-                            {% for (division, group) in division_dict.items() %}
+                            {% for (division, data) in division_dict.items() %}
+                                {% set group = data[0] %}
+                                {% set leader = data[1] %}
                                 <tr>
-                                    <td class="mdl-data-table__cell--non-numeric full-width">{{ division.name }}<text style="{% if group is not none %}cursor: pointer; {% endif %}float: right;">
-                                        {% if group is none %} You have no group! {% else %} Show group<i id="table-caret0" class="fa fa-caret-down right-float font-size-twenty"></i> {% endif %}</text></td>
+                                    <td {% if group is not none %} onclick="showHiddenElements({{group.id}})" {% endif %} class="mdl-data-table__cell--non-numeric full-width">{{ division.name }}<text style="{% if group is not none %}cursor: pointer; {% endif %}float: right;">
+                                        {% if group is none %} You have no group! {% else %} Show group  <i id="table-caret{{group.id}}" style="padding-left: 5px;" class="fa fa-caret-down right-float font-size-twenty"></i> {% endif %}</text></td>
                                 </tr>
                                 {% if group is not none %}
-                                    <group style="display: none" id="{{ group.id }}">
+                                    <group style="display: none;">
+                                        <tr style="background-color: #DFDFDF; display: none;" class="group{{group.id}}">
+                                            <td class="mdl-data-table__cell--non-numeric full-width">
+                                                {% if leader is not none %}
+                                                    TA: {{ leader.firstname }} {{ leader.lastname }}<text style="float: right;"> {{ leader.email }}</text></td>
+                                                {% else %}
+                                                    This group has no TA!
+                                                {% endif %}
+                                        </tr>
                                         {% for user in group.users.all() %}
-                                            <tr>
-                                                {{ user }}
+                                            <tr style="background-color: #EEEEEE; display: none;" class="group{{group.id}}">
+                                                <td class="mdl-data-table__cell--non-numeric full-width">{{ user.firstname }} {{ user.lastname }}<text style="float: right;"> {{ user.email }}</text></td>
                                             </tr>
                                         {% endfor %}
                                     </group>
@@ -47,6 +57,7 @@ PURPOSE: Provide a page where users can view all the pages that they are current
         </div>
         <!-- Hvis det ikke er her, men bare 'bottom' block, lastes det ikke for meg -->
         <script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/show_hidden_element.js') }}"></script>
     {% endif %}
 {% endblock %}
 <!--

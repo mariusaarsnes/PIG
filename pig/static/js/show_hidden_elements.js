@@ -29,3 +29,24 @@ function addData(id, size) {
         }
     }
 }
+
+function showHiddenElements(id) {
+    var elements = document.getElementsByClassName("group" + id);
+    var table = elements[0];
+    var caret = document.getElementById("table-caret" + id);
+    if (table.style.display == "") {
+        caret.className = "fa fa-caret-down right-float font-size-twenty";
+    } else {
+        caret.className = "fa fa-caret-up right-float font-size-twenty";
+    }
+    console.log(elements[0].style.display);
+    console.log(elements[1].style.display);
+    for (var i = 0; i < elements.length; i++) {
+        var element = elements[i];
+        if (element.style.display == "") {
+            element.style.display = "none";
+        } else {
+            element.style.display = "";
+        }
+    }
+}

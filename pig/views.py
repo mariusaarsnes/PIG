@@ -43,6 +43,8 @@ division_registrator = RegisterUser(database,User,Division,user_division, Value,
 
 partition_alg = PartitionAlg(database, db_getters)
 
+user = database.get_session().query(User).filter(User.email == "hash@password.com").first()
+
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
@@ -180,11 +182,11 @@ def show_groupless_users():
     if request.method == "POST":
         if request.args.get("divisionId") is not None:
             division_id = int(request.args.get("divisionId"))
-            print("Running alg!", file=sys.stderr)
             try:
                 partition_alg.create_groups(current_user, division_id)
-            except:
-                pass
+                print("Running alg!", file=sys.stderr)
+            except Exception as e:
+                print(e)
             return redirect(url_for("show_groupless_users", divisionId=request.args.get("divisionId")))
     elif request.args.get("divisionId") is not None:
         division_id = int(request.args.get("divisionId"))

@@ -53,8 +53,8 @@ class Tasks:
         for division in divisions:
             for group in groups:
                 if division.id == group.division_id:
-                    dict.update({division: group})
+                    dict.update({division: [group, None if group.leader_id == None else self.database.get_session().query(self.User).filter(self.User.id == group.leader_id).first()]})
         for division in divisions:
             if division not in dict:
-                dict.update({division: None})
+                dict.update({division: [None, None]})
         return dict

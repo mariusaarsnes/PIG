@@ -31,7 +31,7 @@ class PartitionAlg:
 
             # Insert members into group
             for point in cluster.points:
-                self.database.get_session().execute("INSERT INTO user_group VALUES({point.id}, {group.id})")
+                self.database.get_session().execute(f"INSERT INTO user_group VALUES({point.id}, {group.id})")
 
 
     # Create a structure that can be used as input to k_means
