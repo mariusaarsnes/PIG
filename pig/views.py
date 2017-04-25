@@ -98,13 +98,14 @@ def apply_group():
 @login_required
 def create_division():
     if request.method == 'POST':
+        reg = division_creator.register_division(current_user.id, request.form)
         try:
-            msg = division_creator.register_division(current_user.id, request.form)
+            msg = reg[0]
         except Exception as e:
             msg = "An error happened internally, and the division was not created"
 
         if msg is None:
-            msg = "Division created successfully"
+            return redirect(url_for("show_divisions"))#redirect(url_for("show_groupless_users", divisionId=reg[1]))
         return render_template("message.html", user=current_user, header="Create division", message=msg)
     return render_template("create_division.html", user=current_user)
 
@@ -113,6 +114,12 @@ def create_division():
 def show_groups_leader():
     divisions = db_getters.get_all_divisions_where_leader_for_given_user(current_user= current_user)
     return render_template("show_groups_leader.html", user=current_user, divisions = divisions)
+
+@app.route("/show_groups_member")
+@login_required
+def show_groups_member():
+    division_dict = tasks.get_division_group_dict(db_getters.get_member_divisions(current_user.id), db_getters.get_group_for_user(current_user.id))
+    return render_template("show_groups_member.html", user=current_user, division_dict = division_dict)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():

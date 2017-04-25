@@ -63,7 +63,7 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
                         </button>
                         <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect"
                             for="ta-button">
-                          <a class="undecorated-link" href="{{ url_for('show_groups_leader') }}"><li class="mdl-menu__item">My groups</li></a>
+                          <a class="undecorated-link" href="{{ url_for('show_groups_member') }}"><li class="mdl-menu__item">My groups</li></a>
                         </ul>
                         <a class="mdl-navigation__link" href="{{ url_for('logout') }}"><b>Logout</b></a>
                         <a class="mdl-navigation__link" href=""> User: {{ user.full_name }}</a>

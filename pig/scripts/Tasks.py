@@ -47,3 +47,14 @@ class Tasks:
         value = int(value)
         number_param = self.database.get_session().query(self.NumberParam).filter(self.NumberParam.parameter_id == parameter_id).first()
         return value >= number_param.min and value <= number_param.max
+
+    def get_division_group_dict(self, divisions, groups):
+        dict = {}
+        for division in divisions:
+            for group in groups:
+                if division.id == group.division_id:
+                    dict.update({division: group})
+        for division in divisions:
+            if division not in dict:
+                dict.update({division: None})
+        return dict

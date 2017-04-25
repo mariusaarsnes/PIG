@@ -260,6 +260,10 @@ body .demo-layout-transparent {
     width: 100%;
 }
 
+.hover-hand:hover {
+    cursor: hand;
+}
+
 
 .demo-layout-transparent .mdl-card__supporting-text {
   width: 100%;
