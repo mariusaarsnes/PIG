@@ -14,7 +14,6 @@ class PartitionAlg:
         self.user_division = DbGetters.user_division
 
     def create_groups(self, current_user, division_id):
-        members = self.db_getters.get_groupless_users(division_id)
         division = self.database.get_session().query(self.Division)\
                     .filter(self.Division.id == division_id).first();
 
@@ -22,14 +21,20 @@ class PartitionAlg:
         clusters = PartitionAlg.k_means(data, division.group_size)
         PartitionAlg.normalize(clusters, division.group_size)
 
-        i = 0
-        for cluster in clusters:
+        # Make list of user ids of TAs/leaders
+        leaders = self.database.get_session().query(self.user_division)\
+                .filter(self.user_division._columns.get('division_id') == division_id,
+                        self.user_division._columns.get('role') == 'TA').all()
+        # TODO: Check whether no leaders
+        leaders = [leader.user_id for leader in leaders]
+        for i, cluster in enumerate(clusters):
             print("Cluster({})".format(len(cluster.points)), file=sys.stderr)
             # Insert group into database
-            group = self.Group(division_id = division.id, number = i)
+            leader_id = leaders[i % len(leaders)]
+            group = self.Group(division_id = division.id, number = i, leader_id = leader_id)
             self.database.get_session().add(group)
             self.database.get_session().commit()
-            i += 1
+
 
             # Insert members into group
             for point in cluster.points:
