@@ -438,9 +438,10 @@ class PigTestCase(unittest.TestCase):
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
     def test_alg(self):
+        print("Testing algorithm")
         U = 25 # number of users
-        P = 5 # number of parameters
-        group_size = 5
+        P = 3 # number of parameters
+        group_size = 6
 
         creator = self.create_user("creator@email.com", "Password", "mr", "creator");
 
@@ -488,7 +489,35 @@ class PigTestCase(unittest.TestCase):
                     .filter(Group.id == participation.group_id)\
                     .first()
             assert group is not None
-            print(f"Checking user {user.id} .. participation = {participation} .. group = {group}")
+
+        ## TODO WIP: I realized that we have to fix the way groups are normalized before this sub-test
+        print("-> Now testing accuracy - only one group can have a different size")
+        groups = self.database.get_session().query(Group)\
+                .filter(Group.division_id == division.id)\
+                .all()
+
+        deviant_found = False
+        for group in groups:
+            members = self.database.get_session().query(user_group)\
+                    .filter(user_group._columns.get("group_id") == group.id).all()
+            if len(members) != division.group_size:
+                assert not deviant_found
+                deviant_found = True
+
+        print("-> Now testing idempotence")
+        groups = self.database.get_session().query(Group)\
+                .filter(Group.division_id == division.id)\
+                .all()
+        num_groups = len(groups)
+        # Run alg
+        self.alg.create_groups(creator, division.id)
+
+        groups = self.database.get_session().query(Group)\
+                .filter(Group.division_id == division.id)\
+                .all()
+        num_groups_after = len(groups)
+        assert num_groups == num_groups_after
+
 
 
     def print_clusters(self, clusters):

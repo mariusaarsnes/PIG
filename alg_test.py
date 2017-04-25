@@ -1,4 +1,5 @@
-from pig.scripts.PartitionAlg import PartitionAlg, DataPoint
+from pig.scripts.PartitionAlg import PartitionAlg, DataPoint, sum_squares
+
 from random import random
 import time
 
@@ -22,8 +23,8 @@ def get_stats(clusters):
 
 
 n = 10
-n_points = 25
-cluster_size = 10
+n_points = 100
+cluster_size = 6
 
 def test_performance():
     global n
@@ -68,5 +69,16 @@ def test_accuracy():
     PartitionAlg.normalize(clusters, cluster_size)
     print_clusters(clusters)
 
-    for cluster in clusters:
+    # Test normalizing
+    for cluster in clusters[:-1]:
         assert len(cluster.points) == cluster_size
+
+    # Test accuracy
+    for i, cluster in enumerate(clusters):
+        variation = 0
+        for point in cluster.points:
+            variation += sum_squares(cluster.mean, point.point)
+        print(f"Cluster {i} variation: {variation}")
+
+
+test_accuracy()
