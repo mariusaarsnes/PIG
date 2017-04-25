@@ -80,9 +80,10 @@ PURPOSE: Provide a template for all the pages. Also provide links to all the pag
             <nav class="mdl-navigation">
                 {% if user.is_authenticated %}
                     <a class="mdl-navigation__link" href="{{ url_for('home') }}"><b>Home</b></a>
-                    <a class="mdl-navigation__link" href="{{ url_for('create_division') }}"><b>Create Division</b></a>
-                    <a class="mdl-navigation__link" href="{{ url_for('show_divisions') }}"><b>My divisions</b></a>
-                    <a class="mdl-navigation__link" href="{{ url_for('show_groups_leader') }}"><b>My groups</b></a>
+                    <a class="mdl-navigation__link" href="{{ url_for('create_division') }}"><b>Professor - Create Division</b></a>
+                    <a class="mdl-navigation__link" href="{{ url_for('show_divisions') }}"><b>Professor - My divisions</b></a>
+                    <a class="mdl-navigation__link" href="{{ url_for('show_groups_leader') }}"><b>Teaching assistant - My groups</b></a>
+                    <a class="mdl-navigation__link" href="{{ url_for('show_groups_member') }}"><b>Student - My groups</b></a>
                     <a class="mdl-navigation__link" href="{{ url_for('logout') }}"><b>Logout</b></a>
                     <a class="mdl-navigation__link" href=""> User: {{ user.full_name }}</a>
                 {% else %}

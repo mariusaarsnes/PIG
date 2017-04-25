@@ -347,6 +347,9 @@ input[id=create_division] {
     box-sizing: border-box;
     font-size: 25px;
 }
+.message {
+    margin: 10px;
+}
 input[id=parameter] {
     width: 80%;
     padding: 8px 15px;
