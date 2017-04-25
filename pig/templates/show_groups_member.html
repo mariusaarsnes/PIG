@@ -1,0 +1,70 @@
+<!--
+FILE NAME: pig/templates/show_divisions.html
+WRITTEN BY: Marius Aarsnes
+WHEN: March 2017
+PURPOSE: Provide a page where users can view all the pages that they are currently being a leader of.
+-->
+{% extends "template.html" %}
+{% block content %}
+    <script src="{{ url_for('static', filename='js/show_hidden_elements.js') }}"></script>
+        <div class="mdl-card showgroupsleader mdl-cell mdl-cell--8-col mdl-shadow--6dp">
+            <div class="mdl-card__title showgroupsleader mdl-color--primary mdl-color-text--white">
+                <h2 class="mdl-card__title-text">Divisions you are signed up for</h2>
+            </div>
+            {% if division_dict|length <= 0 %}
+                <text class="message">You are not signed up for any divisions! Ask your professor to send you a sign-up link.</text>
+            {% else %}
+                <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
+                    <div class="full-width">
+                        {% if division_dict|length == 0 %}
+                            <text class="message">You have not been assigned any groups!</text>
+                        {% else %}
+                            <table style="table-layout: fixed;" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
+                                <thead>
+                                    <tr>
+                                        <th id="table-header" class="mdl-data-table__cell--non-numeric full-width">Divisions <text style="float: right;"> Your group</text></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="dropdown">
+                                    {% for (division, data) in division_dict.items() %}
+                                        {% set group = data[0] %}
+                                        {% set leader = data[1] %}
+                                        <tr>
+                                            <td {% if group is not none %} onclick="showHiddenElements({{group.id}})" {% endif %} class="mdl-data-table__cell--non-numeric full-width">{{ division.name }}<text style="{% if group is not none %}cursor: pointer; {% endif %}float: right;">
+                                                {% if group is none %} You have no group! {% else %} Show group  <i id="table-caret{{group.id}}" style="padding-left: 5px;" class="fa fa-caret-down right-float font-size-twenty"></i> {% endif %}</text></td>
+                                        </tr>
+                                        {% if group is not none %}
+                                            <group>
+                                                <tr style="background-color: #DFDFDF; display: none; border-top: hidden;" class="group{{group.id}}">
+                                                    <td class="mdl-data-table__cell--non-numeric full-width">
+                                                        {% if leader is not none %}
+                                                            TA: {{ leader.firstname }} {{ leader.lastname }}<text style="float: right;"> {{ leader.email }}</text>
+                                                        {% else %}
+                                                            This group has no TA!
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% for i in range(0, group.users.all()|length) %}
+                                                    {% set user = group.users[i] %}
+                                                    <tr style="background-color: #EEEEEE; display: none; border-top: hidden;" class="group{{group.id}}">
+                                                        <td class="mdl-data-table__cell--non-numeric full-width">{{ user.firstname }} {{ user.lastname }}<text style="float: right;"> {{ user.email }}</text></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </group>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <!-- Hvis det ikke er her, men bare 'bottom' block, lastes det ikke for meg -->
+        <script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/show_hidden_element.js') }}"></script>
+{% endblock %}
+<!--
+{% block bottom %}
+{% endblock %}
+-->

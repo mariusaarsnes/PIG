@@ -12,6 +12,7 @@ from pig.login.RegistrationHandler import RegistrationHandler
 from pig.scripts.CreateDivision import CreateDivision
 from pig.login.LoginHandler import LoginHandler
 from pig.scripts.Encryption import *
+from passlib.hash import bcrypt
 
 from sqlalchemy.sql.expression import func
 
@@ -44,7 +45,7 @@ class PigTestCase(unittest.TestCase):
         self.alg = PartitionAlg(self.database, self.db_getters)
 
     def tearDown(self):
-        tables = ["parameter_value", "user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "user_group", "groups", "division", "users" ]
+        tables = ["user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "user_group", "groups", "division", "users" ]
         for table in tables:
             self.database.get_session().execute("DELETE FROM " + table)
         self.database.get_session().commit()
@@ -78,7 +79,7 @@ class PigTestCase(unittest.TestCase):
             self.registration_handler.create_user(first_name, last_name, email, password)
 
     def create_user(self, email, password, first_name, last_name):
-        self.database.get_session().execute("INSERT INTO users (firstname,lastname,email,password) VALUES('" +first_name+"','" + last_name+"','" + email +"','"+password+"')")
+        self.database.get_session().execute("INSERT INTO users (firstname,lastname,email,password) VALUES('" +first_name+"','" + last_name+"','" + email +"','"+bcrypt.hash(password)+"')")
         self.database.get_session().commit()
         return self.database.get_session().query(User).filter(User.email == email).first()
 

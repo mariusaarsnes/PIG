@@ -29,6 +29,16 @@ class DbGetters:
     def get_division(self, division_id):
         return self.database.get_session().query(self.Division).filter(self.Division.id == division_id).first()
 
+    def get_member_divisions(self, user_id):
+        return self.database.get_session().query(self.Division).filter(self.Division.id == self.user_division._columns.get("division_id"),
+                                                                       self.user_division._columns.get("user_id") == user_id,
+                                                                       self.user_division._columns.get("role") == "Student").all()
+
+    def get_group_for_user(self, user_id):
+        return self.database.get_session().query(self.Group).filter(self.Group.id == self.user_group._columns.get("group_id"),
+                                                                               self.user_group._columns.get("user_id") == user_id).all()
+
+
     def fetch_divisions(self, current_user, key):
         divisions_participating = self.database.get_session()\
             .query(self.user_division, self.Division, self.User)\

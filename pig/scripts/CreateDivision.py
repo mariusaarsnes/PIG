@@ -111,7 +111,7 @@ class CreateDivision:
 
         self.database.get_session().add(division)
         self.database.get_session().commit()
-        return None
+        return None, division.id
 
     def make_parameter(self, desc):
         parameter = self.database.get_session() \
