@@ -101,12 +101,13 @@ class DbGetters:
             print("ERROR: No created division with id: ", division_id, "created by ",creator.id)
             return None
         return division.groups
+
     # TODO: Only used in tests
     def get_all_leaders_in_division(self,creator,division_id):
         leaders = self.database.get_session().query(self.User)\
             .filter(self.User.id == self.user_division._columns.get('user_id'))\
             .filter(self.user_division._columns.get('division_id')==division_id)\
-            .filter(self.user_division._columns.get('role')=='Leader').all()
+            .filter(self.user_division._columns.get('role')=='TA').all()
         if (len(leaders) <1):
             print("ERROR: No leaders signed up for division ",division_id)
             return None

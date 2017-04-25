@@ -406,6 +406,7 @@ class PigTestCase(unittest.TestCase):
         groupless_users = self.db_getters.get_groupless_users(division.id)
         assert groupless_users[0].id == registration_user2.id
 
+    # TODO Superfluous test? Because leaders are given in PartitionAlg, and this is also tested.
     def test_divide_groups_to_leaders_with_varying_range_of_leaders_and_groups(self):
         group_count = randint(15, 25)
         leader_count = randint(3, 7)
