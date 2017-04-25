@@ -170,7 +170,6 @@ def show_all_students_listed():
 @app.route("/division_groups", methods=['GET', 'POST'])
 @login_required
 def show_groupless_users():
-    print(request.args.get("divisionId"))
     if request.method == "POST":
         if request.args.get("divisionId") is not None:
             division_id = int(request.args.get("divisionId"))
@@ -179,7 +178,7 @@ def show_groupless_users():
                 partition_alg.create_groups(current_user, division_id)
             except:
                 pass
-            return redirect(url_for("show_groupless_users", values=request.args.get("divisionId")))
+            return redirect(url_for("show_groupless_users", divisionId=request.args.get("divisionId")))
     elif request.args.get("divisionId") is not None:
         division_id = int(request.args.get("divisionId"))
         if division_registrator.is_division_creator(current_user, division_id):
