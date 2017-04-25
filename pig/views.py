@@ -43,11 +43,13 @@ division_registrator = RegisterUser(database,User,Division,user_division, Value,
 
 partition_alg = PartitionAlg(database, db_getters)
 
+user = database.get_session().query(User).filter(User.email == "hash@password.com").first()
+
 #This code is being used by the login_manager to grab users based on their IDs. Thats how we identify which user we
 #are currently dealing with
 @login_manager.user_loader
 def user_loader(user_id):
-    return LoginHandler.get_user_with_id(user_id)
+    return login_handler.get_user_with_id(user_id)
 
 #The Functions below are used to handle user interaction with te web app. That is switching between pages
 @app.route("/")
@@ -98,13 +100,14 @@ def apply_group():
 @login_required
 def create_division():
     if request.method == 'POST':
+        reg = division_creator.register_division(current_user.id, request.form)
         try:
-            msg = division_creator.register_division(current_user.id, request.form)
+            msg = reg[0]
         except Exception as e:
             msg = "An error happened internally, and the division was not created"
 
         if msg is None:
-            msg = "Division created successfully"
+            return redirect(url_for("show_divisions"))#redirect(url_for("show_groupless_users", divisionId=reg[1]))
         return render_template("message.html", user=current_user, header="Create division", message=msg)
     return render_template("create_division.html", user=current_user)
 
@@ -113,6 +116,12 @@ def create_division():
 def show_groups_leader():
     divisions = db_getters.get_all_divisions_where_leader_for_given_user(current_user= current_user)
     return render_template("show_groups_leader.html", user=current_user, divisions = divisions)
+
+@app.route("/show_groups_member")
+@login_required
+def show_groups_member():
+    division_dict = tasks.get_division_group_dict(db_getters.get_member_divisions(current_user.id), db_getters.get_group_for_user(current_user.id))
+    return render_template("show_groups_member.html", user=current_user, division_dict = division_dict)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -167,16 +176,21 @@ def show_all_students_listed():
         return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=db_getters.get_all_students(current_user, int(request.args.get("divisionId"))))
     return redirect(url_for("home"))
 
-@app.route("/division_groups")
+@app.route("/division_groups", methods=['GET', 'POST'])
 @login_required
 def show_groupless_users():
-    if request.args.get("divisionId") is not None:
+    if request.method == "POST":
+        if request.args.get("divisionId") is not None:
+            division_id = int(request.args.get("divisionId"))
+            try:
+                partition_alg.create_groups(current_user, division_id)
+                print("Running alg!", file=sys.stderr)
+            except Exception as e:
+                print(e)
+            return redirect(url_for("show_groupless_users", divisionId=request.args.get("divisionId")))
+    elif request.args.get("divisionId") is not None:
         division_id = int(request.args.get("divisionId"))
         if division_registrator.is_division_creator(current_user, division_id):
-            # Run algorithm
-            if request.args.get("divide") is not None:
-                print("Running alg!", file=sys.stderr)
-                partition_alg.create_groups(current_user, division_id)
             # View page
             return render_template("division_groups.html",\
                     user=current_user,\

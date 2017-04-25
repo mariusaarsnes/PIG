@@ -9,36 +9,40 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
 
 <script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 
-<div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
+<div class="mdl-card showdivisions mdl-cell mdl-cell--8-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Your Divisions</h2>
     </div>
-    <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align">
-        <div class="max-width">
-            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width fixed-table">
-                <thead>
-                <tr>
-                    <th class="mdl-data-table__cell--non-numeric thirty-three-width">Name</th>
-                    <th class="twenty-width">TA link</th>
-                    <th class="twenty-width">Student link</th>
-                    <th class="twenty-seven-width" style="text-align: center;">Info</th>
-                </tr>
-                </thead>
-                <tbody>
-                    {%  for division in divisions_created %}
+    {% if divisions_created|length == 0 %}
+        <text class="message">You have not created any divisions yet! Go to the professor menu and click create divisions to begin.</text>
+    {% else %}
+        <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align">
+            <div class="max-width">
+                <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width fixed-table">
+                    <thead>
                     <tr>
-                        <td class="mdl-data-table__cell--non-numeric table-line-break"><text class="table-line-break">{{ division.name }}</text></td>
-                        <td class="no-padding-sides"><button id="show_button_leader" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" type="button" onclick="copyToClipboard('{{ leader_links[loop.index0] }}')">Copy link</button></td>
-                        <td class="no-padding-sides"><button id="show_button_member" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" type="button" onclick="copyToClipboard('{{ member_links[loop.index0] }}')">Copy link</button></td>
-                        <td class="no-padding-sides"><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" onclick="location.href = location.origin + '/division_groups?divisionId={{ division.id }}'" type="button">Division info</button></td>
+                        <th class="mdl-data-table__cell--non-numeric thirty-three-width">Name</th>
+                        <th class="twenty-width">TA link</th>
+                        <th class="twenty-width">Student link</th>
+                        <th class="twenty-seven-width" style="text-align: center;">Info</th>
                     </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {%  for division in divisions_created %}
+                        <tr>
+                            <td class="mdl-data-table__cell--non-numeric table-line-break"><text class="table-line-break">{{ division.name }}</text></td>
+                            <td class="no-padding-sides"><button id="show_button_leader" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" type="button" onclick="copyToClipboard('{{ leader_links[loop.index0] }}')">Copy link</button></td>
+                            <td class="no-padding-sides"><button id="show_button_member" class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" type="button" onclick="copyToClipboard('{{ member_links[loop.index0] }}')">Copy link</button></td>
+                            <td class="no-padding-sides"><button class="mdl-button mdl-js-button mdl-button--raised mdl-button--primary button_style max-width" onclick="location.href = location.origin + '/division_groups?divisionId={{ division.id }}'" type="button">Division info</button></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    {% endif %}
 </div>
-
+<!---
 <div class="mdl-card showdivisions mdl-cell mdl-cell--6-col mdl-shadow--6dp">
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Division you are a part of</h2>
@@ -65,7 +69,7 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
             </table>
         </div>
     </div>
-</div>
+</div>-->
                         <div id="demo-snackbar" class="mdl-js-snackbar mdl-snackbar">
                             <div class="mdl-snackbar__text"></div>
                             <button class="mdl-snackbar__action" type="button"></button>
