@@ -50,7 +50,7 @@ PURPOSE: Provide a page where users can view all the divisions they are signed u
     <div class="mdl-card__title showdivisions mdl-color--primary mdl-color-text--white" id="showdivisions">
         <h2 class="mdl-card__title-text">Students without a group</h2>
     </div>
-    {% if groupless_users|length <= -1 %}
+    {% if groupless_users|length <= 0 %}
         <p style="padding-left: 5px;"> {% if count|length == 0 %} No users has signed up for this division! {% else %} All users who was signed up for this division has a group! {% endif %}</p>
     {% else %}
         <div class="mdl-color-text--grey-600 mdl-card__supporting-text mdl-cell card-align margin-fix">
