@@ -24,6 +24,7 @@ class Tasks:
         self.user_division_parameter_value = user_division_parameter_value
         return
 
+    #Geneerates links for TA and Student signup
     def generate_links(self, key, divisions_created):
         ta_links, student_links = [], []
         for division in divisions_created:
@@ -43,11 +44,13 @@ class Tasks:
         division.users.append(self.database.get_session().query(self.User).filter(self.User.email == current_user.username).first())
         self.database.get_session().commit()
 
+    #Verifies the parameter input when signing up for division
     def verify_number_parameter_input(self, parameter_id, value):
         value = int(value)
         number_param = self.database.get_session().query(self.NumberParam).filter(self.NumberParam.parameter_id == parameter_id).first()
         return value >= number_param.min and value <= number_param.max
 
+    #Creates a dict that makes it easier to display the groups a user is assigned to
     def get_division_group_dict(self, divisions, groups):
         dict = {}
         for division in divisions:

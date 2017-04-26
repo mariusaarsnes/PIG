@@ -9,12 +9,14 @@ class RegistrationHandler:
         self.database = database
         self.User = User
 
+    #Creates a new user with the given information
     def create_user(self, firstname, lastname, email, password):
         hashed_pass = bcrypt.hash(password)
         user = self.User(firstname=firstname, lastname=lastname, email=email, password=hashed_pass)
         self.database.get_session().add(user)
         self.database.get_session().commit()
 
+    #Checks if the registration form is valid. Returns a message with the error if something is wrong
     def validate_form(self, form):
         for k in form:
             if form[k] is "":

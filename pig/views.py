@@ -176,6 +176,7 @@ def show_all_students_listed():
         return render_template("show_all_students_listed.html", user=current_user, user_groups=db_getters.get_user_groups(int(request.args.get("divisionId"))), students=db_getters.get_all_students(current_user, int(request.args.get("divisionId"))))
     return redirect(url_for("home"))
 
+#Page for showing the groups for a given division & the users that has not yet been assigned any groups
 @app.route("/division_groups", methods=['GET', 'POST'])
 @login_required
 def show_groupless_users():

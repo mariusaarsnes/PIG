@@ -10,21 +10,16 @@ class RegisterUser():
         self.Division = Division
         self.user_division = user_division
 
+    #Registers a user for a given division
     def register_user(self, current_user, division_id, role):
         try:
             self.database.get_session().execute("INSERT INTO user_division VALUES(:user_id, :division_id, :role)", {"user_id": current_user.id, "division_id": int(division_id), "role": role})
-            """
-            division = self.database.get_session() \
-                .query(self.Division) \
-                .filter(self.Division.id == division_id) \
-                .first()
-            division.users.append(current_user)
-            """
             self.database.get_session().commit()
         except Exception:
             pass
             #The user is already registered.
 
+    #Registers the parameters a user typed into the signup form
     def register_parameters(self, current_user, form):
         divisionId = int(form["DivisionId"])
         for (key, value) in form.items():
@@ -41,5 +36,6 @@ class RegisterUser():
                             {"user_id": current_user.id, "division_id": divisionId, "parameter_id": parameter.id, "value_id": value_parameter.id})
         self.database.get_session().commit()
 
+    #Checks if the user is the creator of the specified division
     def is_division_creator(self, current_user, division_id):
         return self.database.get_session().query(self.Division).filter(self.Division.id == division_id, self.Division.creator_id == current_user.id).first() is not None
