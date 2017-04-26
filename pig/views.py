@@ -182,11 +182,8 @@ def show_groupless_users():
     if request.method == "POST":
         if request.args.get("divisionId") is not None:
             division_id = int(request.args.get("divisionId"))
-            try:
-                partition_alg.create_groups(current_user, division_id)
-                print("Running alg!", file=sys.stderr)
-            except Exception as e:
-                print(e)
+            partition_alg.create_groups(current_user, division_id)
+            print("Running alg!", file=sys.stderr)
             return redirect(url_for("show_groupless_users", divisionId=request.args.get("divisionId")))
     elif request.args.get("divisionId") is not None:
         division_id = int(request.args.get("divisionId"))
