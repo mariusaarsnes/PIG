@@ -151,7 +151,7 @@ class PigTestCase(unittest.TestCase):
     def sign_up_users_for_division_as_leader(self,leaders,division_id):
         for leader in leaders:
             self.database.get_session().execute\
-                ("INSERT INTO user_division (user_id, division_id,role) VALUES('"+str(leader.id)+ "','" + str(division_id)+"','Leader')")
+                ("INSERT INTO user_division (user_id, division_id,role) VALUES('"+str(leader.id)+ "','" + str(division_id)+"','TA')")
         self.database.get_session().commit()
 
     def delete_all_groups_in_given_division(self,division_id):
@@ -330,11 +330,11 @@ class PigTestCase(unittest.TestCase):
         form_dict.update({ "DivisionName": "Division" })
         form_dict.update({ "DivisionId": division.id })
         form_dict.update({ "Parameter" + str(param_id): 5 })
-        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user1.id), division.id, "Member")
-        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user2.id), division.id, "Leader")
+        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user1.id), division.id, "Student")
+        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user2.id), division.id, "TA")
         self.division_registrator.register_parameters(self.login_handler.get_user_with_id(registration_user2.id), form_dict)
-        assert self.database.get_session().query(user_division).filter(user_division._columns.get("role") == "Member").first().user_id == registration_user1.id
-        assert self.database.get_session().query(user_division).filter(user_division._columns.get("role") == "Leader").first().user_id == registration_user2.id
+        assert self.database.get_session().query(user_division).filter(user_division._columns.get("role") == "Student").first().user_id == registration_user1.id
+        assert self.database.get_session().query(user_division).filter(user_division._columns.get("role") == "TA").first().user_id == registration_user2.id
         assert self.database.get_session().query(Value).filter(user_division_parameter_value._columns.get("user_id") == registration_user2.id,
                                                                user_division_parameter_value._columns.get("division_id") == division.id,
                                                                user_division_parameter_value._columns.get("parameter_id") == param_id).first().value == 5
@@ -382,7 +382,7 @@ class PigTestCase(unittest.TestCase):
         form_dict.update({ "DivisionName": "Division" })
         form_dict.update({ "DivisionId": division.id })
         form_dict.update({ "Parameter" + str(param_id): 5 })
-        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user2.id), division.id, "Leader")
+        self.division_registrator.register_user(self.login_handler.get_user_with_id(registration_user2.id), division.id, "TA")
         self.division_registrator.register_parameters(self.login_handler.get_user_with_id(registration_user2.id), form_dict)
         user_dict = self.db_getters.get_all_users_with_values(division.id)
         for (key, value) in user_dict.items():
@@ -406,6 +406,7 @@ class PigTestCase(unittest.TestCase):
         groupless_users = self.db_getters.get_groupless_users(division.id)
         assert groupless_users[0].id == registration_user2.id
 
+    # TODO Superfluous test? Because leaders are given in PartitionAlg, and this is also tested.
     def test_divide_groups_to_leaders_with_varying_range_of_leaders_and_groups(self):
         group_count = randint(15, 25)
         leader_count = randint(3, 7)
@@ -427,7 +428,7 @@ class PigTestCase(unittest.TestCase):
 
         self.divide_groups_to_leaders.assign_leaders_to_groups(current_user=creator,division_id=division.id)
 
-        groups = self.db_getters.get_all_groups_in_division_for_given_creator_and_division_id(creator, division.id)
+        groups = self.db_getters.get_all_groups_in_division(creator, division.id)
 
         for element in groups:
             assert (element.leader_id >= first_leader.id and element.leader_id < first_leader.id + leader_count)
@@ -438,15 +439,17 @@ class PigTestCase(unittest.TestCase):
         self.delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(first_leader.id,leader_count)
 
     def test_alg(self):
-        U = 25 # number of users
-        P = 5 # number of parameters
-        group_size = 5
+        print("Testing algorithm")
+        S = 25 # number of students
+        L = 2 # the L first students will sign up as leaders
+        P = 3 # number of parameters
+        group_size = 6
 
         creator = self.create_user("creator@email.com", "Password", "mr", "creator");
 
-        # Create users
-        users = [self.create_user(f"user{u}@email.com", "Password", f"first{u}", f"last{u}")\
-                    for u in range(U)]
+        # Create students
+        students = [self.create_user(f"student{u}@email.com", "Password", f"first{u}", f"last{u}")\
+                    for u in range(S)]
 
         # Create division
         self.create_division("division for test_alg", creator.id)
@@ -454,6 +457,12 @@ class PigTestCase(unittest.TestCase):
         division.group_size = group_size
 
         parameters = [ Parameter(description=f"param{p}") for p in range(P) ]
+
+        # Sign up students and leaders
+        for student in students[:L]:
+            self.database.get_session().execute(f"INSERT INTO user_division VALUES({student.id}, {division.id}, 'TA')")
+        for student in students[L:]:
+            self.database.get_session().execute(f"INSERT INTO user_division VALUES({student.id}, {division.id}, 'Student')")
 
         for parameter in parameters:
             spec = NumberParam(min=0, max=10)
@@ -465,30 +474,62 @@ class PigTestCase(unittest.TestCase):
             self.database.get_session().add(spec)
             self.database.get_session().commit()
 
-            # Sign up users for division, with random values
-            for user in users:
+            # Sign up students for division, with random values
+            for student in students[L:]:
                 value = Value(value=randint(0,10), description="")
                 self.database.get_session().add(value)
                 self.database.get_session().commit()
-                self.database.get_session().execute(f"INSERT INTO user_division_parameter_value VALUES({user.id}, {division.id}, {parameter.id}, {value.id})")
-                self.database.get_session().execute(f"INSERT INTO user_division VALUES({user.id}, {division.id}, 'Member')")
+                self.database.get_session().execute(f"INSERT INTO user_division_parameter_value VALUES({student.id}, {division.id}, {parameter.id}, {value.id})")
 
         self.database.get_session().commit()
 
         # Run alg
         self.alg.create_groups(creator, division.id)
 
-        # Check that all users are assigned a group
-        for user in users:
+        # Check that all students are assigned a group
+        for student in students:
             participation = self.database.get_session().query(user_group)\
-                    .filter(user_division._columns.get("user_id") == user.id)\
+                    .filter(user_division._columns.get("user_id") == student.id)\
                     .first()
             assert participation is not None
             group = self.database.get_session().query(Group)\
                     .filter(Group.id == participation.group_id)\
                     .first()
             assert group is not None
-            print(f"Checking user {user.id} .. participation = {participation} .. group = {group}")
+
+
+        groups = self.database.get_session().query(Group)\
+                .filter(Group.division_id == division.id)\
+                .all()
+
+        print("-> Now testing that all groups have a TA")
+        for group in groups:
+            assert group.leader_id is not None
+
+        print("-> Now testing accuracy - only one group can have a different size")
+        deviant_found = False
+        for group in groups:
+            members = self.database.get_session().query(user_group)\
+                    .filter(user_group._columns.get("group_id") == group.id).all()
+            if len(members) != division.group_size:
+                assert not deviant_found
+                deviant_found = True
+
+        print("-> Now testing idempotence")
+        groups = self.database.get_session().query(Group)\
+                .filter(Group.division_id == division.id)\
+                .all()
+        num_groups = len(groups)
+
+        # Run alg
+        self.alg.create_groups(creator, division.id)
+
+        groups = self.database.get_session().query(Group)\
+                .filter(Group.division_id == division.id)\
+                .all()
+        num_groups_after = len(groups)
+        assert num_groups == num_groups_after
+
 
 
     def print_clusters(self, clusters):
