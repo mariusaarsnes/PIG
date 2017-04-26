@@ -7,14 +7,19 @@ PURPOSE: Provide a page where users can view all the pages that they are current
 {% extends "template.html" %}
 {% block content %}
     <script src="{{ url_for('static', filename='js/show_hidden_elements.js') }}"></script>
-        <div class="mdl-card showgroupsleader mdl-cell mdl-cell--8-col mdl-shadow--6dp">
-            <div class="mdl-card__title showgroupsleader mdl-color--primary mdl-color-text--white">
-                <h2 class="mdl-card__title-text">Divisions you are signed up for</h2>
-            </div>
-            {% if divisions == None %}
+        {% if divisions is none %}
+            <div class="mdl-card showgroupsleader mdl-cell mdl-cell--8-col mdl-shadow--6dp">
+                <div class="mdl-card__title showgroupsleader mdl-color--primary mdl-color-text--white">
+                    <h2 class="mdl-card__title-text">Groups you are TA for</h2>
+                </div>
                 <text class="message">You have not been assigned any groups in any division!</text>
-            {% else  %}
-                {% for division in divisions %}
+            </div>
+        {% else %}
+            {% for division in divisions %}
+                <div class="mdl-card showgroupsleader mdl-cell mdl-cell--{% if divisions|length <= 1 %}8{% else %}6{% endif %}-col mdl-shadow--6dp">
+                    <div class="mdl-card__title showgroupsleader mdl-color--primary mdl-color-text--white">
+                        <h2 class="mdl-card__title-text">Groups you are leader for in {{ division.name }}</h2>
+                    </div>
                     {% set count = [] %}
                     {% for group in division.groups %}
                         {% if (group.leader_id == current_user.id) %}
@@ -24,7 +29,7 @@ PURPOSE: Provide a page where users can view all the pages that they are current
                                     <table style="table-layout: fixed;" class="mdl-data-table mdl-js-data-table mdl-shadow--2dp full-width">
                                         <thead>
                                             <tr>
-                                                <th id="table-header" class="mdl-data-table__cell--non-numeric full-width" onclick="showHiddenElement('{{ group.id }}')">Group {{ group.id }} <i id="table-caret{{ group.id }}" class="fa fa-caret-down right-float font-size-twenty"></i></th>
+                                                <th id="table-header" class="mdl-data-table__cell--non-numeric full-width" onclick="showHiddenElement('{{ group.id }}')">Group {{ group.number + 1 }} <i id="table-caret{{ group.id }}" class="fa fa-caret-down right-float font-size-twenty"></i></th>
                                             </tr>
                                         </thead>
                                         <tbody id="group{{ group.id }}" style="display: none;" class="dropdown">
@@ -42,9 +47,9 @@ PURPOSE: Provide a page where users can view all the pages that they are current
                     {% if count|length == 0 %}
                         <p style="margin: 10px">You are signed up as leader, but you have no groups!</p>
                     {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
+                </div>
+            {% endfor %}
+        {% endif %}
         <!-- Hvis det ikke er her, men bare 'bottom' block, lastes det ikke for meg -->
         <script src="{{ url_for('static', filename='js/clipboard_copy.js') }}"></script>
 {% endblock %}

@@ -20,7 +20,6 @@ class PartitionAlg:
         data = self.prepare(division)
         clusters = PartitionAlg.k_means(data, division.group_size)
         PartitionAlg.normalize(clusters, division.group_size)
-
         # Make list of user ids of TAs/leaders
         leaders = self.database.get_session().query(self.user_division)\
                 .filter(self.user_division._columns.get('division_id') == division_id,
@@ -35,10 +34,10 @@ class PartitionAlg:
             self.database.get_session().add(group)
             self.database.get_session().commit()
 
-
             # Insert members into group
             for point in cluster.points:
                 self.database.get_session().execute(f"INSERT INTO user_group VALUES({point.id}, {group.id})")
+            self.database.get_session().commit()
 
 
     # Create a structure that can be used as input to k_means
@@ -71,21 +70,17 @@ class PartitionAlg:
                 users[value.user_id].append(val)
 
             # (TODO: Ensure that the same amount of values is registered for each user at this point)
-
         # Eliminate users that are already in a group
         for user_id in list(users):
             participations = self.database.get_session().query(self.user_group)\
-                    .filter(self.user_division._columns.get("user_id") == user_id)
+                    .filter(self.user_group._columns.get("user_id") == user_id).all()
             for participation in participations:
                 group = self.database.get_session().query(self.Group)\
                         .filter(self.Group.id == participation.group_id)\
                         .first()
                 if group.division_id == division.id:
                     users.pop(user_id, None)
-
         return [DataPoint(id, point) for (id, point) in users.items()]
-
-
 
     # Returns list of lists of DataPoints
     def k_means(points, cluster_size):
