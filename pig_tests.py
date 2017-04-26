@@ -44,16 +44,18 @@ class PigTestCase(unittest.TestCase):
         self.login_handler = LoginHandler(self.database, User)
         self.alg = PartitionAlg(self.database, self.db_getters)
 
+    #Clears the database between every test
     def tearDown(self):
         tables = ["user_division_parameter_value", "value","number_param", "enum_variant", "division_parameter", "parameter", "user_division", "user_group", "groups", "division", "users" ]
         for table in tables:
             self.database.get_session().execute("DELETE FROM " + table)
         self.database.get_session().commit()
 
-
+    #Function that calls the site login function
     def login(self,username,password):
         return self.app.post("/login", data=dict(Username=username,Password=password),follow_redirects=True)
 
+    #Function that calls the site logout function
     def logout(self):
         return self.app.get('/logout', follow_redirects=True)
 
@@ -78,90 +80,99 @@ class PigTestCase(unittest.TestCase):
         if result[0]:
             self.registration_handler.create_user(first_name, last_name, email, password)
 
+    #Inserts user data into the database, and returns the user object
     def create_user(self, email, password, first_name, last_name):
         self.database.get_session().execute("INSERT INTO users (firstname,lastname,email,password) VALUES('" +first_name+"','" + last_name+"','" + email +"','"+bcrypt.hash(password)+"')")
         self.database.get_session().commit()
         return self.database.get_session().query(User).filter(User.email == email).first()
 
-
+    #Creates a range of users (for tests that require a large amount of users)
     def create_users_with_given_parameters_for_usertype_and_count(self,type,count):
         for i in range(count):
             self.database.get_session().execute("INSERT INTO users (firstname,lastname,email,password) VALUES('first"+type+str(i)+"','last"+type+str(i)+"','"+type+str(i)+"@email.com','password')")
         self.database.get_session().commit()
 
-
+    #Removes a user based on their email (PK)
     def delete_user(self, email):
         self.database.get_session().execute("DELETE FROM users WHERE email = '" + email + "'")
         self.database.get_session().commit()
 
-
+    #Creates a new division and returns it object
     def create_division(self, name, creator_id):
         division = Division(name=name, creator_id=creator_id)
         self.database.get_session().add(division)
         self.database.get_session().commit()
         return self.database.get_session().query(Division).filter(Division.id == database.get_session().query(func.max(Division.id)).first()[0]).first()
 
-
+    #Creates a new group with given leader, then returns its object
     def create_group(self, division, leader_id):
         group = Group(leader_id=leader_id)
         division.groups.append(group)
         self.database.get_session().commit()
         return self.database.get_session().query(Group).filter(Group.id == database.get_session().query(func.max(Group.id)).first()[0]).first()
 
+    #Returns the first division it finds that belongs to the creator specified
     def get_division(self,name,creator_id):
         return self.database.get_session()\
             .query(Division).filter(Division.creator_id == creator_id, Division.name == name).first()
 
-
+    #Deletes the division with the given id
     def delete_division(self, id):
         #self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
         self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
         self.database.get_session().commit()
 
-
+    #Returns the user object with the given email
     def get_user(self, email):
         return self.database.get_session().query(User).filter(User.email == email).first()
 
-
+    #Returns the users within an id range (To find the newly created users for certain tests)
     def get_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(self,minVal,size):
         return self.database.get_session().query(User).filter(User.id>=minVal,User.id < minVal+size)
 
-
+    #Deleted the users within the id range given
     def delete_users_where_id_is_larger_or_equal_to_parameter_and_in_interval(self,minVal,size):
         self.database.get_session().execute("DELETE FROM users WHERE id >= " + str(minVal) + " AND id <" + str(minVal+size))
         self.database.get_session().commit()
 
+    #Goes to the site page given by the link
     def go_to_division(self, link):
         return self.app.get("/" + link)
 
+    #Creates a new group for the given division
     def create_single_group_with_given_division_id(self, division_id):
         group = Group(division_id= division_id)
         self.database.get_session().add(group)
         self.database.get_session().commit()
 
+    #Creates multiple groups for the given division
     def create_multiple_groups_with_given_division_id(self,division_id, count):
         for i in range(count):
             self.database.get_session().execute("INSERT INTO groups (division_id) VALUES('"+str(division_id)+"')")
         self.database.get_session().commit()
 
-
+    #Gets all groups linked to the specified division
     def get_groups_using_only_division_id(self,division_id):
         return self.database.get_session().query(Group).filter(Group.division_id == division_id)
 
+    #Links a list of users to a given division with the role Teaching Assistant (TA)
     def sign_up_users_for_division_as_leader(self,leaders,division_id):
         for leader in leaders:
             self.database.get_session().execute\
                 ("INSERT INTO user_division (user_id, division_id,role) VALUES('"+str(leader.id)+ "','" + str(division_id)+"','TA')")
         self.database.get_session().commit()
 
+    #Deletes all groups linked to the specified division
     def delete_all_groups_in_given_division(self,division_id):
         self.database.get_session().execute("DELETE FROM groups WHERE division_id ="+str(division_id))
 
+    #Deletes all users linked to the given division id
     def delete_from_user_division_with_given_division_id(self,division_id,count):
         for i in range(count):
             self.database.get_session().execute("DELETE FROM user_division WHERE division_id=" + str(division_id))
         self.database.get_session().commit()
 
+    #Returns the users linked to the given divisions
     def get_user_division_on_given_division_id(self,division_id):
         return self.database.get_session().query(user_division).filter(user_division._columns.get("division_id")==division_id).all()
 
@@ -177,6 +188,7 @@ class PigTestCase(unittest.TestCase):
         finally:
             assert data is None
 
+    #Tests if it is able to connect to the database with right login information
     def test_connect_to_db_with_valid_uri(self):
         data = None
         database = self.setup_db()
@@ -206,13 +218,24 @@ class PigTestCase(unittest.TestCase):
 
     # Testing login with valid username and password, and then logging out.
     def test_login_and_logout_valid_username_and_password(self):
-        self.create_user('valid@email.com','password','firstname','lastname')
+        user = self.create_user('valid@email.com','password','firstname','lastname')
         response = self.login('valid@email.com','password')
-
+        self.login_handler.get_user_with_id(user.id)
         assert '200' in response.status
+
         response = self.logout()
         assert '200' in response.status
 
+    #Tests if the given states of the users are right.
+    def test_valid_user_states(self):
+        user = self.create_user('valid@email.com','password','firstname','lastname')
+        self.login('valid@email.com','password')
+        login_user = self.login_handler.get_user_with_id(user.id)
+        assert login_user.is_active()
+        assert not login_user.is_anonymous()
+        assert login_user.is_authenticated()
+        assert login_user.get_id() == user.id
+        self.logout()
 
     #The methods below are pretty self explainatory; they all query the database and they are used by the testing methods
     #instead of them directly querying the database.
@@ -220,21 +243,37 @@ class PigTestCase(unittest.TestCase):
         self.database.get_session().execute("DELETE FROM users WHERE email = '" + email + "'")
         self.database.get_session().commit()
 
+    #Creates a new division with given name and leader, then returns it
     def create_division(self, name, creator_id):
         division = Division(name=name, creator_id=creator_id)
         self.database.get_session().add(division)
         self.database.get_session().commit()
+        return division
 
+    #Deletes the division with the given id
     def delete_division(self, id):
         self.database.get_session().execute("DELETE FROM user_division WHERE division_id = " + str(id))
         self.database.get_session().execute("DELETE FROM division WHERE id = " + str(id))
         self.database.get_session().commit()
 
+    #Returns the user with the given mail
     def get_user(self, email):
         return self.database.get_session().query(User).filter(User.email == email).first()
 
+
     def go_to_division(self, link):
         return self.app.get("/" + link)
+
+    #Tests to make sure our simple queries actually retutrn what we expect
+    def test_registering_division(self):
+        user = self.create_user("email@email.com", "password", "First", "Last")
+        current_user = self.login_handler.get_user_with_id(user.id)
+        division = self.create_division("new_div", current_user.id)
+        assert self.db_getters.get_all_divisions()[0] == division
+        print(self.db_getters.get_all_divisions_where_creator(current_user))
+        assert self.db_getters.get_all_divisions_where_creator(current_user)[0] == division
+        assert self.db_getters.get_division(division.id) == division
+        assert self.db_getters.get_all_divisions_where_leader(current_user) is None
 
     #Testing registration of a user with two different passwords
     def test_register_user_with_two_different_password_inputs(self):
@@ -292,6 +331,8 @@ class PigTestCase(unittest.TestCase):
         user = self.get_user("asd@asd.com")
         assert user is None
 
+    #Tests if its possible to create a division with the given parameters
+    #Makes sure the parameters is inserted with the right values and attributes
     def test_create_division_with_parameters(self):
         user = self.create_user("Email@email.com", "Password", "First", "Last")
         self.division_creator.register_division(user.id, dict(
@@ -312,6 +353,8 @@ class PigTestCase(unittest.TestCase):
         assert number_param.min == 1
         assert number_param.max == 10
 
+    #Tests registering up for a division
+    #Checks if the users are signed up for the right division with right roles and right parameter values
     def test_register_for_division(self):
         user = self.create_user("Email@email.com", "Password", "First", "Last")
         registration_user1 = self.create_user("Register1@user.com", "Password", "Firstname", "Lastname")
@@ -359,12 +402,13 @@ class PigTestCase(unittest.TestCase):
         self.delete_user(user1.email)
     """
 
+    #Tests the encryption
     def test_encryption(self):
         link = "This is a test"
         encrypted_link = encode("Key", link)
         assert link == decode("Key", encrypted_link)
 
-
+    #Tests if it is able to get all the users that has signed up for a given division as user
     def test_get_all_users_with_values(self):
         user = self.create_user("Email@email.com", "Password", "First", "Last")
         registration_user2 = self.create_user("Register2@user.com", "Password", "Firstname", "Lastname")
