@@ -2,7 +2,8 @@
 
 # Table of contents
 1. [file structure](#FileStruct)
-2. [Updating the database schema](#DatabaseSchema)
+2. [setup](#Setup)
+3. [Updating the database schema](#DatabaseSchema)
 
 # General file structure of the project <a name="FileStruct"></a>
 Most of the project is in the `pig` directory. 
@@ -34,6 +35,36 @@ The files outside of `pig` are mostly files for making the website run, testing 
 * `pig/scripts/register_user.py`
 * `pig/scripts/Tasks.py` ment to be the file where all methods that aren't fetching data from the database is. This is WiP.
 
+# Setup of website <a name="Setup"></a>
+
+To run the application you need:
+* A web server to host the website and the database
+* A web browser to access the website
+
+Source code:
+* https://github.com/mariiuus/PIG.git
+
+Dependencies:
+* Python 3.6.0 or newer
+* Flask==0.12
+* Flask-SQLAlchemy==2.1
+* Jinja2==2.9.5
+* psycopg2==2.6.2
+* SQLAlchemy==1.1.5
+* Werkzeug==0.11.15
+* flask_login==0.4.0
+* python-coveralls ==2.9.0
+* coverage==4.3.4
+
+Setup:
+* Upload the source code to the server
+* If the webserver does not do this automatically, upload all the dependencies. 
+(Heroku does this by reading the contents of `requirements.txt.`)
+* Set up the database on the server, in theory any database system can be used, 
+but one using the PostgreSQL is preferred.
+* On the server, run `run.py`
+
+ 
 
 # Updating the database schema (destructive) <a name="DatabaseSchema"></a>
 These instructions will delete the current schema with all its tables 
