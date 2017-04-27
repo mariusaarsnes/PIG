@@ -1,5 +1,3 @@
-(TODO: General guidelines for contributing. Getting started, e.g some pointers as to what is where.)
-
 # Table of contents
 1. [file structure](#FileStruct)
 2. [setup](#Setup)
