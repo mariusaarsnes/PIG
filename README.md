@@ -9,7 +9,7 @@ TDT4140 - Software Engineering
 
 PIG, Partition Into Groups, is an application with the objective to intelligently partition a set of people into groups based on parameters that the users answer before being divided into groups.
 
-Our application will provide functionality to create instances of divisions where different users can sign up as members to be placed in a group or leader to be leading a group. 
+The application will provide functionality to create instances of divisions where different users can sign up as members to be placed in a group or leader to be leading a group. 
 
 As a scenario you can imagine a lecturer creating a division for one of his courses so that the students taking the course can be divided into groups to do a group project. Also, teaching assistants can sign up as leaders for this division to be assigned a number of groups they are. 
 
